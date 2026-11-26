@@ -33,6 +33,8 @@
     <key>NSSpeechRecognitionUsageDescription</key>
     <string>Typeflux Classic uses speech recognition to transcribe audio when Apple Speech fallback is enabled.</string>
 
+    <key>TYPEFLUX_WEB_AUTH_CHANNEL</key>
+    <string>production</string>
     <key>CFBundleURLTypes</key>
     <array>
         <dict>
@@ -41,6 +43,14 @@
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>ai.gulu.app.typeflux</string>
+            </array>
+        </dict>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>ai.gulu.app.typeflux.billing</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>typeflux</string>
             </array>
         </dict>
     </array>

@@ -68,6 +68,7 @@ final class OnboardingWindowController: NSObject {
         window.delegate = self
         window.appearance = AppAppearance.nsAppearance(for: settingsStore.appearanceMode)
 
+        ClassicAccountOnboarding.activeModel = viewModel
         self.viewModel = viewModel
         self.window = window
         DockVisibilityController.shared.windowDidShow(window)
@@ -86,6 +87,10 @@ final class OnboardingWindowController: NSObject {
         window?.delegate = nil
         window?.close()
         window = nil
+        if ClassicAccountOnboarding.activeModel === viewModel {
+            ClassicAccountOnboarding.activeLogin?.cancel()
+            ClassicAccountOnboarding.activeModel = nil
+        }
         viewModel = nil
 
         handler?()

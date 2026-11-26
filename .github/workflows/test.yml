@@ -31,6 +31,12 @@ jobs:
           fetch-depth: 2
           persist-credentials: false
 
+      - name: Verify synchronized account files
+        run: scripts/sync_account_module.sh --check
+
+      - name: Test account sync updates
+        run: python3 scripts/test_account_sync.py
+
       - name: Build
         run: make build
 
@@ -66,6 +72,15 @@ jobs:
                 ;;
             esac
           done <<< "$changed_files"
+
+          if grep -Fxq UPSTREAM_ACCOUNT_SYNC <<< "$changed_files"; then
+            while IFS= read -r path; do
+              [[ "$path" == Tests/* ]] || continue
+              while read -r suite; do
+                suites+=("$suite")
+              done < <(sed -En 's/.*(class|struct) ([A-Za-z0-9_]+Tests)[ :{].*/\2/p' "$path")
+            done < scripts/account_module_files.txt
+          fi
 
           if [[ -z "${suites[0]:-}" ]]; then
             echo "No affected test suites selected."

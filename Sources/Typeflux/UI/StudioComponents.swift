@@ -598,7 +598,7 @@ struct StudioShell<Content: View>: View {
 
     var body: some View {
         ZStack {
-            StudioGlassBackground(tintOpacity: StudioTheme.Opacity.glassBackgroundTint)
+            StudioGlassBackground()
                 .ignoresSafeArea()
 
             HStack(spacing: StudioTheme.Spacing.none) {
@@ -696,7 +696,7 @@ struct StudioShell<Content: View>: View {
     }
 }
 
-struct StudioGlassBackground: View {
+struct ClassicWindowCanvas: View {
     @Environment(\.colorScheme) private var colorScheme
 
     let tintOpacity: Double

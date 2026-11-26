@@ -59,6 +59,9 @@ struct TypefluxOfficialASRRoutingHTTPClient: TypefluxOfficialASRRoutingClient {
             return request
         }
 
+        if response.statusCode == 402, let exhausted = CloudCreditsExhaustedError.parse(data: data) {
+            throw exhausted
+        }
         let envelope = try decodeEnvelope(ASRTokenResponse.self, from: data)
         if response.statusCode == 401 {
             throw TypefluxOfficialASRRoutingError.unauthorized

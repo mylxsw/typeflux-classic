@@ -18,6 +18,9 @@ repo=${TYPEFLUX_UPSTREAM_REPO:-}
 if [[ -z $repo ]]; then
     repo=$tmp/upstream
     git clone --quiet --bare --filter=blob:none https://github.com/mylxsw/typeflux.git "$repo"
+    if [[ $1 =~ ^[0-9a-fA-F]{40}$ ]] && ! git -C "$repo" cat-file -e "$1^{commit}" 2>/dev/null; then
+        git -C "$repo" fetch --quiet origin "$1"
+    fi
 fi
 commit=$(git -C "$repo" rev-parse --verify --end-of-options "$1^{commit}")
 git -C "$repo" show "$commit:scripts/account_module_files.txt" > "$tmp/files"

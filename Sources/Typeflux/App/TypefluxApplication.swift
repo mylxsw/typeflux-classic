@@ -41,8 +41,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 AppAppearance.apply(settingsStore.appearanceMode)
             }
         }
+        AccountOnboarding.provider = ClassicAccountOnboarding.self
         appCoordinator = AppCoordinator()
         appCoordinator?.start()
+    }
+
+    func application(_: NSApplication, open urls: [URL]) {
+        Task { @MainActor in
+            await AppLoginURLRouter.handle(
+                urls, login: AuthState.shared.webLoginCoordinator,
+                isLoggedIn: { AuthState.shared.isLoggedIn },
+                showLogin: { LoginWindowController.shared.showWebLoginFailure() },
+                handleBilling: { await BillingReturnLink.handle(auth: .shared) }
+            )
+        }
     }
 
     func applicationWillTerminate(_: Notification) {
