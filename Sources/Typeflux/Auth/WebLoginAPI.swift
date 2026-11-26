@@ -59,7 +59,7 @@ final class WebLoginHTTPAPI: WebLoginAPI {
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(body)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("2", forHTTPHeaderField: "X-Typeflux-Credit-Version")
+        TypefluxCloudRequestHeaders.applyClientInfo(to: &request)
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.httpShouldHandleCookies = false
         request.timeoutInterval = 30
