@@ -1493,3 +1493,4 @@
 "billing.subscription.refreshFailed" = "订阅信息刷新失败，请重试。";
 "auth.web.successTitle" = "登录成功";
 "auth.web.successMessage" = "现在可以开始使用 Typeflux 了。";
+"settings.models.sharedRewriteUnavailable" = "完整版中选择的润色模型在 Classic 中不可用。";

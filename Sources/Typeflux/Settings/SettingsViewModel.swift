@@ -98,6 +98,7 @@ final class StudioViewModel: ObservableObject {
     @Published var focusedModelProvider: StudioModelProviderID
 
     @Published var sttProvider: STTProvider
+    @Published var sharedRewriteSelectionUnavailable = false
     @Published var llmProvider: LLMProvider
     @Published var llmRemoteProvider: LLMRemoteProvider
     @Published var appearanceMode: AppearanceMode
@@ -1162,19 +1163,27 @@ final class StudioViewModel: ObservableObject {
     }
 
     func setLLMProvider(_ provider: LLMProvider) {
-        llmProvider = provider
-        settingsStore.llmProvider = provider
-        focusedModelProvider = provider == .ollama ? .ollama : llmRemoteProvider.studioProviderID
+        let previous = settingsStore.rewriteModelSelection
+        selectLLMProvider(provider)
+        exportRewriteModelSelection(ifChangedFrom: previous)
         settingsStore.applyDefaultPersonaIfLLMConfigured()
     }
 
+    private func selectLLMProvider(_ provider: LLMProvider) {
+        llmProvider = provider
+        settingsStore.llmProvider = provider
+        focusedModelProvider = provider == .ollama ? .ollama : llmRemoteProvider.studioProviderID
+    }
+
     func setLLMRemoteProvider(_ provider: LLMRemoteProvider) {
+        let previous = settingsStore.rewriteModelSelection
         llmRemoteProvider = provider
         settingsStore.llmRemoteProvider = provider
         llmProvider = .openAICompatible
         settingsStore.llmProvider = .openAICompatible
         loadLLMConfiguration(for: provider)
         focusedModelProvider = provider.studioProviderID
+        exportRewriteModelSelection(ifChangedFrom: previous)
         settingsStore.applyDefaultPersonaIfLLMConfigured()
     }
 
@@ -1275,7 +1284,8 @@ final class StudioViewModel: ObservableObject {
     }
 
     func setLLMModelSelection(_ provider: LLMProvider, suggestedModel: String) {
-        setLLMProvider(provider)
+        let previous = settingsStore.rewriteModelSelection
+        selectLLMProvider(provider)
         switch provider {
         case .ollama:
             ollamaModel = suggestedModel
@@ -1284,7 +1294,24 @@ final class StudioViewModel: ObservableObject {
             llmModel = suggestedModel
             settingsStore.setLLMModel(suggestedModel, for: llmRemoteProvider)
         }
+        exportRewriteModelSelection(ifChangedFrom: previous)
         settingsStore.applyDefaultPersonaIfLLMConfigured()
+    }
+
+    func refreshRewriteModelSelection() {
+        llmProvider = settingsStore.llmProvider
+        llmRemoteProvider = settingsStore.llmRemoteProvider
+        ollamaModel = settingsStore.ollamaModel
+        if modelDomain == .llm {
+            focusedModelProvider = activeProvider(for: .llm)
+        }
+        loadLLMConfiguration(for: llmRemoteProvider)
+    }
+
+    private func exportRewriteModelSelection(ifChangedFrom previous: SettingsStore.RewriteModelSelection) {
+        if settingsStore.exportSharedRewriteModelSelection(ifChangedFrom: previous) {
+            sharedRewriteSelectionUnavailable = false
+        }
     }
 
     func loadLLMConfiguration(for provider: LLMRemoteProvider) {
@@ -2263,9 +2290,11 @@ final class StudioViewModel: ObservableObject {
         isPreparingOllama = true
         ollamaStatus = L("settings.models.ollama.preparing")
 
+        let previous = settingsStore.rewriteModelSelection
         settingsStore.ollamaBaseURL = ollamaBaseURL
         settingsStore.ollamaModel = ollamaModel
         settingsStore.ollamaAutoSetup = ollamaAutoSetup
+        exportRewriteModelSelection(ifChangedFrom: previous)
 
         Task {
             do {
@@ -2565,6 +2594,7 @@ final class StudioViewModel: ObservableObject {
     }
 
     func applyModelConfiguration(shouldShowToast: Bool = true) {
+        let previous = settingsStore.rewriteModelSelection
         switch focusedModelProvider {
         case .freeModel, .customLLM, .openRouter, .openAI, .anthropic, .gemini, .deepSeek, .kimi,
              .qwen, .zhipu, .minimax, .grok, .groq, .xiaomi, .openCodeZen, .openCodeGo:
@@ -2608,6 +2638,7 @@ final class StudioViewModel: ObservableObject {
         case .appleSpeech, .localSTT, .typefluxOfficial, .typefluxCloud:
             break
         }
+        exportRewriteModelSelection(ifChangedFrom: previous)
         settingsStore.applyDefaultPersonaIfLLMConfigured()
         if shouldShowToast {
             showToast(L("settings.models.configurationSaved"))

@@ -50,9 +50,15 @@ final class SettingsWindowController: NSObject {
     ) {
         self.settingsStore = settingsStore
 
+        let previous = settingsStore.rewriteModelSelection
+        let sharedSelectionAvailable = settingsStore.importSharedRewriteModelSelection()
         Task { await AuthState.shared.refreshTokenIfNeeded() }
 
         if let window {
+            viewModel?.sharedRewriteSelectionUnavailable = !sharedSelectionAvailable
+            if settingsStore.rewriteModelSelection != previous {
+                viewModel?.refreshRewriteModelSelection()
+            }
             viewModel?.navigate(to: initialSection)
             refreshAppearance()
             DockVisibilityController.shared.windowDidShow(window)
@@ -71,6 +77,7 @@ final class SettingsWindowController: NSObject {
             localModelManager: localModelManager,
             notificationService: notificationService
         )
+        viewModel.sharedRewriteSelectionUnavailable = !sharedSelectionAvailable
         AppLocalization.shared.setLanguage(viewModel.appLanguage)
         let view = StudioView(viewModel: viewModel)
         let hosting = TransparentSettingsHostingView(rootView: view)
