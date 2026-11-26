@@ -146,4 +146,37 @@ final class OverlayControllerTests: XCTestCase {
         XCTAssertFalse(controller.isProcessingProgressActiveForTesting)
         XCTAssertEqual(controller.processingProgressForTesting, 1)
     }
+
+    @MainActor
+    func testLateLLMPhaseDoesNotRestartProgressClockOnHiddenOverlay() async throws {
+        let controller = OverlayController(appState: AppStateStore())
+        let dismissals: [() -> Void] = [
+            { controller.dismissImmediately() },
+            { controller.dismiss(after: 0.05) },
+            { controller.dismissSoon() }
+        ]
+
+        for dismiss in dismissals {
+            controller.showProcessing(timeout: 30)
+            dismiss()
+            // Once while the dismissal is still pending, once after the panel has left.
+            controller.transitionToLLMPhase(timeout: 30)
+            XCTAssertFalse(controller.isProcessingProgressActiveForTesting)
+            try await Task.sleep(for: .milliseconds(500))
+            controller.transitionToLLMPhase(timeout: 30)
+            XCTAssertFalse(controller.isProcessingProgressActiveForTesting)
+        }
+    }
+
+    @MainActor
+    func testLLMPhaseStillRunsProgressClockForVisibleOverlay() {
+        let controller = OverlayController(appState: AppStateStore())
+        defer { controller.dismissImmediately() }
+        controller.showProcessing(timeout: 30)
+
+        controller.transitionToLLMPhase(timeout: 30)
+
+        XCTAssertTrue(controller.isProcessingProgressActiveForTesting)
+        XCTAssertEqual(controller.processingProgressForTesting, 0.7, accuracy: 0.001)
+    }
 }

@@ -602,7 +602,9 @@ final class OverlayController {
         }
         var shouldRefresh = false
         if model.presentation.isRecordingPreview { showProcessingImmediately() }
-        guard model.presentation.isProcessing else { return }
+        // A hidden or leaving capsule keeps its last presentation. A late phase
+        // change must not restart the progress clock behind it.
+        guard model.presentation.isProcessing, window?.isVisible == true, dismissWorkItem == nil else { return }
         if contentProcessingStartedElapsed == nil,
            let startedAt = processingProgressStartedAt {
             contentProcessingStartedElapsed = ProcessInfo.processInfo.systemUptime - startedAt
