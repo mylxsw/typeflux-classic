@@ -131,6 +131,11 @@ mkdir -p "$APP_DIR/Contents/Resources"
 cp "$ROOT_DIR/app/Info.plist" "$APP_DIR/Contents/Info.plist"
 cp "$BIN" "$APP_DIR/Contents/MacOS/Typeflux"
 cp "$ROOT_DIR/app/Typeflux.icns" "$APP_DIR/Contents/Resources/Typeflux.icns"
+# Localized display name ("Typeflux Classic") shown by Finder, Launchpad, Dock and privacy prompts.
+for lproj in "$ROOT_DIR"/app/*.lproj; do
+  rm -rf "$APP_DIR/Contents/Resources/$(basename "$lproj")"
+  cp -R "$lproj" "$APP_DIR/Contents/Resources/"
+done
 rm -rf "$APP_DIR/Contents/Resources/Typeflux_Typeflux.bundle"
 cp -R "$RESOURCE_BUNDLE" "$APP_DIR/Contents/Resources/Typeflux_Typeflux.bundle"
 install_bundled_models

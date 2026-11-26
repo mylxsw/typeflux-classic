@@ -68,6 +68,9 @@ struct AboutView: View {
                     Text(L("about.subtitle"))
                         .font(.studioBody(StudioTheme.Typography.bodyLarge))
                         .foregroundStyle(StudioTheme.textSecondary)
+
+                    ClassicFullVersionLink(style: .inline, openURL: open)
+                        .padding(.top, StudioTheme.Spacing.xxSmall)
                 }
 
                 Spacer()
@@ -112,7 +115,7 @@ struct AboutView: View {
             detailLinkRow(
                 icon: "shippingbox",
                 title: L("about.project"),
-                value: "Typeflux",
+                value: "Typeflux Classic",
                 subtitle: L("about.project.subtitle"),
                 url: TypefluxProduct.repositoryURL
             )

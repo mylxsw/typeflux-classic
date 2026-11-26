@@ -10,8 +10,8 @@
 "overlayStyle.liquidGlass" = "Liquid Glass";
 "overlayStyle.classic" = "Classic";
 
-"window.voiceStudio" = "Typeflux";
-"window.about" = "About Typeflux";
+"window.voiceStudio" = "Typeflux Classic";
+"window.about" = "About Typeflux Classic";
 
 "common.refresh" = "Refresh";
 "common.refreshing" = "Refreshing...";
@@ -20,10 +20,10 @@
 "home.exportAll" = "Export All";
 "home.openHistory" = "Open History";
 
-"sidebar.appName" = "Typeflux";
+"sidebar.appName" = "Typeflux Classic";
 "sidebar.platform" = "Desktop";
 "sidebar.about" = "About";
-"sidebar.aboutAccessibility" = "About Typeflux";
+"sidebar.aboutAccessibility" = "About Typeflux Classic";
 "sidebar.feedbackAccessibility" = "Send feedback";
 "sidebar.feedback.directOption" = "Direct feedback";
 "sidebar.feedback.emailOption" = "Send feedback email";
@@ -55,7 +55,7 @@
 "sidebar.accountCard.accessibilityUsage" = "%@ plan. %@ of %@ credits used.";
 
 "feedback.direct.title" = "Send feedback";
-"feedback.direct.subtitle" = "Describe the problem or suggestion. Typeflux will send it to the service and create an issue for follow-up.";
+"feedback.direct.subtitle" = "Describe the problem or suggestion. Typeflux Classic will send it to the service and create an issue for follow-up.";
 "feedback.direct.contentLabel" = "Feedback";
 "feedback.direct.contentPlaceholder" = "Tell us what happened or what you would like to improve.\nExample: I pressed the shortcut, but dictation did not start, even after restarting the app.\nOr: I would like finished text to copy to the clipboard automatically.";
 "feedback.direct.contactLabel" = "Contact (optional)";
@@ -76,7 +76,7 @@
 "studio.section.vocabulary" = "Vocabulary";
 "studio.section.history" = "History";
 "studio.section.settings" = "Settings";
-"studio.eyebrow.home" = "Typeflux";
+"studio.eyebrow.home" = "Typeflux Classic";
 "studio.eyebrow.models" = "Configuration";
 "studio.eyebrow.personas" = "Voice Personas";
 "studio.eyebrow.vocabulary" = "Custom Terms";
@@ -91,7 +91,7 @@
 "studio.subheading.home" = "AI-powered voice input — speak once, get transcribed and refined text delivered to any app on your Mac.";
 "studio.subheading.models" = "Choose the local and remote engines used for transcription and rewrite flows.";
 "studio.subheading.personas" = "Create reusable writing styles and keep every prompt ready for daily use.";
-"studio.subheading.vocabulary" = "Help Typeflux catch names, products, and domain terms more reliably.";
+"studio.subheading.vocabulary" = "Help Typeflux Classic catch names, products, and domain terms more reliably.";
 "studio.subheading.history" = "Review recent sessions, inspect the recognized text, and export your archive.";
 "studio.subheading.settings" = "Adjust shortcuts, appearance, and behavior from one unified interface.";
 "studio.search.home" = "Search activity...";
@@ -106,7 +106,7 @@
 "settings.servers.api.title" = "API server";
 "settings.servers.api.subtitle" = "Choose the server used for account, cloud AI, and app requests.";
 "settings.servers.asr.title" = "Speech recognition server";
-"settings.servers.asr.subtitle" = "Choose the server used by Typeflux speech recognition.";
+"settings.servers.asr.subtitle" = "Choose the server used by Typeflux Classic speech recognition.";
 "settings.servers.automatic" = "Automatic (fastest available)";
 "settings.servers.speedTest.title" = "Server speed test";
 "settings.servers.speedTest.subtitle" = "Test all available addresses and show their latency in the menus above.";
@@ -122,7 +122,7 @@
 "settings.servers.tag.unavailable" = "Unavailable";
 "settings.servers.tag.notTested" = "Not tested";
 "settings.launchAtLogin.title" = "Launch at Login";
-"settings.launchAtLogin.subtitle" = "Start Typeflux automatically after you sign in to your Mac.";
+"settings.launchAtLogin.subtitle" = "Start Typeflux Classic automatically after you sign in to your Mac.";
 "settings.activationHotkey" = "Voice Shortcuts";
 "settings.identity" = "Identity & Interaction";
 "settings.appearance.title" = "Appearance";
@@ -130,7 +130,7 @@
 "settings.overlayStyle.subtitle" = "Choose the visual style for capsules and dialogs.";
 "settings.appearance.subtitle" = "Switch the component system between light, dark, or system-following themes.";
 "settings.language.title" = "Language";
-"settings.language.subtitle" = "Choose the display language used across the Typeflux interface.";
+"settings.language.subtitle" = "Choose the display language used across the Typeflux Classic interface.";
 "settings.output.title" = "Output";
 "settings.output.opencc.title" = "Text Transformation & Optimization";
 "settings.output.opencc.subtitle" = "Automatically apply language-specific rules, such as Chinese conversion.";
@@ -154,16 +154,16 @@
 "settings.advanced.soundEffects.title" = "Enable sound effects";
 "settings.advanced.soundEffects.subtitle" = "Play start, done, and error sounds during recording workflow feedback.";
 "settings.advanced.voiceProcessingTimeout.title" = "AI rewrite base wait time";
-"settings.advanced.voiceProcessingTimeout.subtitle" = "Sets the wait time for short text. Typeflux automatically allows more time for longer source text.";
+"settings.advanced.voiceProcessingTimeout.subtitle" = "Sets the wait time for short text. Typeflux Classic automatically allows more time for longer source text.";
 "settings.advanced.voiceProcessingTimeout.option" = "%d seconds";
 "settings.advanced.autoUpdate.title" = "Automatic Updates";
 "settings.advanced.autoUpdate.subtitle" = "Automatically check for and install updates every 3 hours.";
 "settings.analyticsSharing.title" = "Share anonymous usage analytics";
-"settings.analyticsSharing.subtitle" = "Help improve Typeflux by sharing anonymous app and model download events. Voice and text content is never collected.";
+"settings.analyticsSharing.subtitle" = "Help improve Typeflux Classic by sharing anonymous app and model download events. Voice and text content is never collected.";
 "settings.permissionStatus.title" = "Permission Status";
-"settings.permissionStatus.subtitle" = "Review the macOS permissions Typeflux depends on, then grant access where needed.";
+"settings.permissionStatus.subtitle" = "Review the macOS permissions Typeflux Classic depends on, then grant access where needed.";
 
-"menu.openVoiceStudio" = "Open Typeflux";
+"menu.openVoiceStudio" = "Open Typeflux Classic";
 "menu.history" = "History";
 "menu.addVocabulary" = "Add Word";
 "menu.addVocabulary.dialog.title" = "Add word";
@@ -182,9 +182,9 @@
 "menu.agentTasks.viewAll" = "View All Tasks";
 "menu.agentTasks.runningCount" = "%d running";
 "menu.appearance" = "Appearance";
-"menu.settings" = "Typeflux Settings";
+"menu.settings" = "Typeflux Classic Settings";
 "menu.setupGuide" = "Setup Guide";
-"menu.about" = "About Typeflux";
+"menu.about" = "About Typeflux Classic";
 "menu.checkForUpdates" = "Check for Updates";
 "menu.downloadingUpdate" = "Downloading Update…";
 "menu.installingUpdate" = "Installing Update…";
@@ -209,7 +209,7 @@
 "appMenu.paste" = "Paste";
 "appMenu.selectAll" = "Select All";
 
-"about.appName" = "Typeflux";
+"about.appName" = "Typeflux Classic";
 "about.subtitle" = "The voice-native typing experience";
 "about.details" = "DETAILS";
 "about.developer" = "Developer";
@@ -221,10 +221,11 @@
 "about.project.subtitle" = "Source code, issues, and release history";
 "about.build" = "Build";
 "about.build.subtitle" = "Read from the app bundle";
+"classic.fullVersion.link" = "Learn about the full Typeflux";
 
 "permission.microphone.title" = "Microphone";
 "permission.microphone.summary" = "Required to capture audio from the system microphone.";
-"permission.microphone.detail.authorized" = "Typeflux can access the system microphone.";
+"permission.microphone.detail.authorized" = "Typeflux Classic can access the system microphone.";
 "permission.microphone.detail.notDetermined" = "Grant microphone access to allow recording from the menu bar.";
 "permission.microphone.detail.denied" = "Microphone access was denied. Re-enable it in System Settings.";
 "permission.microphone.detail.restricted" = "Microphone access is restricted by the system.";
@@ -238,8 +239,8 @@
 "permission.speechRecognition.detail.unknown" = "Speech recognition needs attention.";
 "permission.accessibility.title" = "Accessibility";
 "permission.accessibility.summary" = "Required to insert or replace text in other apps.";
-"permission.accessibility.detail.granted" = "Typeflux can control text fields in other apps.";
-"permission.accessibility.detail.required" = "Enable Accessibility so Typeflux can type into the focused app.";
+"permission.accessibility.detail.granted" = "Typeflux Classic can control text fields in other apps.";
+"permission.accessibility.detail.required" = "Enable Accessibility so Typeflux Classic can type into the focused app.";
 "permission.badge.granted" = "Granted";
 "permission.badge.required" = "Required";
 "permission.action.openSettings" = "Open Settings";
@@ -276,8 +277,8 @@
 "common.failedWithReason" = "Failed: %@";
 "common.failedPrefix" = "Failed:";
 
-"updater.available.title" = "A new version of Typeflux is ready to install!";
-"updater.available.subtitle" = "Typeflux %@ is now available. Would you like to install it and relaunch Typeflux now?";
+"updater.available.title" = "A new version of Typeflux Classic is ready to install!";
+"updater.available.subtitle" = "Typeflux Classic %@ is now available. Would you like to install it and relaunch Typeflux Classic now?";
 "updater.available.versionLabel" = "Version %@ is now available.";
 "updater.action.update" = "Update Now";
 "updater.action.installAndRelaunch" = "Install and Relaunch";
@@ -286,7 +287,7 @@
 "updater.action.viewDetails" = "View Details";
 "updater.autoUpdate.checkbox" = "Automatically download and install updates in the future";
 "updater.latest.title" = "Up to Date";
-"updater.latest.message" = "You are running the latest version of Typeflux.";
+"updater.latest.message" = "You are running the latest version of Typeflux Classic.";
 "updater.checkFailed.title" = "Update Check Failed";
 "updater.checkFailed.noData" = "Unable to retrieve update information.";
 "updater.download.failed" = "Failed to download the update.";
@@ -424,7 +425,7 @@
 "workflow.llmNotConfigured.action.settings" = "Open Settings";
 "workflow.llmNotConfigured.action.loginCloud" = "Login to Typeflux Cloud";
 "workflow.llmNotConfigured.action.configureCustomModel" = "Configure Custom Model";
-"workflow.llmNotConfigured.notice.localFallback" = "Typeflux Cloud is not signed in. Typeflux used local speech recognition to keep this input flowing. Sign in to enable cloud rewriting.";
+"workflow.llmNotConfigured.notice.localFallback" = "Typeflux Cloud is not signed in. Typeflux Classic used local speech recognition to keep this input flowing. Sign in to enable cloud rewriting.";
 "workflow.llmNotConfigured.askSkipped" = "Typeflux Cloud is not signed in. The voice transcript was saved, but cloud Q&A could not run.";
 
 "persona.none.title" = "No Persona";
@@ -563,13 +564,13 @@
 "history.llmOutcome.failed" = "Failed";
 "history.llmOutcome.requestFailedFallback" = "Request failed · transcript fallback";
 "history.keep.title" = "Keep history";
-"history.keep.subtitle" = "Choose how long Typeflux keeps local dictation history on this device.";
+"history.keep.subtitle" = "Choose how long Typeflux Classic keeps local dictation history on this device.";
 "history.privacy.title" = "Your data stays private";
 "history.privacy.subtitle" = "Voice dictation history is only stored on this Mac. Auto-cleanup removes expired local entries and linked audio files.";
 "history.export.title" = "Export archive";
 "history.export.subtitle" = "Download your history as markdown or clear the current timeline.";
 "history.export.chooseDirectory" = "Choose Export Folder";
-"history.export.chooseDirectoryMessage" = "Typeflux will save the Markdown history archive in this folder.";
+"history.export.chooseDirectoryMessage" = "Typeflux Classic will save the Markdown history archive in this folder.";
 "history.export.chooseDirectoryPrompt" = "Export";
 "history.empty" = "No history entries yet.";
 "history.loadingMore" = "Loading more history...";
@@ -601,7 +602,7 @@
 "vocabulary.filter.automatic" = "Auto-added";
 "vocabulary.filter.manual" = "Manually added";
 "vocabulary.filter.otherApps" = "Other Apps";
-"vocabulary.intro.title" = "Help Typeflux catch names, products, and domain terms more reliably.";
+"vocabulary.intro.title" = "Help Typeflux Classic catch names, products, and domain terms more reliably.";
 "vocabulary.intro.subtitle" = "Manual entries are sent as recognition hints to Whisper-compatible transcription backends.";
 "vocabulary.search.placeholder" = "Search vocabulary...";
 "vocabulary.empty.title" = "No vocabulary terms yet.";
@@ -669,7 +670,7 @@
 "settings.personaAppBindings.openButton" = "App Personas";
 "settings.personas.newButton" = "New Persona";
 "settings.personaAppBindings.enabled.title" = "Enable feature";
-"settings.personaAppBindings.enabled.subtitle" = "When turned off, Typeflux ignores all app-specific persona rules and falls back to the default persona.";
+"settings.personaAppBindings.enabled.subtitle" = "When turned off, Typeflux Classic ignores all app-specific persona rules and falls back to the default persona.";
 "settings.personaAppBindings.addTitle" = "Add app-specific persona";
 "settings.personaAppBindings.addSubtitle" = "Enter an app identifier and choose a persona, or use search to pick an app from the system.";
 "settings.personaAppBindings.listTitle" = "Configured apps";
@@ -915,7 +916,7 @@
 "settings.models.googleCloud.oauth.authorize" = "Authorize Google";
 "settings.models.googleCloud.oauth.reauthorize" = "Reauthorize";
 "settings.models.googleCloud.oauth.disconnect" = "Disconnect";
-"settings.models.googleCloud.oauth.connected" = "Google authorization is connected. Typeflux will refresh the Speech-to-Text access token automatically.";
+"settings.models.googleCloud.oauth.connected" = "Google authorization is connected. Typeflux Classic will refresh the Speech-to-Text access token automatically.";
 "settings.models.googleCloud.oauth.disconnected" = "Google authorization disconnected.";
 "settings.models.googleCloud.cloudGatewayHint" = "Uses Google Cloud Speech-to-Text v2 StreamingRecognize directly with your Project ID and API key.";
 "settings.models.useGoogleCloud" = "Use Google";
@@ -948,10 +949,10 @@
 "settings.models.localSTT.prepareFailed" = "Local speech model preparation failed.";
 "settings.models.localSTT.deleted" = "Model files deleted.";
 "settings.models.localSTT.transferProgress" = "%@ downloaded (%@ of %@)";
-"notification.localModelReady.title" = "Typeflux";
+"notification.localModelReady.title" = "Typeflux Classic";
 "notification.localModelReady.body" = "Local model is ready.";
 "workflow.localModelDownloadingAlert.title" = "Local speech model is downloading";
-"workflow.localModelDownloadingAlert.message" = "%@ is still downloading and cannot be used yet. Typeflux will send a system notification when it is ready.";
+"workflow.localModelDownloadingAlert.message" = "%@ is still downloading and cannot be used yet. Typeflux Classic will send a system notification when it is ready.";
 "workflow.localModelDownloadingAlert.progress" = "Current progress: %d%%";
 "workflow.localModelDownloadingAlert.failedTitle" = "Local speech model download failed";
 "workflow.localModelDownloadingAlert.failedMessage" = "The download failed: %@. You can try again by pressing the shortcut when your network is available.";
@@ -981,7 +982,7 @@
 "workflow.vocabulary.autoAdded.single" = "Added %@ to vocabulary.";
 "workflow.vocabulary.autoAdded.multiple" = "Added %d terms to vocabulary.";
 
-"onboarding.window.title" = "Welcome to Typeflux";
+"onboarding.window.title" = "Welcome to Typeflux Classic";
 "onboarding.step.language" = "Language";
 "onboarding.step.models" = "Models";
 "onboarding.step.permissions" = "Permissions";
@@ -996,7 +997,7 @@
 "onboarding.welcome.feature3.desc" = "An optional language model refines your dictation on the fly.";
 
 "onboarding.language.title" = "Choose your language";
-"onboarding.language.subtitle" = "Select the display language for the Typeflux interface.";
+"onboarding.language.subtitle" = "Select the display language for the Typeflux Classic interface.";
 "onboarding.account.title" = "Welcome Back";
 "onboarding.account.subtitle" = "Unlock cloud speech recognition and AI inference";
 "onboarding.account.cloudReady" = "Speech recognition and language model services ready — no extra API keys needed.";
@@ -1034,9 +1035,9 @@
 "onboarding.llmConfig.incompleteAlert.skip" = "Skip";
 
 "onboarding.permissions.title" = "Grant permissions";
-"onboarding.permissions.subtitle" = "Typeflux needs a few system permissions to capture your voice and insert text into other apps.";
+"onboarding.permissions.subtitle" = "Typeflux Classic needs a few system permissions to capture your voice and insert text into other apps.";
 "onboarding.permissions.instruction.title" = "Complete each required permission";
-"onboarding.permissions.instruction.subtitle" = "Click the button on the right of each permission, approve the macOS prompt, then return to Typeflux.";
+"onboarding.permissions.instruction.subtitle" = "Click the button on the right of each permission, approve the macOS prompt, then return to Typeflux Classic.";
 "onboarding.permissions.incompleteAlert.title" = "Permissions not complete";
 "onboarding.permissions.incompleteAlert.message" = "Complete the required permissions before continuing. Click each permission button and approve it in macOS.";
 "onboarding.permissions.privacyCallout.title" = "Privacy First";
@@ -1045,12 +1046,12 @@
 "onboarding.shortcuts.title" = "Keyboard shortcuts";
 "onboarding.shortcuts.subtitle" = "These are the default shortcuts. You're all set — no changes required.";
 "onboarding.shortcuts.globeKeyNotice.title" = "Free up the FN / Globe (🌐) key";
-"onboarding.shortcuts.globeKeyNotice.message" = "macOS reserves the FN / 🌐 key to open Emoji & Symbols by default, which blocks Typeflux from using it. Open Keyboard settings and change \"Press FN / 🌐 key to\" to \"Do Nothing\" — that's all it takes.";
+"onboarding.shortcuts.globeKeyNotice.message" = "macOS reserves the FN / 🌐 key to open Emoji & Symbols by default, which blocks Typeflux Classic from using it. Open Keyboard settings and change \"Press FN / 🌐 key to\" to \"Do Nothing\" — that's all it takes.";
 "onboarding.shortcuts.globeKeyNotice.button" = "Open Keyboard Settings";
 "onboarding.shortcuts.globeKeyNotice.ready.title" = "FN / 🌐 key is ready";
-"onboarding.shortcuts.globeKeyNotice.ready.message" = "Your keyboard setting looks good — Typeflux can use the FN / 🌐 key as a hotkey. If the hotkey still doesn't respond, try signing out and back in, or restart your Mac.";
+"onboarding.shortcuts.globeKeyNotice.ready.message" = "Your keyboard setting looks good — Typeflux Classic can use the FN / 🌐 key as a hotkey. If the hotkey still doesn't respond, try signing out and back in, or restart your Mac.";
 "onboarding.shortcuts.externalKeyboard.title" = "Using an external keyboard without a working FN key?";
-"onboarding.shortcuts.externalKeyboard.message" = "You can use Right Command or Right Option instead. Typeflux will change Voice Input to that key, and Ask Anything to a quick double-press of that key.";
+"onboarding.shortcuts.externalKeyboard.message" = "You can use Right Command or Right Option instead. Typeflux Classic will change Voice Input to that key, and Ask Anything to a quick double-press of that key.";
 "onboarding.shortcuts.externalKeyboard.useRightCommand" = "Use Right Command";
 "onboarding.shortcuts.externalKeyboard.useRightOption" = "Use Right Option";
 "onboarding.shortcuts.replacement.rightCommand" = "Right Command";
@@ -1060,8 +1061,8 @@
 "onboarding.shortcuts.replacement.active.message" = "Your shortcuts have changed: Voice Input now uses %@, and Ask Anything uses %@×2.";
 "onboarding.shortcuts.replacement.restore" = "Restore FN shortcuts";
 "onboarding.shortcuts.replacement.appliedAlert.title" = "Shortcuts updated";
-"onboarding.shortcuts.replacement.appliedAlert.message" = "Typeflux now uses %@ for Voice Input and %@×2 for Ask Anything.";
-"onboarding.shortcuts.replacement.restoredAlert.message" = "Typeflux has restored the default FN / 🌐 shortcuts.";
+"onboarding.shortcuts.replacement.appliedAlert.message" = "Typeflux Classic now uses %@ for Voice Input and %@×2 for Ask Anything.";
+"onboarding.shortcuts.replacement.restoredAlert.message" = "Typeflux Classic has restored the default FN / 🌐 shortcuts.";
 "onboarding.shortcuts.activation.hint" = "Turn speech into text";
 "onboarding.shortcuts.ask.hint" = "Ask aloud or edit selected text";
 "onboarding.shortcuts.persona.hint" = "Switch personas or rewrite selected text";

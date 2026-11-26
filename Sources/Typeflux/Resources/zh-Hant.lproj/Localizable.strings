@@ -10,8 +10,8 @@
 "overlayStyle.liquidGlass" = "Liquid Glass";
 "overlayStyle.classic" = "經典樣式";
 
-"window.voiceStudio" = "Typeflux";
-"window.about" = "關於 Typeflux";
+"window.voiceStudio" = "Typeflux Classic";
+"window.about" = "關於 Typeflux Classic";
 
 "common.refresh" = "重新整理";
 "common.refreshing" = "重新整理中...";
@@ -20,10 +20,10 @@
 "home.exportAll" = "匯出全部";
 "home.openHistory" = "打開歷史";
 
-"sidebar.appName" = "Typeflux";
+"sidebar.appName" = "Typeflux Classic";
 "sidebar.platform" = "桌面版";
 "sidebar.about" = "關於";
-"sidebar.aboutAccessibility" = "關於 Typeflux";
+"sidebar.aboutAccessibility" = "關於 Typeflux Classic";
 "sidebar.feedbackAccessibility" = "問題回饋";
 "sidebar.feedback.directOption" = "直接回饋";
 "sidebar.feedback.emailOption" = "透過電子郵件回饋問題";
@@ -55,7 +55,7 @@
 "sidebar.accountCard.accessibilityUsage" = "%@ 方案，已用 %@ / %@ 雲端額度。";
 
 "feedback.direct.title" = "問題回饋";
-"feedback.direct.subtitle" = "描述你遇到的問題或建議。Typeflux 會提交到服務端並建立 Issue 方便後續追蹤。";
+"feedback.direct.subtitle" = "描述你遇到的問題或建議。Typeflux Classic 會提交到服務端並建立 Issue 方便後續追蹤。";
 "feedback.direct.contentLabel" = "回饋內容";
 "feedback.direct.contentPlaceholder" = "請簡單說說你遇到的問題或想法。\n例如：我按下快捷鍵後沒有開始轉寫，重新啟動 App 後還是一樣。\n也可以寫：我希望轉寫完成後自動複製到剪貼簿。";
 "feedback.direct.contactLabel" = "聯絡方式（選填）";
@@ -76,7 +76,7 @@
 "studio.section.vocabulary" = "詞庫";
 "studio.section.history" = "歷史";
 "studio.section.settings" = "設定";
-"studio.eyebrow.home" = "Typeflux";
+"studio.eyebrow.home" = "Typeflux Classic";
 "studio.eyebrow.models" = "配置";
 "studio.eyebrow.personas" = "語音人設";
 "studio.eyebrow.vocabulary" = "自訂詞彙";
@@ -106,7 +106,7 @@
 "settings.servers.api.title" = "API 伺服器";
 "settings.servers.api.subtitle" = "用於帳號、雲端 AI 和應用程式要求的伺服器。";
 "settings.servers.asr.title" = "語音辨識伺服器";
-"settings.servers.asr.subtitle" = "用於 Typeflux 語音辨識的伺服器。";
+"settings.servers.asr.subtitle" = "用於 Typeflux Classic 語音辨識的伺服器。";
 "settings.servers.automatic" = "自動（選擇最快可用位址）";
 "settings.servers.speedTest.title" = "伺服器測速";
 "settings.servers.speedTest.subtitle" = "測試全部可用位址，並在上方選單中顯示延遲。";
@@ -122,7 +122,7 @@
 "settings.servers.tag.unavailable" = "無法使用";
 "settings.servers.tag.notTested" = "未測速";
 "settings.launchAtLogin.title" = "開機自動啟動";
-"settings.launchAtLogin.subtitle" = "登入 Mac 後自動啟動 Typeflux，無需手動打開。";
+"settings.launchAtLogin.subtitle" = "登入 Mac 後自動啟動 Typeflux Classic，無需手動打開。";
 "settings.activationHotkey" = "語音快捷鍵";
 "settings.identity" = "身份與互動";
 "settings.appearance.title" = "明暗模式";
@@ -130,7 +130,7 @@
 "settings.overlayStyle.subtitle" = "選擇膠囊和對話框的視覺樣式。";
 "settings.appearance.subtitle" = "在淺色、深色或跟隨系統主題之間切換整個介面。";
 "settings.language.title" = "語言";
-"settings.language.subtitle" = "選擇 Typeflux 介面的顯示語言。";
+"settings.language.subtitle" = "選擇 Typeflux Classic 介面的顯示語言。";
 "settings.audio" = "音訊";
 "settings.microphone.title" = "麥克風";
 "settings.microphone.subtitle" = "選擇聽寫使用的輸入裝置。自動模式會跟隨目前 macOS 預設輸入裝置。";
@@ -146,14 +146,14 @@
 "settings.advanced.soundEffects.title" = "啟用音效";
 "settings.advanced.soundEffects.subtitle" = "在開始錄音、完成操作與發生錯誤時播放提示音。";
 "settings.advanced.voiceProcessingTimeout.title" = "AI 改寫基礎等待時間";
-"settings.advanced.voiceProcessingTimeout.subtitle" = "設定短文字的等待時間，原始內容越長，Typeflux 會自動增加處理時間。";
+"settings.advanced.voiceProcessingTimeout.subtitle" = "設定短文字的等待時間，原始內容越長，Typeflux Classic 會自動增加處理時間。";
 "settings.advanced.voiceProcessingTimeout.option" = "%d 秒";
 "settings.advanced.autoUpdate.title" = "自動更新";
 "settings.advanced.autoUpdate.subtitle" = "每 3 小時自動檢查並安裝新版本。";
 "settings.analyticsSharing.title" = "分享匿名使用情況分析";
-"settings.analyticsSharing.subtitle" = "分享匿名應用程式與模型下載事件，協助改進 Typeflux。絕不會收集語音和文字內容。";
+"settings.analyticsSharing.subtitle" = "分享匿名應用程式與模型下載事件，協助改進 Typeflux Classic。絕不會收集語音和文字內容。";
 "settings.permissionStatus.title" = "權限狀態";
-"settings.permissionStatus.subtitle" = "檢視 Typeflux 依賴的 macOS 權限，並在需要時完成授權。";
+"settings.permissionStatus.subtitle" = "檢視 Typeflux Classic 依賴的 macOS 權限，並在需要時完成授權。";
 "settings.output.title" = "輸出";
 "settings.output.opencc.title" = "文本轉換與優化";
 "settings.output.opencc.subtitle" = "自動應用語言特定的規則，如繁簡轉換。";
@@ -163,7 +163,7 @@
 "settings.output.opencc.config.s2hk" = "簡體 → 繁體（香港）";
 "settings.output.opencc.config.t2s" = "繁體 → 簡體";
 
-"menu.openVoiceStudio" = "打開 Typeflux";
+"menu.openVoiceStudio" = "打開 Typeflux Classic";
 "menu.history" = "歷史";
 "menu.addVocabulary" = "新增生詞";
 "menu.addVocabulary.dialog.title" = "新增生詞";
@@ -184,7 +184,7 @@
 "menu.appearance" = "外觀";
 "menu.settings" = "系統設定";
 "menu.setupGuide" = "新手引導";
-"menu.about" = "關於 Typeflux";
+"menu.about" = "關於 Typeflux Classic";
 "menu.checkForUpdates" = "檢查更新";
 "menu.downloadingUpdate" = "正在下載更新…";
 "menu.installingUpdate" = "正在安裝更新…";
@@ -209,7 +209,7 @@
 "appMenu.paste" = "貼上";
 "appMenu.selectAll" = "全選";
 
-"about.appName" = "Typeflux";
+"about.appName" = "Typeflux Classic";
 "about.subtitle" = "The voice-native typing experience";
 "about.details" = "詳情";
 "about.developer" = "開發者";
@@ -219,10 +219,11 @@
 "about.project.subtitle" = "原始碼、問題回報與版本發佈";
 "about.build" = "建置版本";
 "about.build.subtitle" = "讀取自應用 Bundle";
+"classic.fullVersion.link" = "了解完整版 Typeflux";
 
 "permission.microphone.title" = "麥克風";
 "permission.microphone.summary" = "用於擷取系統麥克風輸入。";
-"permission.microphone.detail.authorized" = "Typeflux 已可存取系統麥克風。";
+"permission.microphone.detail.authorized" = "Typeflux Classic 已可存取系統麥克風。";
 "permission.microphone.detail.notDetermined" = "請授予麥克風權限，以便從選單列開始錄音。";
 "permission.microphone.detail.denied" = "麥克風權限已被拒絕，請前往系統設定重新啟用。";
 "permission.microphone.detail.restricted" = "麥克風權限受系統限制。";
@@ -236,8 +237,8 @@
 "permission.speechRecognition.detail.unknown" = "語音辨識權限需要注意。";
 "permission.accessibility.title" = "輔助使用";
 "permission.accessibility.summary" = "用於向其他應用插入或替換文字。";
-"permission.accessibility.detail.granted" = "Typeflux 現在可以控制其他應用中的文字輸入框。";
-"permission.accessibility.detail.required" = "請開啟輔助使用權限，讓 Typeflux 能向目前應用輸入文字。";
+"permission.accessibility.detail.granted" = "Typeflux Classic 現在可以控制其他應用中的文字輸入框。";
+"permission.accessibility.detail.required" = "請開啟輔助使用權限，讓 Typeflux Classic 能向目前應用輸入文字。";
 "permission.badge.granted" = "已授權";
 "permission.badge.required" = "必需";
 "permission.action.openSettings" = "打開設定";
@@ -274,8 +275,8 @@
 "common.failedWithReason" = "失敗：%@";
 "common.failedPrefix" = "失敗：";
 
-"updater.available.title" = "Typeflux 新版本已準備好安裝！";
-"updater.available.subtitle" = "Typeflux %@ 現已可用，是否立即安裝並重新啟動 Typeflux？";
+"updater.available.title" = "Typeflux Classic 新版本已準備好安裝！";
+"updater.available.subtitle" = "Typeflux Classic %@ 現已可用，是否立即安裝並重新啟動 Typeflux Classic？";
 "updater.available.versionLabel" = "版本 %@ 現已可用。";
 "updater.action.update" = "立即更新";
 "updater.action.installAndRelaunch" = "安裝並重啟";
@@ -284,7 +285,7 @@
 "updater.action.viewDetails" = "查看詳情";
 "updater.autoUpdate.checkbox" = "今後自動下載並安裝更新";
 "updater.latest.title" = "已是最新版本";
-"updater.latest.message" = "你目前執行的是最新版本的 Typeflux。";
+"updater.latest.message" = "你目前執行的是最新版本的 Typeflux Classic。";
 "updater.checkFailed.title" = "檢查更新失敗";
 "updater.checkFailed.noData" = "無法取得更新資訊。";
 "updater.download.failed" = "下載更新失敗。";
@@ -561,13 +562,13 @@
 "history.llmOutcome.failed" = "失敗";
 "history.llmOutcome.requestFailedFallback" = "請求失敗 · 已使用原始轉寫";
 "history.keep.title" = "保留歷史";
-"history.keep.subtitle" = "選擇 Typeflux 在這台裝置上保留本地聽寫歷史的時間。";
+"history.keep.subtitle" = "選擇 Typeflux Classic 在這台裝置上保留本地聽寫歷史的時間。";
 "history.privacy.title" = "你的資料保持私密";
 "history.privacy.subtitle" = "語音聽寫歷史只保存在這台 Mac 上。自動清理會移除過期本地記錄和關聯音訊檔。";
 "history.export.title" = "匯出封存";
 "history.export.subtitle" = "將歷史匯出為 Markdown，或清空目前時間線。";
 "history.export.chooseDirectory" = "選擇匯出資料夾";
-"history.export.chooseDirectoryMessage" = "Typeflux 會將 Markdown 歷史封存儲存到這個資料夾。";
+"history.export.chooseDirectoryMessage" = "Typeflux Classic 會將 Markdown 歷史封存儲存到這個資料夾。";
 "history.export.chooseDirectoryPrompt" = "匯出";
 "history.empty" = "還沒有歷史記錄。";
 "history.loadingMore" = "正在載入更多歷史...";
@@ -599,7 +600,7 @@
 "vocabulary.filter.automatic" = "自動新增";
 "vocabulary.filter.manual" = "手動新增";
 "vocabulary.filter.otherApps" = "其它應用";
-"vocabulary.intro.title" = "協助 Typeflux 更穩定地辨識人名、產品名與領域詞彙。";
+"vocabulary.intro.title" = "協助 Typeflux Classic 更穩定地辨識人名、產品名與領域詞彙。";
 "vocabulary.intro.subtitle" = "手動新增的詞條會作為辨識提示送往相容 Whisper 的轉寫後端。";
 "vocabulary.search.placeholder" = "搜尋詞庫...";
 "vocabulary.empty.title" = "還沒有詞條。";
@@ -667,7 +668,7 @@
 "settings.personaAppBindings.openButton" = "應用專屬人設";
 "settings.personas.newButton" = "新增人設";
 "settings.personaAppBindings.enabled.title" = "啟用功能";
-"settings.personaAppBindings.enabled.subtitle" = "關閉後，Typeflux 會忽略所有應用專屬人設規則，改回使用預設人設。";
+"settings.personaAppBindings.enabled.subtitle" = "關閉後，Typeflux Classic 會忽略所有應用專屬人設規則，改回使用預設人設。";
 "settings.personaAppBindings.addTitle" = "新增應用專屬人設";
 "settings.personaAppBindings.addSubtitle" = "輸入應用識別並選擇人設，或使用搜尋按鈕從系統應用清單中選擇。";
 "settings.personaAppBindings.listTitle" = "已設定應用";
@@ -911,7 +912,7 @@
 "settings.models.googleCloud.oauth.authorize" = "授權 Google";
 "settings.models.googleCloud.oauth.reauthorize" = "重新授權";
 "settings.models.googleCloud.oauth.disconnect" = "中斷授權";
-"settings.models.googleCloud.oauth.connected" = "Google 授權已連線，Typeflux 會自動刷新 Speech-to-Text 存取權杖。";
+"settings.models.googleCloud.oauth.connected" = "Google 授權已連線，Typeflux Classic 會自動刷新 Speech-to-Text 存取權杖。";
 "settings.models.googleCloud.oauth.disconnected" = "Google 授權已中斷。";
 "settings.models.googleCloud.cloudGatewayHint" = "使用 Project ID 和 API Key 直接呼叫 Google Cloud Speech-to-Text v2 StreamingRecognize。";
 "settings.models.useGoogleCloud" = "使用 Google";
@@ -944,10 +945,10 @@
 "settings.models.localSTT.prepareFailed" = "本地語音模型準備失敗。";
 "settings.models.localSTT.deleted" = "模型檔案已刪除。";
 "settings.models.localSTT.transferProgress" = "已下載 %@（%@ / %@）";
-"notification.localModelReady.title" = "Typeflux";
+"notification.localModelReady.title" = "Typeflux Classic";
 "notification.localModelReady.body" = "本地模型已就緒。";
 "workflow.localModelDownloadingAlert.title" = "本地語音模型正在下載";
-"workflow.localModelDownloadingAlert.message" = "%@ 仍在下載中，暫時無法使用。下載完成後，Typeflux 會透過系統通知提醒你。";
+"workflow.localModelDownloadingAlert.message" = "%@ 仍在下載中，暫時無法使用。下載完成後，Typeflux Classic 會透過系統通知提醒你。";
 "workflow.localModelDownloadingAlert.progress" = "目前進度：%d%%";
 "workflow.localModelDownloadingAlert.failedTitle" = "本地語音模型下載失敗";
 "workflow.localModelDownloadingAlert.failedMessage" = "下載失敗：%@。網路恢復後，再次按快捷鍵即可重新嘗試。";
@@ -977,7 +978,7 @@
 "workflow.vocabulary.autoAdded.single" = "已自動將 %@ 加入生詞本。";
 "workflow.vocabulary.autoAdded.multiple" = "已自動將 %d 個詞加入生詞本。";
 
-"onboarding.window.title" = "歡迎使用 Typeflux";
+"onboarding.window.title" = "歡迎使用 Typeflux Classic";
 "onboarding.step.language" = "語言";
 "onboarding.step.models" = "模型";
 "onboarding.step.permissions" = "權限";
@@ -992,7 +993,7 @@
 "onboarding.welcome.feature3.desc" = "可選的語言模型即時優化您的聽寫內容。";
 
 "onboarding.language.title" = "選擇語言";
-"onboarding.language.subtitle" = "選擇 Typeflux 介面的顯示語言。";
+"onboarding.language.subtitle" = "選擇 Typeflux Classic 介面的顯示語言。";
 "onboarding.account.title" = "歡迎回來";
 "onboarding.account.subtitle" = "解鎖雲端語音辨識與 AI 推理能力";
 "onboarding.account.cloudReady" = "語音辨識與大語言模型服務已就緒，無需額外設定 API 金鑰。";
@@ -1030,9 +1031,9 @@
 "onboarding.llmConfig.incompleteAlert.skip" = "略過";
 
 "onboarding.permissions.title" = "授予權限";
-"onboarding.permissions.subtitle" = "Typeflux 需要少量系統權限，用於錄製語音並將文字輸入其他應用程式。";
+"onboarding.permissions.subtitle" = "Typeflux Classic 需要少量系統權限，用於錄製語音並將文字輸入其他應用程式。";
 "onboarding.permissions.instruction.title" = "請完成每一項必要授權";
-"onboarding.permissions.instruction.subtitle" = "點擊每個權限右側的按鈕，在 macOS 彈窗或系統設定中完成授權，然後回到 Typeflux。";
+"onboarding.permissions.instruction.subtitle" = "點擊每個權限右側的按鈕，在 macOS 彈窗或系統設定中完成授權，然後回到 Typeflux Classic。";
 "onboarding.permissions.incompleteAlert.title" = "權限尚未完成";
 "onboarding.permissions.incompleteAlert.message" = "繼續之前請先完成必要權限。請點擊每個權限右側的按鈕，並在 macOS 中確認授權。";
 "onboarding.permissions.privacyCallout.title" = "隱私優先";
@@ -1041,12 +1042,12 @@
 "onboarding.shortcuts.title" = "鍵盤快捷鍵";
 "onboarding.shortcuts.subtitle" = "以下是預設快捷鍵設定，無需修改即可使用。";
 "onboarding.shortcuts.globeKeyNotice.title" = "請先釋放 FN / 🌐（地球）鍵";
-"onboarding.shortcuts.globeKeyNotice.message" = "macOS 預設會用 FN / 🌐 鍵開啟「表情符號與符號」，這會讓 Typeflux 無法使用它。請開啟鍵盤設定，將「按下 FN / 🌐 鍵時」改為「不執行任何操作」即可。";
+"onboarding.shortcuts.globeKeyNotice.message" = "macOS 預設會用 FN / 🌐 鍵開啟「表情符號與符號」，這會讓 Typeflux Classic 無法使用它。請開啟鍵盤設定，將「按下 FN / 🌐 鍵時」改為「不執行任何操作」即可。";
 "onboarding.shortcuts.globeKeyNotice.button" = "開啟鍵盤設定";
 "onboarding.shortcuts.globeKeyNotice.ready.title" = "FN / 🌐 鍵已就緒";
-"onboarding.shortcuts.globeKeyNotice.ready.message" = "鍵盤設定已經到位，Typeflux 可以使用 FN / 🌐 鍵作為快捷鍵了。若按鍵仍無回應，請嘗試登出後重新登入，或重新啟動 Mac。";
+"onboarding.shortcuts.globeKeyNotice.ready.message" = "鍵盤設定已經到位，Typeflux Classic 可以使用 FN / 🌐 鍵作為快捷鍵了。若按鍵仍無回應，請嘗試登出後重新登入，或重新啟動 Mac。";
 "onboarding.shortcuts.externalKeyboard.title" = "使用外接鍵盤，且沒有可用的 FN 鍵？";
-"onboarding.shortcuts.externalKeyboard.message" = "你可以改用右側 Command 或右側 Option。Typeflux 會將語音輸入改為這個按鍵，將「隨便問」改為快速連按兩次這個按鍵。";
+"onboarding.shortcuts.externalKeyboard.message" = "你可以改用右側 Command 或右側 Option。Typeflux Classic 會將語音輸入改為這個按鍵，將「隨便問」改為快速連按兩次這個按鍵。";
 "onboarding.shortcuts.externalKeyboard.useRightCommand" = "使用右側 Command";
 "onboarding.shortcuts.externalKeyboard.useRightOption" = "使用右側 Option";
 "onboarding.shortcuts.replacement.rightCommand" = "右側 Command";
@@ -1056,8 +1057,8 @@
 "onboarding.shortcuts.replacement.active.message" = "你的快捷鍵已經發生變化：語音輸入現在使用 %@，「隨便問」使用 %@×2。";
 "onboarding.shortcuts.replacement.restore" = "恢復 FN 快捷鍵";
 "onboarding.shortcuts.replacement.appliedAlert.title" = "快捷鍵已更新";
-"onboarding.shortcuts.replacement.appliedAlert.message" = "Typeflux 現在使用 %@ 作為語音輸入快捷鍵，使用 %@×2 開啟「隨便問」。";
-"onboarding.shortcuts.replacement.restoredAlert.message" = "Typeflux 已恢復預設的 FN / 🌐 快捷鍵。";
+"onboarding.shortcuts.replacement.appliedAlert.message" = "Typeflux Classic 現在使用 %@ 作為語音輸入快捷鍵，使用 %@×2 開啟「隨便問」。";
+"onboarding.shortcuts.replacement.restoredAlert.message" = "Typeflux Classic 已恢復預設的 FN / 🌐 快捷鍵。";
 "onboarding.shortcuts.activation.hint" = "把說的話輸入為文字";
 "onboarding.shortcuts.ask.hint" = "語音提問或修改選取文字";
 "onboarding.shortcuts.persona.hint" = "切換人設或改寫選取文字";

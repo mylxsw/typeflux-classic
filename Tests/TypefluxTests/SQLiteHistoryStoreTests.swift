@@ -294,7 +294,7 @@ final class SQLiteHistoryStoreTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
 
         let content = try String(contentsOf: url, encoding: .utf8)
-        XCTAssertTrue(content.contains("# Typeflux History"))
+        XCTAssertTrue(content.contains("# Typeflux Classic History"))
         XCTAssertTrue(content.contains("hello world"))
         XCTAssertTrue(content.contains("Mode: dictation"))
     }
@@ -464,14 +464,14 @@ extension SQLiteHistoryStoreTests {
         let content = try String(contentsOf: url, encoding: .utf8)
         XCTAssertTrue(content.contains("first entry"))
         XCTAssertTrue(content.contains("second entry"))
-        XCTAssertTrue(content.contains("# Typeflux History"))
+        XCTAssertTrue(content.contains("# Typeflux Classic History"))
     }
 
     func testExportMarkdownOnEmptyStoreCreatesFile() throws {
         let url = try store.exportMarkdown()
         XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
         let content = try String(contentsOf: url, encoding: .utf8)
-        XCTAssertTrue(content.contains("# Typeflux History"))
+        XCTAssertTrue(content.contains("# Typeflux Classic History"))
     }
 
     // MARK: - concurrent access safety

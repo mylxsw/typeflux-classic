@@ -674,9 +674,9 @@ struct StudioView: View {
         components.scheme = "mailto"
         components.path = "mylxsw@aicode.cc"
         components.queryItems = [
-            URLQueryItem(name: "subject", value: "Typeflux Feedback"),
+            URLQueryItem(name: "subject", value: "Typeflux Classic Feedback"),
             URLQueryItem(
-                name: "body", value: "Hi,\n\nI want to share some feedback about Typeflux:\n"
+                name: "body", value: "Hi,\n\nI want to share some feedback about Typeflux Classic:\n"
             )
         ]
 
@@ -685,8 +685,7 @@ struct StudioView: View {
     }
 
     private func openGitHubIssue() {
-        guard let url = URL(string: "https://github.com/mylxsw/typeflux/issues/new") else { return }
-        NSWorkspace.shared.open(url)
+        NSWorkspace.shared.open(ClassicProductLinks.newIssueURL)
     }
 
     private func submitDirectFeedback() {
@@ -2503,6 +2502,10 @@ struct StudioView: View {
                         .labelsHidden()
                         .toggleStyle(.switch)
                     }
+
+                    Divider().overlay(StudioTheme.border.opacity(StudioTheme.Opacity.divider))
+
+                    ClassicFullVersionLink(style: .row)
                 }
             }
 
