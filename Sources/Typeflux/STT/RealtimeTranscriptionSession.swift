@@ -260,9 +260,18 @@ actor BufferedRealtimeTranscriptionSession: RealtimeTranscriptionSession,
 
     private func enqueue(_ data: Data) async -> Bool {
         guard let continuation else { return false }
-        if case .enqueued = continuation.yield(data) { return true }
-        await fail(RealtimeAudioBufferError.capacityExceeded)
-        return false
+        switch continuation.yield(data) {
+        case .enqueued:
+            return true
+        case .dropped:
+            await fail(RealtimeAudioBufferError.capacityExceeded)
+            return false
+        case .terminated:
+            // The writer may already have failed. Let finish propagate its error.
+            return false
+        @unknown default:
+            return false
+        }
     }
 
     func finish() async throws -> String {

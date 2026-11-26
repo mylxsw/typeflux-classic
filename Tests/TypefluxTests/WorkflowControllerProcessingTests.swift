@@ -1604,7 +1604,8 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         let controller = makeWorkflowController(
             audioRecorder: audioRecorder,
             sttTranscriber: realtimeTranscriber,
-            configureSettings: { $0.sttProvider = .aliCloud }
+            configureSettings: { $0.sttProvider = .aliCloud },
+            hasPaidCloudSubscription: { true }
         )
 
         let recordingTask = Task {
@@ -1632,7 +1633,8 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         let controller = makeWorkflowController(
             audioRecorder: recorder,
             sttTranscriber: factory,
-            configureSettings: { $0.sttProvider = .aliCloud }
+            configureSettings: { $0.sttProvider = .aliCloud },
+            hasPaidCloudSubscription: { true }
         )
         let startup = Task { await controller.beginRecording(intent: .dictation, startLocked: false) }
         await waitUntil { events.snapshot().contains("realtime-setup") }
