@@ -694,10 +694,13 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         )
 
         controller.handlePersonaPickerRequested()
-        await waitForMainActorWork()
+        await waitUntil(timeout: 10) { controller.isPersonaPickerPresented }
 
-        XCTAssertTrue(controller.isPersonaPickerPresented)
-        XCTAssertFalse(eventRecorder.snapshot().contains("cue-play"))
+        await MainActor.run {
+            XCTAssertTrue(controller.isPersonaPickerPresented)
+            XCTAssertFalse(eventRecorder.snapshot().contains("cue-play"))
+            controller.dismissPersonaPicker(immediate: true)
+        }
     }
 
     func testOpeningPersonaPickerDoesNotPlayCueWhenSoundEffectsAreDisabled() async {
@@ -710,10 +713,13 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         )
 
         controller.handlePersonaPickerRequested()
-        await waitForMainActorWork()
+        await waitUntil(timeout: 10) { controller.isPersonaPickerPresented }
 
-        XCTAssertTrue(controller.isPersonaPickerPresented)
-        XCTAssertFalse(eventRecorder.snapshot().contains("cue-play"))
+        await MainActor.run {
+            XCTAssertTrue(controller.isPersonaPickerPresented)
+            XCTAssertFalse(eventRecorder.snapshot().contains("cue-play"))
+            controller.dismissPersonaPicker(immediate: true)
+        }
     }
 
     func testPersonaPickerUsesExplicitCaptureForOpaqueSelection() async throws {
@@ -1150,7 +1156,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
 
     func testGenerateRewriteThrowsTimeoutWhenStreamDoesNotFinish() async {
         let controller = makeWorkflowController(
-            llmService: SlowProcessingLLMService(delay: .milliseconds(200)),
+            llmService: PendingProcessingLLMService(),
             configureSettings: configureReadyLLM
         )
 
@@ -1177,17 +1183,18 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         let controller = makeWorkflowController(
             llmService: ProgressingProcessingLLMService(
                 chunks: ["one", " two", " three", " four"],
-                delay: .milliseconds(40)
+                delay: .milliseconds(150)
             ),
             configureSettings: configureReadyLLM
         )
+        // Four delays outlast the first-output budget. Leave room for CI scheduling between chunks.
         let budget = LLMRewriteTimeoutBudget(
             estimatedInputUnits: 200,
-            baseSeconds: 0.05,
-            firstOutputSeconds: 0.05,
-            stallSeconds: 0.1,
-            totalSeconds: 0.3,
-            watchdogSeconds: 0.4
+            baseSeconds: 0.4,
+            firstOutputSeconds: 0.4,
+            stallSeconds: 3,
+            totalSeconds: 8,
+            watchdogSeconds: 9
         )
 
         let result = try await controller.generateRewrite(
@@ -1198,6 +1205,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
                 personaPrompt: "Rewrite this"
             ),
             sessionID: controller.processingSessionID,
+            showsStreamingPreview: false,
             timeoutBudget: budget
         )
 
@@ -1247,7 +1255,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         let controller = makeWorkflowController(
             textInjector: textInjector,
             sttTranscriber: MockProcessingTranscriber(transcript: transcript),
-            llmService: SlowProcessingLLMService(delay: .milliseconds(200)),
+            llmService: PendingProcessingLLMService(),
             historyStore: historyStore,
             configureSettings: configureReadyLLM
         )
@@ -1296,7 +1304,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
             let historyStore = MockProcessingHistoryStore()
             let controller = makeWorkflowController(
                 textInjector: textInjector,
-                sttTranscriber: MockProcessingTranscriber(error: URLError(.cannotConnectToHost)),
+                sttTranscriber: PendingCloudProcessingTranscriber(),
                 localFallbackTranscriber: MockProcessingTranscriber(transcript: transcript),
                 llmService: CountingProcessingLLMService(
                     rewriteText: "Incomplete rewrite",
@@ -1306,7 +1314,9 @@ final class WorkflowControllerProcessingTests: XCTestCase {
                 configureSettings: {
                     self.configureReadyLLM(settingsStore: $0)
                     $0.sttProvider = .typefluxOfficial
-                }
+                },
+                hasPaidCloudSubscription: { true },
+                cloudPriorityWindow: 0
             )
             let snapshot = TextSelectionSnapshot(
                 selectedRange: CFRange(location: 0, length: replaceSelection ? 5 : 0),
@@ -1386,7 +1396,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
             let controller = makeWorkflowController(
                 textInjector: textInjector,
                 sttTranscriber: MockProcessingTranscriber(transcript: "Do not insert this transcript"),
-                llmService: SlowProcessingLLMService(delay: .milliseconds(200), onStart: { started.fulfill() }),
+                llmService: PendingProcessingLLMService(onStart: { started.fulfill() }),
                 configureSettings: configureReadyLLM
             )
             let sessionID = controller.processingSessionID
@@ -1453,7 +1463,8 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         let controller = makeWorkflowController(
             sttTranscriber: MockProcessingTranscriber(error: URLError(.cannotConnectToHost)),
             historyStore: historyStore,
-            configureSettings: { $0.sttProvider = .whisperAPI }
+            configureSettings: { $0.sttProvider = .whisperAPI },
+            hasPaidCloudSubscription: { true }
         )
 
         await controller.process(
@@ -1604,7 +1615,8 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         let controller = makeWorkflowController(
             audioRecorder: audioRecorder,
             sttTranscriber: realtimeTranscriber,
-            configureSettings: { $0.sttProvider = .aliCloud }
+            configureSettings: { $0.sttProvider = .aliCloud },
+            hasPaidCloudSubscription: { true }
         )
 
         let recordingTask = Task {
@@ -1632,7 +1644,8 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         let controller = makeWorkflowController(
             audioRecorder: recorder,
             sttTranscriber: factory,
-            configureSettings: { $0.sttProvider = .aliCloud }
+            configureSettings: { $0.sttProvider = .aliCloud },
+            hasPaidCloudSubscription: { true }
         )
         let startup = Task { await controller.beginRecording(intent: .dictation, startLocked: false) }
         await waitUntil { events.snapshot().contains("realtime-setup") }
@@ -1641,7 +1654,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         factory.releaseSetup()
         await startup.value
         try recorder.emitAudio(frameCount: 320, value: 0.3)
-        await controller.activeRealtimeAudioBufferPump?.finishInput()
+        try await controller.activeRealtimeAudioBufferPump?.finishInput()
         let samples = await factory.session.receivedFirstSamples
         XCTAssertEqual(samples, [0.1, 0.2, 0.3])
         controller.cancelRecording()
@@ -1725,6 +1738,28 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         await MainActor.run {
             controller.overlayController.dismissImmediately()
         }
+    }
+
+    func testLivePreviewReceivesSnapshotBeforeTheRecordingCallbackReturns() async throws {
+        let recorder = MockProcessingAudioRecorder()
+        let previewer = SnapshotProcessingLivePreviewer()
+        let controller = makeWorkflowController(
+            audioRecorder: recorder,
+            liveTranscriptionPreviewer: previewer,
+            configureSettings: { $0.sttProvider = .localModel }
+        )
+        await controller.beginRecording(intent: .dictation, startLocked: false)
+        XCTAssertTrue(controller.isRecording)
+        try recorder.emitAudio(frameCount: 512, value: 0.25, valueAfterDelivery: 0.75)
+        await previewer.releaseInput()
+        for _ in 0..<100 {
+            if await !previewer.values.isEmpty { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let values = await previewer.values
+        XCTAssertEqual(values, [0.25], "The preview must own its audio before the producer resumes")
+        controller.cancelRecording()
+        await waitForMainActorWork()
     }
 
     func testAudioStartFailureCopyExplainsMissingMicrophoneAndRecovery() {
@@ -2851,6 +2886,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         historyStore: HistoryStore = MockProcessingHistoryStore(),
         clipboard: ClipboardService = MockClipboardService(),
         soundEffectPlayer: SoundEffectPlayer? = nil,
+        liveTranscriptionPreviewer: (any LiveTranscriptionPreviewing)? = nil,
         localModelManager: (any LocalSTTModelManaging)? = nil,
         localModelDownloadAlertPresenter: any LocalModelDownloadAlertPresenting =
             MockLocalModelDownloadAlertPresenter(),
@@ -2860,7 +2896,8 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         configureSettings: ((SettingsStore) -> Void)? = nil,
         hasPaidCloudSubscription: @escaping @Sendable () async -> Bool = {
             await MainActor.run { AuthState.shared.canUseCloudASR }
-        }
+        },
+        cloudPriorityWindow: TimeInterval? = nil
     ) -> WorkflowController {
         let suiteName = "WorkflowControllerProcessingTests.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
@@ -2889,6 +2926,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
                 soniox: sttTranscriber,
                 typefluxOfficial: sttTranscriber,
                 typefluxCloudLoginFallbackLocalModel: localFallbackTranscriber,
+                typefluxOfficialCloudPriorityWindow: cloudPriorityWindow,
                 hasPaidTypefluxCloudSubscription: hasPaidCloudSubscription
             ),
             llmService: llmService,
@@ -2909,6 +2947,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
                 settingsStore: settingsStore
             ),
             soundEffectPlayer: soundEffectPlayer ?? SoundEffectPlayer(settingsStore: settingsStore),
+            liveTranscriptionPreviewer: liveTranscriptionPreviewer,
             localModelManager: localModelManager,
             localModelDownloadAlertPresenter: localModelDownloadAlertPresenter,
             outputPostProcessor: NoopOutputPostProcessor(),
@@ -3238,28 +3277,17 @@ private final class CountingProcessingLLMService: LLMService {
     }
 }
 
-private final class SlowProcessingLLMService: LLMService {
-    private let delay: Duration
+private final class PendingProcessingLLMService: LLMService {
     private let onStart: (() -> Void)?
 
-    init(delay: Duration, onStart: (() -> Void)? = nil) {
-        self.delay = delay
+    init(onStart: (() -> Void)? = nil) {
         self.onStart = onStart
     }
 
     func streamRewrite(request _: LLMRewriteRequest) -> AsyncThrowingStream<String, Error> {
-        AsyncThrowingStream { continuation in
-            onStart?()
-            Task {
-                do {
-                    try await Task.sleep(for: delay)
-                    continuation.yield("late")
-                    continuation.finish()
-                } catch {
-                    continuation.finish(throwing: error)
-                }
-            }
-        }
+        onStart?()
+        // These tests exercise timeout or cancellation before any output.
+        return AsyncThrowingStream { _ in }
     }
 
     func complete(systemPrompt _: String, userPrompt _: String) async throws -> String {
@@ -3373,13 +3401,18 @@ private final class MockProcessingAudioRecorder: AudioRecorder {
         onStart()
     }
 
-    func emitAudio(frameCount: AVAudioFrameCount, recordingIndex: Int = 0, value: Float = 0) throws {
+    func emitAudio(
+        frameCount: AVAudioFrameCount, recordingIndex: Int = 0, value: Float = 0, valueAfterDelivery: Float? = nil
+    ) throws {
         let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 16000, channels: 1))
         let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: max(1, frameCount)))
         buffer.frameLength = frameCount
         buffer.floatChannelData?[0].update(repeating: value, count: Int(frameCount))
         let handler = lock.withLock { bufferHandlers[recordingIndex] }
         handler?(buffer)
+        if let valueAfterDelivery {
+            buffer.floatChannelData?[0].update(repeating: valueAfterDelivery, count: Int(frameCount))
+        }
     }
 
     func stop() throws -> AudioFile {
@@ -3388,6 +3421,26 @@ private final class MockProcessingAudioRecorder: AudioRecorder {
         lock.unlock()
         return AudioFile(fileURL: URL(fileURLWithPath: "/tmp/mock.wav"), duration: 1)
     }
+}
+
+private actor SnapshotProcessingLivePreviewer: LiveTranscriptionPreviewing {
+    private var released = false
+    private var waiter: CheckedContinuation<Void, Never>?
+    private(set) var values: [Float] = []
+
+    func prepareForStart() async {}
+    func start(onTextUpdate _: @escaping @Sendable (String) -> Void) async throws {}
+    func append(_ buffer: AVAudioPCMBuffer) async {
+        if !released { await withCheckedContinuation { waiter = $0 } }
+        values.append(buffer.floatChannelData![0][0])
+    }
+    func releaseInput() {
+        released = true
+        waiter?.resume()
+        waiter = nil
+    }
+    func finish() async -> String { "" }
+    func cancel() async { releaseInput() }
 }
 
 private final class FileReturningAudioRecorder: AudioRecorder {
@@ -3748,6 +3801,13 @@ private final class MockWorkflowLocalModelManager: LocalSTTModelManaging {
     }
 }
 
+private struct PendingCloudProcessingTranscriber: Transcriber {
+    func transcribe(audioFile _: AudioFile) async throws -> String {
+        try await Task.sleep(for: .seconds(30))
+        throw URLError(.timedOut)
+    }
+}
+
 private final class MockProcessingTranscriber: Transcriber {
     private let transcript: String
     private let error: Error?
@@ -4009,7 +4069,7 @@ extension WorkflowControllerProcessingTests {
         factory.releaseSetup()
         await startup.value
         try recorder.emitAudio(frameCount: 320, value: 0.3)
-        await controller.activeRealtimeAudioBufferPump?.finishInput()
+        try await controller.activeRealtimeAudioBufferPump?.finishInput()
         let samples = await factory.session.receivedFirstSamples
         XCTAssertEqual(samples, [0.1, 0.2, 0.3])
         XCTAssertEqual(recorder.startCallCount, 1)

@@ -773,7 +773,8 @@ struct StudioView: View {
                     data: prepared.data,
                     filename: prepared.filename,
                     contentType: prepared.contentType,
-                    to: target
+                    to: target,
+                    token: token
                 )
                 try Task.checkCancellation()
 
