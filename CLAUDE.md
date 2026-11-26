@@ -23,7 +23,7 @@ swift test --filter TypefluxTests.LLMRouterTests
 # Run a specific test method
 swift test --filter TypefluxTests.LLMRouterTests/testMethodName
 
-# Launch dev app (builds, bundles into ~/Applications/Typeflux Dev.app, opens)
+# Launch dev app (builds, bundles into ~/Applications/Typeflux Classic Dev.app, opens)
 make run
 
 # Launch dev app with terminal logs attached (most useful for development)
@@ -124,7 +124,7 @@ History changes are broadcast via `NotificationCenter` using `.historyStoreDidCh
 
 ### App Bundle Packaging
 
-The app must run as a `.app` bundle (not a bare CLI binary) for macOS privacy permissions and menu bar behavior to work correctly. `scripts/run_dev_app.sh` builds the binary, assembles `~/Applications/Typeflux Dev.app`, code-signs it, and opens it. Set `TYPEFLUX_DEV_CODESIGN_IDENTITY` to a stable Apple Development identity to avoid repeated Accessibility permission prompts across rebuilds.
+The app must run as a `.app` bundle (not a bare CLI binary) for macOS privacy permissions and menu bar behavior to work correctly. `scripts/run_dev_app.sh` builds the binary, assembles `~/Applications/Typeflux Classic Dev.app`, code-signs it, and opens it. Set `TYPEFLUX_DEV_CODESIGN_IDENTITY` to a stable Apple Development identity to avoid repeated Accessibility permission prompts across rebuilds.
 
 ## Testing
 

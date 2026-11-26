@@ -6,14 +6,12 @@ For a command-by-command overview, see [MAKE_COMMANDS.md](./MAKE_COMMANDS.md).
 
 ## Recommended Release Path
 
-For official GitHub releases, publish a GitHub Release. The `Release` workflow
-then builds two macOS installers, signs them with a Developer ID Application
-certificate, notarizes them with Apple, packages them into DMGs, and uploads
-installer variants as release assets:
+The GitHub Release workflow for Classic builds, signs, and notarizes the
+minimal bundle for Apple Silicon and Intel. It uploads one ZIP and one DMG
+per architecture using the same names documented in the
+[release setup](../README.md#release-setup).
 
-- `Typeflux-minimal.dmg` / `Typeflux-minimal.zip` (includes Sherpa-ONNX runtime, downloads model on first use)
-- `Typeflux-full.dmg` / `Typeflux-full.zip` (~150 MB, includes SenseVoice model)
-- `Typeflux-app-only.dmg` / `Typeflux-app-only.zip` (app bundle without local runtime/model assets, intended for in-app auto-update payloads after assets have been persisted)
+Local builds also support full and app-only variants.
 
 The `full` variant embeds the SenseVoice STT model so users can use local
 speech recognition immediately without downloading additional model files.
@@ -282,18 +280,13 @@ You can distribute the final artifacts through:
 - direct download from a website or CDN
 - an optional Homebrew Cask
 
-If you publish a release manually, prefer attaching both:
-
-- `Typeflux-minimal.dmg`
-- `Typeflux-minimal.zip`
-- `Typeflux-full.dmg`
-- `Typeflux-full.zip`
+For a manual GitHub release, use the same asset names as the release workflow.
 
 ## Release Checklist
 
 - [ ] Version updated with `./scripts/set_version.sh <version>`
 - [ ] `CHANGELOG.md` updated
-- [ ] `swift test` passes
+- [ ] Affected test suites pass
 - [ ] `make release-notarize` completes successfully
 - [ ] `Typeflux.dmg` is tested on a clean macOS machine
 - [ ] Release artifacts are uploaded to the chosen distribution channel

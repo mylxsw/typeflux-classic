@@ -1,11 +1,10 @@
 <div align="center">
 
-# [Typeflux](https://typeflux.app) - Talk. We'll Type.
+# [Typeflux Classic](https://typeflux.app) - Talk. We'll Type.
 
 Hold `Fn` to dictate, or double-press `Fn` to ask anything. Typeflux delivers lightning-fast, accurate voice-to-text directly into any macOS application. Free, open-source, and supports local models — your voice never has to leave your Mac.
 
-[![Tests](https://github.com/mylxsw/typeflux/actions/workflows/test.yml/badge.svg)](https://github.com/mylxsw/typeflux/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/mylxsw/typeflux/graph/badge.svg)](https://codecov.io/gh/mylxsw/typeflux)
+[![Tests](https://github.com/mylxsw/typeflux-classic/actions/workflows/test.yml/badge.svg)](https://github.com/mylxsw/typeflux-classic/actions/workflows/test.yml)
 
 English | [简体中文](./README.zh-CN.md)
 
@@ -20,9 +19,9 @@ English | [简体中文](./README.zh-CN.md)
 
 ## Download
 
-**[⬇ Download latest release (.dmg)](https://github.com/mylxsw/typeflux/releases/latest)**
+**[⬇ Download latest release (.dmg)](https://github.com/mylxsw/typeflux-classic/releases/latest)**
 
-1. Download `Typeflux.dmg` from the latest release
+1. Download the Classic DMG for your Mac from the latest release
 2. Open the DMG and drag `Typeflux.app` to **Applications**
 3. Launch and grant Microphone + Accessibility permissions
 
@@ -109,8 +108,8 @@ For local inference: model files are downloaded automatically on first use.
 ## Build from Source
 
 ```bash
-git clone https://github.com/mylxsw/typeflux
-cd typeflux
+git clone https://github.com/mylxsw/typeflux-classic
+cd typeflux-classic
 
 # One-time setup: create a local code-signing identity so macOS
 # permissions (microphone, accessibility) persist across rebuilds.
@@ -121,15 +120,50 @@ make dev          # launch with terminal logs attached
 make full-dev     # launch dev app with bundled SenseVoice resources
 make full-release # build the full notarized production installer locally
 make release-continue # resume an interrupted local release
-swift test        # run tests
+make test SUITE=TypefluxCloudRequestHeadersTests
 ```
 
-CI tests are opt-in. On an open pull request, a repository owner, member, or
-collaborator can comment `@autotest` to run the test workflow.
+CI builds the app and runs affected suites on pull requests to `main`.
+Repository owners, members, and collaborators can rerun CI with `@autotest`.
 
-> ⚠️ If you skip `setup_dev_cert.sh`, `make run` still works but macOS will re-prompt for permissions on each build (ad-hoc signing).
+The development bundle is installed at `~/Applications/Typeflux Classic Dev.app`.
 
 See [CLAUDE.md](./CLAUDE.md) for the full development guide.
+
+## Maintaining Classic
+
+Typeflux Classic is the standalone macOS voice input edition derived from Typeflux 0.4.0.
+It shares the local data, account, and subscription with Typeflux.
+
+Backport an upstream fix from a branch based on Classic's `main`:
+
+```bash
+git remote add upstream https://github.com/mylxsw/typeflux.git # once per clone
+git fetch upstream main
+git cherry-pick -x <upstream-fix-sha>
+```
+
+Run the affected tests and open a pull request against Classic's `main`.
+
+## Release setup
+
+The release workflow produces `Typeflux-Classic-<version>-<arch>.{zip,dmg}`
+for `apple-silicon` and `intel`. Both formats contain `Typeflux.app` and use
+the minimal bundle with the local-model runtime. Use the Classic release page
+as the server's `source_url`, for example
+`https://github.com/mylxsw/typeflux-classic/releases/tag/v0.5.0`.
+
+Configure these GitHub Actions secrets using the same names as in Typeflux:
+
+- `APPLE_CERTIFICATE_BASE64`
+- `APPLE_CERTIFICATE_PASSWORD`
+- `CODESIGN_IDENTITY`
+- `APPLE_TEAM_ID`
+- `NOTARYTOOL_APPLE_ID`
+- `NOTARYTOOL_PASSWORD`
+
+GitHub Actions provides `GITHUB_TOKEN` for release assets. The existing
+`NOTIFICATION_REMOTE_URL` secret is optional.
 
 ## Documentation
 

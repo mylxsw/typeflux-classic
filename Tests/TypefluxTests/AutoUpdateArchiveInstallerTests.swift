@@ -2,18 +2,28 @@
 import XCTest
 
 final class AutoUpdateArchiveInstallerTests: XCTestCase {
-    func testUpdateQueryItemsIncludeVersionAndArchitecture() {
-        let items = AutoUpdateRequestSupport.queryItems(currentVersion: "1.2.0", architecture: "amd64")
+    func testUpdateQueryItemsIncludeVersionProductAndArchitecture() {
+        let items = AutoUpdateRequestSupport.queryItems(currentVersion: "0.5.0", architecture: "amd64")
 
-        XCTAssertEqual(items.map(\.name), ["version", "arch"])
-        XCTAssertEqual(items.first(where: { $0.name == "version" })?.value, "1.2.0")
+        XCTAssertEqual(items.map(\.name), ["version", "product", "arch"])
+        XCTAssertEqual(items.first(where: { $0.name == "version" })?.value, "0.5.0")
+        XCTAssertEqual(items.first(where: { $0.name == "product" })?.value, "classic")
         XCTAssertEqual(items.first(where: { $0.name == "arch" })?.value, "amd64")
     }
 
     func testUpdateQueryItemsOmitEmptyArchitecture() {
-        let items = AutoUpdateRequestSupport.queryItems(currentVersion: "1.2.0", architecture: "")
+        let items = AutoUpdateRequestSupport.queryItems(currentVersion: "0.5.0", architecture: "")
 
-        XCTAssertEqual(items.map(\.name), ["version"])
+        XCTAssertEqual(items.map(\.name), ["version", "product"])
+    }
+
+    func testOnlyClassicVersionsCanReachTheUpdateFlow() {
+        for version in ["0.5.0", "v0.99.0", " 0.6.0-rc.1+build.2 "] {
+            XCTAssertTrue(AutoUpdateRequestSupport.isClassicVersion(version), version)
+        }
+        for version in ["1.0.0", "v1.0.0", "1.0", "1.0.0-rc.1", "1.10.0", "2.0.0", "10.0.0", "", "latest"] {
+            XCTAssertFalse(AutoUpdateRequestSupport.isClassicVersion(version), version)
+        }
     }
 
     func testPackageArchitectureUsesSupportedUpdateAPIValue() {

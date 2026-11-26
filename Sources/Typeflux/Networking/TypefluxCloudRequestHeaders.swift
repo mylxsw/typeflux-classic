@@ -1,5 +1,10 @@
 import Foundation
 
+enum TypefluxProduct {
+    static let identifier = "classic"
+    static let repositoryURL = URL(string: "https://github.com/mylxsw/typeflux-classic")!
+}
+
 struct TypefluxCloudClientInfo: Equatable, Sendable {
     let appName: String
     let appVersion: String
@@ -136,6 +141,7 @@ enum TypefluxCloudScenario: String, CaseIterable, Hashable, Sendable {
 
 enum TypefluxCloudRequestHeaders {
     static let scenarioField = "x-scenario"
+    static let clientProductField = "x-client-product"
     static let clientIDField = "x-client-id"
     static let clientLocaleField = "x-client-locale"
     static let clientLanguagesField = "x-client-languages"
@@ -157,6 +163,7 @@ enum TypefluxCloudRequestHeaders {
         if !info.acceptLanguage.isEmpty {
             request.setValue(info.acceptLanguage, forHTTPHeaderField: "Accept-Language")
         }
+        request.setValue(TypefluxProduct.identifier, forHTTPHeaderField: clientProductField)
         request.setValue(info.clientID, forHTTPHeaderField: clientIDField)
         request.setValue(info.localeIdentifier, forHTTPHeaderField: clientLocaleField)
         request.setValue(info.preferredLanguages.joined(separator: ","), forHTTPHeaderField: clientLanguagesField)
@@ -201,6 +208,7 @@ enum TypefluxCloudRequestHeaders {
         if !info.acceptLanguage.isEmpty {
             merged["Accept-Language"] = info.acceptLanguage
         }
+        merged[clientProductField] = TypefluxProduct.identifier
         merged[clientIDField] = info.clientID
         merged[clientLocaleField] = info.localeIdentifier
         merged[clientLanguagesField] = info.preferredLanguages.joined(separator: ",")

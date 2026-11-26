@@ -115,85 +115,24 @@ jobs:
             --keychain "$KEYCHAIN_PATH"
 
       - name: Build, sign, notarize, staple, and package installers
+        env:
+          PACKAGE_ARCH: ${{ matrix.package_arch }}
+          TYPEFLUX_RELEASE_ARCH: ${{ matrix.release_arch }}
+          RELEASE_SCRIPT: ${{ matrix.release_script }}
         run: |
           set -euo pipefail
 
-          if [[ "${GITHUB_EVENT_NAME}" == "push" && "${GITHUB_REF_NAME}" == "pre-release" ]]; then
-            MINIMAL_PACKAGE_NAME="Typeflux-pre-release-minimal"
-            FULL_PACKAGE_NAME="Typeflux-pre-release-full"
-            APP_ONLY_PACKAGE_NAME="Typeflux-pre-release-app-only"
-          else
-            MINIMAL_PACKAGE_NAME="Typeflux-minimal"
-            FULL_PACKAGE_NAME="Typeflux-full"
-            APP_ONLY_PACKAGE_NAME="Typeflux-app-only"
-          fi
-
-          ARTIFACT_STAGING_DIR="$RUNNER_TEMP/typeflux-release-artifacts"
-          rm -rf "$ARTIFACT_STAGING_DIR"
-          mkdir -p "$ARTIFACT_STAGING_DIR"
-
-          require_package_artifacts() {
-            local package_name="$1"
-            local missing=false
-
-            for extension in dmg zip; do
-              local artifact_path="$BUILD_DIR/${package_name}.${extension}"
-              if [[ -f "$artifact_path" ]]; then
-                echo "Created artifact: ${artifact_path}"
-              else
-                echo "Error: expected artifact was not created: ${artifact_path}" >&2
-                missing=true
-              fi
-            done
-
-            if [[ "$missing" == true ]]; then
-              echo "Release artifacts currently in ${BUILD_DIR}:" >&2
-              find "$BUILD_DIR" -maxdepth 1 \( -name "Typeflux*.dmg" -o -name "Typeflux*.zip" \) -print | sort >&2
-              exit 1
-            fi
-          }
-
-          stage_package_artifacts() {
-            local package_name="$1"
-
-            for extension in dmg zip; do
-              local artifact_path="$BUILD_DIR/${package_name}.${extension}"
-              cp "$artifact_path" "$ARTIFACT_STAGING_DIR/"
-              echo "Staged artifact: ${ARTIFACT_STAGING_DIR}/${package_name}.${extension}"
-            done
-          }
-
-          run_release() {
-            local release_arch="$1"
-            local release_variant="$2"
-            local package_name="$3"
-            local release_script="$4"
-
-            echo "Building release package: ${package_name} (${release_variant}, ${release_arch})"
-            TYPEFLUX_RELEASE_ARCH="$release_arch" \
-            TYPEFLUX_RELEASE_VARIANT="$release_variant" \
-            TYPEFLUX_PACKAGE_NAME="$package_name" \
-            "$release_script"
-            require_package_artifacts "$package_name"
-            stage_package_artifacts "$package_name"
-          }
-
-          run_release "${{ matrix.release_arch }}" minimal "$MINIMAL_PACKAGE_NAME-${{ matrix.package_arch }}" "${{ matrix.release_script }}"
-          run_release "${{ matrix.release_arch }}" full "$FULL_PACKAGE_NAME-${{ matrix.package_arch }}" "${{ matrix.release_script }}"
-          run_release "${{ matrix.release_arch }}" app-only "$APP_ONLY_PACKAGE_NAME-${{ matrix.package_arch }}" "${{ matrix.release_script }}"
-
-          echo "Restoring staged release artifacts to ${BUILD_DIR}:"
-          mkdir -p "$BUILD_DIR"
-          cp "$ARTIFACT_STAGING_DIR"/Typeflux*.dmg "$ARTIFACT_STAGING_DIR"/Typeflux*.zip "$BUILD_DIR/"
-          find "$BUILD_DIR" -maxdepth 1 \( -name "Typeflux*.dmg" -o -name "Typeflux*.zip" \) -print | sort
+          VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' app/Info.plist)"
+          export TYPEFLUX_PACKAGE_NAME="Typeflux-Classic-${VERSION}-${PACKAGE_ARCH}"
+          "$RELEASE_SCRIPT"
 
       - name: Upload architecture artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: typeflux-release-${{ matrix.package_arch }}-${{ github.sha }}
+          name: typeflux-classic-release-${{ matrix.package_arch }}-${{ github.sha }}
           path: |
-            .build/release/Typeflux*-${{ matrix.package_arch }}.zip
-            .build/release/Typeflux*-${{ matrix.package_arch }}.dmg
+            .build/release/Typeflux-Classic-*-${{ matrix.package_arch }}.zip
+            .build/release/Typeflux-Classic-*-${{ matrix.package_arch }}.dmg
           if-no-files-found: error
           retention-days: 14
 
@@ -221,20 +160,17 @@ jobs:
       - name: Download Apple Silicon artifacts
         uses: actions/download-artifact@v4
         with:
-          name: typeflux-release-apple-silicon-${{ github.sha }}
+          name: typeflux-classic-release-apple-silicon-${{ github.sha }}
           path: .build/release
 
       - name: Download Intel artifacts
         uses: actions/download-artifact@v4
         with:
-          name: typeflux-release-intel-${{ github.sha }}
+          name: typeflux-classic-release-intel-${{ github.sha }}
           path: .build/release
 
       - name: Verify release artifacts
-        run: |
-          set -euo pipefail
-
-          ./scripts/verify_release_artifacts.sh
+        run: ./scripts/verify_release_artifacts.sh
 
       - name: Prepare pre-release metadata
         if: github.event_name == 'push' && github.ref_name == 'pre-release'
@@ -243,7 +179,7 @@ jobs:
 
           SHORT_SHA="${GITHUB_SHA::7}"
           echo "TYPEFLUX_PRERELEASE_TAG=pre-release-${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
-          echo "TYPEFLUX_PRERELEASE_NAME=Typeflux Pre-release #${GITHUB_RUN_NUMBER} (${SHORT_SHA})" >> "$GITHUB_ENV"
+          echo "TYPEFLUX_PRERELEASE_NAME=Typeflux Classic Pre-release #${GITHUB_RUN_NUMBER} (${SHORT_SHA})" >> "$GITHUB_ENV"
 
       - name: Upload pre-release assets
         if: github.event_name == 'push' && github.ref_name == 'pre-release'
@@ -255,24 +191,14 @@ jobs:
           prerelease: true
           make_latest: false
           body: |
-            Automated Typeflux pre-release build.
+            Automated Typeflux Classic pre-release build.
 
             Commit: ${{ github.sha }}
             Branch: pre-release
             Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           files: |
-            .build/release/Typeflux-pre-release-minimal-apple-silicon.zip
-            .build/release/Typeflux-pre-release-minimal-apple-silicon.dmg
-            .build/release/Typeflux-pre-release-minimal-intel.zip
-            .build/release/Typeflux-pre-release-minimal-intel.dmg
-            .build/release/Typeflux-pre-release-full-apple-silicon.zip
-            .build/release/Typeflux-pre-release-full-apple-silicon.dmg
-            .build/release/Typeflux-pre-release-full-intel.zip
-            .build/release/Typeflux-pre-release-full-intel.dmg
-            .build/release/Typeflux-pre-release-app-only-apple-silicon.zip
-            .build/release/Typeflux-pre-release-app-only-apple-silicon.dmg
-            .build/release/Typeflux-pre-release-app-only-intel.zip
-            .build/release/Typeflux-pre-release-app-only-intel.dmg
+            .build/release/Typeflux-Classic-*.zip
+            .build/release/Typeflux-Classic-*.dmg
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -283,18 +209,8 @@ jobs:
         with:
           tag_name: ${{ github.event.release.tag_name }}
           files: |
-            .build/release/Typeflux-minimal-apple-silicon.zip
-            .build/release/Typeflux-minimal-apple-silicon.dmg
-            .build/release/Typeflux-minimal-intel.zip
-            .build/release/Typeflux-minimal-intel.dmg
-            .build/release/Typeflux-full-apple-silicon.zip
-            .build/release/Typeflux-full-apple-silicon.dmg
-            .build/release/Typeflux-full-intel.zip
-            .build/release/Typeflux-full-intel.dmg
-            .build/release/Typeflux-app-only-apple-silicon.zip
-            .build/release/Typeflux-app-only-apple-silicon.dmg
-            .build/release/Typeflux-app-only-intel.zip
-            .build/release/Typeflux-app-only-intel.dmg
+            .build/release/Typeflux-Classic-*.zip
+            .build/release/Typeflux-Classic-*.dmg
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -341,6 +257,6 @@ jobs:
           RUBY
           )"
 
-          curl --fail --show-error --silent -X POST "${{ env.NOTIFICATION_REMOTE_URL }}" \
+          curl --fail --show-error --silent -X POST "$NOTIFICATION_REMOTE_URL" \
             -H "Content-Type: application/json" \
             -d "${payload}"

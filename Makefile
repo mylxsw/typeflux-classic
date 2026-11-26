@@ -61,8 +61,8 @@ build: ## Build the Swift package
 	swift build
 
 .PHONY: test
-test: ## Run all unit tests
-	swift test
+test: ## Run unit tests (optionally scoped with FILTER or SUITE)
+	swift test $(if $(strip $(FILTER)$(SUITE)),--filter "$(if $(FILTER),$(FILTER),$(SUITE))")
 
 .PHONY: coverage
 coverage: ## Generate code coverage report

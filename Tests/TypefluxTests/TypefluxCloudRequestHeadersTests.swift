@@ -22,6 +22,7 @@ final class TypefluxCloudRequestHeadersTests: XCTestCase {
 
         TypefluxCloudRequestHeaders.applyClientInfo(to: &request, provider: .fixture)
 
+        XCTAssertEqual(request.value(forHTTPHeaderField: "x-client-product"), "classic")
         XCTAssertEqual(request.value(forHTTPHeaderField: "User-Agent"), "Typeflux/1.2.3")
         XCTAssertEqual(request.value(forHTTPHeaderField: "Accept-Language"), "zh-Hans-US, en-US;q=0.9")
         XCTAssertEqual(request.value(forHTTPHeaderField: TypefluxCloudRequestHeaders.clientIDField), "client-123")
@@ -70,6 +71,7 @@ final class TypefluxCloudRequestHeadersTests: XCTestCase {
 
         XCTAssertEqual(headers["x-request-id"], "req-1")
         XCTAssertEqual(headers[TypefluxCloudRequestHeaders.scenarioField], "ask-anything")
+        XCTAssertEqual(headers["x-client-product"], "classic")
         XCTAssertEqual(headers["User-Agent"], "Typeflux/1.2.3")
         XCTAssertEqual(headers[TypefluxCloudRequestHeaders.clientIDField], "client-123")
     }
@@ -84,6 +86,7 @@ final class TypefluxCloudRequestHeadersTests: XCTestCase {
 
         XCTAssertEqual(headers["x-request-id"], "req-1")
         XCTAssertNil(headers[TypefluxCloudRequestHeaders.scenarioField])
+        XCTAssertNil(headers["x-client-product"])
         XCTAssertNil(headers["User-Agent"])
         XCTAssertNil(headers[TypefluxCloudRequestHeaders.clientIDField])
     }

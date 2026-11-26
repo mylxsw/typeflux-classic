@@ -2,11 +2,14 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP_DIR="${TYPEFLUX_DEV_APP_DIR:-${TYPEFLUX_DEV_APP_DIR:-$HOME/Applications/Typeflux Dev.app}}"
+APP_DIR="${TYPEFLUX_DEV_APP_DIR:-$HOME/Applications/Typeflux Classic Dev.app}"
 DEV_VARIANT="${TYPEFLUX_DEV_VARIANT:-minimal}"
 
-# Kill any running instance before rebuilding, so the binary copy succeeds.
-pkill -f "Typeflux Dev.app/Contents/MacOS/Typeflux" 2>/dev/null || true
+# Refuse to overwrite the executable of a running development app.
+if ps -axww -o comm= | grep -Fxq "$APP_DIR/Contents/MacOS/Typeflux"; then
+  echo "Error: quit the development app at $APP_DIR before rebuilding it." >&2
+  exit 1
+fi
 
 profile_supports_apple_sign_in() {
   local profile_path="$1"
@@ -253,7 +256,7 @@ else
   echo "Warning: To enable it, provide TYPEFLUX_DEV_PROVISIONING_PROFILE with a matching macOS provisioning profile that includes the Sign In with Apple capability."
 fi
 
-open "$APP_DIR"
+open -n "$APP_DIR"
 
 echo "App launched: $APP_DIR"
 echo "Dev variant: $DEV_VARIANT"

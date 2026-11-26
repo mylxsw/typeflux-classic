@@ -32,7 +32,7 @@ What it does:
 
 - builds the app in development mode
 - assembles a stable `.app` bundle
-- launches `~/Applications/Typeflux Dev.app`
+- launches `~/Applications/Typeflux Classic Dev.app`
 
 Use it when:
 
@@ -73,7 +73,7 @@ What it does:
 
 - launches the development app with terminal logs attached
 - sets `TYPEFLUX_API_URL=http://127.0.0.1:8080` before launch
-- bundles SenseVoice into `~/Applications/Typeflux Dev.app` using the same app-internal layout as the `full` release variant
+- bundles SenseVoice into `~/Applications/Typeflux Classic Dev.app` using the same app-internal layout as the `full` release variant
 - downloads missing SenseVoice runtime/model files into the local cache on first use
 
 Use it when:
@@ -83,7 +83,7 @@ Use it when:
 
 Notes:
 
-- `make dev` and `make full-dev` reuse the same `~/Applications/Typeflux Dev.app` path
+- `make dev` and `make full-dev` reuse the same `~/Applications/Typeflux Classic Dev.app` path
 - switching from `make full-dev` back to `make dev` removes the bundled model payload from the dev app
 - this command validates the full local app behavior, not notarization, DMG packaging, or final release signing
 
