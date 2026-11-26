@@ -6,7 +6,7 @@ APP_DIR="${TYPEFLUX_DEV_APP_DIR:-$HOME/Applications/Typeflux Classic Dev.app}"
 DEV_VARIANT="${TYPEFLUX_DEV_VARIANT:-minimal}"
 
 # Refuse to overwrite the executable of a running development app.
-if ps -axww -o comm= | grep -Fxq "$APP_DIR/Contents/MacOS/Typeflux"; then
+if ps -axww -o comm= | grep -Fx "$APP_DIR/Contents/MacOS/Typeflux" >/dev/null; then
   echo "Error: quit the development app at $APP_DIR before rebuilding it." >&2
   exit 1
 fi

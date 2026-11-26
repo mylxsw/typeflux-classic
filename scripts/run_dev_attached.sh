@@ -7,7 +7,7 @@ APP_EXEC="$APP_DIR/Contents/MacOS/Typeflux"
 LOG_PID=""
 DEV_VARIANT="${TYPEFLUX_DEV_VARIANT:-minimal}"
 
-if ps -axww -o comm= | grep -Fxq "$APP_EXEC"; then
+if ps -axww -o comm= | grep -Fx "$APP_EXEC" >/dev/null; then
   echo "Error: quit the development app at $APP_DIR before rebuilding it." >&2
   exit 1
 fi
