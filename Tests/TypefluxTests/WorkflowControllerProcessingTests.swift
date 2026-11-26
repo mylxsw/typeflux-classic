@@ -694,10 +694,13 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         )
 
         controller.handlePersonaPickerRequested()
-        await waitForMainActorWork()
+        await waitUntil(timeout: 10) { controller.isPersonaPickerPresented }
 
-        XCTAssertTrue(controller.isPersonaPickerPresented)
-        XCTAssertFalse(eventRecorder.snapshot().contains("cue-play"))
+        await MainActor.run {
+            XCTAssertTrue(controller.isPersonaPickerPresented)
+            XCTAssertFalse(eventRecorder.snapshot().contains("cue-play"))
+            controller.dismissPersonaPicker(immediate: true)
+        }
     }
 
     func testOpeningPersonaPickerDoesNotPlayCueWhenSoundEffectsAreDisabled() async {
@@ -710,10 +713,13 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         )
 
         controller.handlePersonaPickerRequested()
-        await waitForMainActorWork()
+        await waitUntil(timeout: 10) { controller.isPersonaPickerPresented }
 
-        XCTAssertTrue(controller.isPersonaPickerPresented)
-        XCTAssertFalse(eventRecorder.snapshot().contains("cue-play"))
+        await MainActor.run {
+            XCTAssertTrue(controller.isPersonaPickerPresented)
+            XCTAssertFalse(eventRecorder.snapshot().contains("cue-play"))
+            controller.dismissPersonaPicker(immediate: true)
+        }
     }
 
     func testPersonaPickerUsesExplicitCaptureForOpaqueSelection() async throws {
