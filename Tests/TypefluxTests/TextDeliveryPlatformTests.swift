@@ -245,6 +245,20 @@ struct TextDeliveryPlatformTests {
         #expect(board.string(forType: .string) == (userCopiedAgain ? "new user copy" : "original"))
     }
 
+    @Test func largeClipboardImageSurvivesTextDelivery() async throws {
+        let board = NSPasteboard.withUniqueName()
+        defer { board.releaseGlobally() }
+        let tiff = Data(repeating: 0x01, count: 15 * 1_024 * 1_024)
+        board.setData(tiff, forType: .tiff)
+        let injector = AXTextInjector()
+        let backend = AXTextDeliveryBackend(injector: injector, selection: nil, pasteboard: board)
+        let clipboard = try await backend.prepareClipboard()
+        #expect(injector.writeTransientPasteboardString("generated", to: board))
+        clipboard.changeCount = board.changeCount
+        await backend.finishClipboard(clipboard, confirmed: true)
+        #expect(board.data(forType: .tiff) == tiff)
+    }
+
     @Test func unusedClipboardSnapshotDoesNotOverwriteNewCopy() async throws {
         let board = NSPasteboard.withUniqueName()
         defer { board.releaseGlobally() }
