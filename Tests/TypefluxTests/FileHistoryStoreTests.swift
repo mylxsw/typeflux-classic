@@ -243,7 +243,7 @@ final class FileHistoryStoreTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
 
         let content = try String(contentsOf: url, encoding: .utf8)
-        XCTAssertTrue(content.contains("# Typeflux History"))
+        XCTAssertTrue(content.contains("# Typeflux Classic History"))
         XCTAssertTrue(content.contains("hello world"))
         XCTAssertTrue(content.contains("Mode: dictation"))
     }

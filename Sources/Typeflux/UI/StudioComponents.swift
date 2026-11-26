@@ -763,12 +763,14 @@ struct StudioSidebar: View {
                     showsBorder: false
                 )
 
-                HStack(alignment: .center, spacing: 6) {
+                // The product name is too long to share a line with the version inside the
+                // fixed-width sidebar, so the version sits below it and the name may shrink slightly.
+                VStack(alignment: .leading, spacing: 1) {
                     Text(L("sidebar.appName"))
                         .font(.studioDisplay(StudioTheme.Typography.sectionTitle, weight: .bold))
                         .foregroundStyle(StudioTheme.textPrimary)
                         .lineLimit(1)
-                        .fixedSize(horizontal: true, vertical: false)
+                        .minimumScaleFactor(0.75)
 
                     Text(appVersionBadge)
                         .font(.studioBody(8, weight: .semibold))
@@ -777,7 +779,7 @@ struct StudioSidebar: View {
                         .fixedSize(horizontal: true, vertical: false)
                 }
 
-                Spacer()
+                Spacer(minLength: 0)
             }
             .padding(.top, StudioTheme.Insets.sidebarHeaderTop)
             .padding(.bottom, StudioTheme.Spacing.large)

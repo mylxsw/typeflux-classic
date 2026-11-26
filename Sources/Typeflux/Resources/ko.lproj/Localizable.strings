@@ -10,8 +10,8 @@
 "overlayStyle.liquidGlass" = "Liquid Glass";
 "overlayStyle.classic" = "클래식";
 
-"window.voiceStudio" = "Typeflux";
-"window.about" = "Typeflux 정보";
+"window.voiceStudio" = "Typeflux Classic";
+"window.about" = "Typeflux Classic 정보";
 
 "common.refresh" = "새로고침";
 "common.refreshing" = "새로고침 중...";
@@ -20,10 +20,10 @@
 "home.exportAll" = "모두 내보내기";
 "home.openHistory" = "기록 열기";
 
-"sidebar.appName" = "Typeflux";
+"sidebar.appName" = "Typeflux Classic";
 "sidebar.platform" = "데스크탑";
 "sidebar.about" = "소개";
-"sidebar.aboutAccessibility" = "Typeflux 정보";
+"sidebar.aboutAccessibility" = "Typeflux Classic 정보";
 "sidebar.feedbackAccessibility" = "문제 피드백";
 "sidebar.feedback.directOption" = "직접 피드백";
 "sidebar.feedback.emailOption" = "이메일로 문제 보내기";
@@ -55,7 +55,7 @@
 "sidebar.accountCard.accessibilityUsage" = "%@ 요금제. %@ / %@ 크레딧 사용.";
 
 "feedback.direct.title" = "문제 피드백";
-"feedback.direct.subtitle" = "문제나 제안을 입력하세요. Typeflux가 서버로 전송하고 후속 조치를 위한 Issue를 생성합니다.";
+"feedback.direct.subtitle" = "문제나 제안을 입력하세요. Typeflux Classic이 서버로 전송하고 후속 조치를 위한 Issue를 생성합니다.";
 "feedback.direct.contentLabel" = "피드백 내용";
 "feedback.direct.contentPlaceholder" = "겪은 문제나 개선되면 좋을 점을 간단히 적어 주세요.\n예: 단축키를 눌러도 받아쓰기가 시작되지 않고, 앱을 다시 열어도 그대로입니다.\n또는: 받아쓰기가 끝나면 텍스트가 자동으로 클립보드에 복사되면 좋겠습니다.";
 "feedback.direct.contactLabel" = "연락처(선택 사항)";
@@ -76,7 +76,7 @@
 "studio.section.vocabulary" = "어휘";
 "studio.section.history" = "기록";
 "studio.section.settings" = "설정";
-"studio.eyebrow.home" = "Typeflux";
+"studio.eyebrow.home" = "Typeflux Classic";
 "studio.eyebrow.models" = "구성";
 "studio.eyebrow.personas" = "음성 페르소나";
 "studio.eyebrow.vocabulary" = "맞춤 용어";
@@ -91,7 +91,7 @@
 "studio.subheading.home" = "AI 기반 음성 입력 — 한 번 말하면 Mac의 모든 앱에 텍스트가 변환되고 세련된 텍스트가 전달됩니다.";
 "studio.subheading.models" = "전사 및 재작성 흐름에 사용되는 로컬 및 원격 엔진을 선택합니다.";
 "studio.subheading.personas" = "재사용 가능한 글쓰기 스타일을 만들고 모든 메시지를 매일 사용할 수 있도록 준비하세요.";
-"studio.subheading.vocabulary" = "Typeflux이 이름, 제품, 도메인 용어를 더욱 안정적으로 포착할 수 있도록 도와주세요.";
+"studio.subheading.vocabulary" = "Typeflux Classic이 이름, 제품, 도메인 용어를 더욱 안정적으로 포착할 수 있도록 도와주세요.";
 "studio.subheading.history" = "최근 세션을 검토하고, 인식된 텍스트를 검사하고, 아카이브를 내보냅니다.";
 "studio.subheading.settings" = "하나의 통합 인터페이스에서 바로가기, 모양, 동작을 조정하세요.";
 "studio.search.home" = "검색 활동...";
@@ -106,7 +106,7 @@
 "settings.servers.api.title" = "API 서버";
 "settings.servers.api.subtitle" = "계정, 클라우드 AI 및 앱 요청에 사용할 서버입니다.";
 "settings.servers.asr.title" = "음성 인식 서버";
-"settings.servers.asr.subtitle" = "Typeflux 음성 인식에 사용할 서버입니다.";
+"settings.servers.asr.subtitle" = "Typeflux Classic 음성 인식에 사용할 서버입니다.";
 "settings.servers.automatic" = "자동(가장 빠른 서버)";
 "settings.servers.speedTest.title" = "서버 속도 테스트";
 "settings.servers.speedTest.subtitle" = "사용 가능한 모든 주소를 테스트하고 위 메뉴에 지연 시간을 표시합니다.";
@@ -122,7 +122,7 @@
 "settings.servers.tag.unavailable" = "사용 불가";
 "settings.servers.tag.notTested" = "테스트 안 함";
 "settings.launchAtLogin.title" = "로그인 시 실행";
-"settings.launchAtLogin.subtitle" = "Mac에 로그인한 후 자동으로 Typeflux을 시작하세요.";
+"settings.launchAtLogin.subtitle" = "Mac에 로그인한 후 자동으로 Typeflux Classic을 시작하세요.";
 "settings.activationHotkey" = "음성 단축키";
 "settings.identity" = "정체성과 상호작용";
 "settings.appearance.title" = "외관";
@@ -130,7 +130,7 @@
 "settings.overlayStyle.subtitle" = "캡슐과 대화 상자의 시각적 스타일을 선택합니다.";
 "settings.appearance.subtitle" = "밝은 테마, 어두운 테마 또는 시스템 테마에 따라 구성 요소 시스템을 전환합니다.";
 "settings.language.title" = "언어";
-"settings.language.subtitle" = "Typeflux 인터페이스에서 사용되는 표시 언어를 선택하세요.";
+"settings.language.subtitle" = "Typeflux Classic 인터페이스에서 사용되는 표시 언어를 선택하세요.";
 "settings.output.title" = "출력";
 "settings.output.opencc.title" = "중국어 출력 변환";
 "settings.output.opencc.subtitle" = "AI 출력의 중국어 형식을 자동으로 조정합니다.";
@@ -154,16 +154,16 @@
 "settings.advanced.soundEffects.title" = "음향 효과 활성화";
 "settings.advanced.soundEffects.subtitle" = "워크플로 피드백을 기록하는 동안 시작, 완료 및 오류 소리를 재생합니다.";
 "settings.advanced.voiceProcessingTimeout.title" = "AI 재작성 기본 대기 시간";
-"settings.advanced.voiceProcessingTimeout.subtitle" = "짧은 텍스트의 대기 시간을 설정합니다. 원본 내용이 길수록 Typeflux가 처리 시간을 자동으로 늘립니다.";
+"settings.advanced.voiceProcessingTimeout.subtitle" = "짧은 텍스트의 대기 시간을 설정합니다. 원본 내용이 길수록 Typeflux Classic이 처리 시간을 자동으로 늘립니다.";
 "settings.advanced.voiceProcessingTimeout.option" = "%d초";
 "settings.advanced.autoUpdate.title" = "자동 업데이트";
 "settings.advanced.autoUpdate.subtitle" = "3시간마다 자동으로 새 버전을 확인하고 설치합니다.";
 "settings.analyticsSharing.title" = "익명 사용 분석 공유";
-"settings.analyticsSharing.subtitle" = "익명의 앱 및 모델 다운로드 이벤트를 공유하여 Typeflux 개선에 도움을 줍니다. 음성 및 텍스트 내용은 수집되지 않습니다.";
+"settings.analyticsSharing.subtitle" = "익명의 앱 및 모델 다운로드 이벤트를 공유하여 Typeflux Classic 개선에 도움을 줍니다. 음성 및 텍스트 내용은 수집되지 않습니다.";
 "settings.permissionStatus.title" = "허가현황";
-"settings.permissionStatus.subtitle" = "Typeflux이 의존하는 macOS 권한을 검토한 후 필요한 경우 액세스 권한을 부여하세요.";
+"settings.permissionStatus.subtitle" = "Typeflux Classic이 의존하는 macOS 권한을 검토한 후 필요한 경우 액세스 권한을 부여하세요.";
 
-"menu.openVoiceStudio" = "Typeflux 열기";
+"menu.openVoiceStudio" = "Typeflux Classic 열기";
 "menu.history" = "역사";
 "menu.addVocabulary" = "단어 추가";
 "menu.addVocabulary.dialog.title" = "단어 추가";
@@ -180,9 +180,9 @@
 "menu.agentTasks.viewAll" = "모든 작업 보기";
 "menu.agentTasks.runningCount" = "%d개 실행 중";
 "menu.appearance" = "외관";
-"menu.settings" = "Typeflux 설정";
+"menu.settings" = "Typeflux Classic 설정";
 "menu.setupGuide" = "설정 가이드";
-"menu.about" = "Typeflux 정보";
+"menu.about" = "Typeflux Classic 정보";
 "menu.checkForUpdates" = "업데이트 확인";
 "menu.downloadingUpdate" = "업데이트 다운로드 중…";
 "menu.installingUpdate" = "업데이트 설치 중…";
@@ -207,7 +207,7 @@
 "appMenu.paste" = "붙여넣기";
 "appMenu.selectAll" = "모두 선택";
 
-"about.appName" = "Typeflux";
+"about.appName" = "Typeflux Classic";
 "about.subtitle" = "음성 기반 타이핑 경험";
 "about.details" = "DETAILS";
 "about.developer" = "개발자";
@@ -217,10 +217,11 @@
 "about.project.subtitle" = "소스 코드, 이슈, 출시 내역";
 "about.build" = "빌드";
 "about.build.subtitle" = "앱 번들에서 읽기";
+"classic.fullVersion.link" = "Typeflux 전체 버전 알아보기";
 
 "permission.microphone.title" = "마이크";
 "permission.microphone.summary" = "시스템 마이크에서 오디오를 캡처하는 데 필요합니다.";
-"permission.microphone.detail.authorized" = "Typeflux은(는) 시스템 마이크에 액세스할 수 있습니다.";
+"permission.microphone.detail.authorized" = "Typeflux Classic은 시스템 마이크에 액세스할 수 있습니다.";
 "permission.microphone.detail.notDetermined" = "메뉴 표시줄에서 녹음할 수 있도록 마이크 액세스 권한을 부여하세요.";
 "permission.microphone.detail.denied" = "마이크 액세스가 거부되었습니다. 시스템 설정에서 다시 활성화하세요.";
 "permission.microphone.detail.restricted" = "마이크 액세스는 시스템에 의해 제한됩니다.";
@@ -234,8 +235,8 @@
 "permission.speechRecognition.detail.unknown" = "음성 인식에는 주의가 필요합니다.";
 "permission.accessibility.title" = "접근성";
 "permission.accessibility.summary" = "다른 앱에서 텍스트를 삽입하거나 바꾸는 데 필요합니다.";
-"permission.accessibility.detail.granted" = "Typeflux은(는) 다른 앱의 텍스트 필드를 제어할 수 있습니다.";
-"permission.accessibility.detail.required" = "Typeflux이(가) 집중된 앱에 입력할 수 있도록 접근성을 활성화하세요.";
+"permission.accessibility.detail.granted" = "Typeflux Classic은 다른 앱의 텍스트 필드를 제어할 수 있습니다.";
+"permission.accessibility.detail.required" = "Typeflux Classic이 집중된 앱에 입력할 수 있도록 접근성을 활성화하세요.";
 "permission.badge.granted" = "승인됨";
 "permission.badge.required" = "필수";
 "permission.action.openSettings" = "설정 열기";
@@ -272,8 +273,8 @@
 "common.failedWithReason" = "실패: %@";
 "common.failedPrefix" = "실패:";
 
-"updater.available.title" = "새로운 버전의 Typeflux를 설치할 준비가 되었습니다!";
-"updater.available.subtitle" = "Typeflux %@을(를) 사용할 수 있습니다. 지금 설치하고 Typeflux를 재시작하시겠습니까?";
+"updater.available.title" = "새로운 버전의 Typeflux Classic을 설치할 준비가 되었습니다!";
+"updater.available.subtitle" = "Typeflux Classic %@을(를) 사용할 수 있습니다. 지금 설치하고 Typeflux Classic을 재시작하시겠습니까?";
 "updater.available.versionLabel" = "버전 %@을(를) 사용할 수 있습니다.";
 "updater.action.update" = "지금 업데이트";
 "updater.action.installAndRelaunch" = "설치 및 재시작";
@@ -282,7 +283,7 @@
 "updater.action.viewDetails" = "자세히 보기";
 "updater.autoUpdate.checkbox" = "앞으로 업데이트를 자동으로 다운로드하고 설치";
 "updater.latest.title" = "최신";
-"updater.latest.message" = "Typeflux의 최신 버전을 실행 중입니다.";
+"updater.latest.message" = "Typeflux Classic의 최신 버전을 실행 중입니다.";
 "updater.checkFailed.title" = "업데이트 확인 실패";
 "updater.checkFailed.noData" = "업데이트 정보를 가져올 수 없습니다.";
 "updater.download.failed" = "업데이트 다운로드에 실패했습니다.";
@@ -557,7 +558,7 @@
 "history.llmOutcome.failed" = "실패";
 "history.llmOutcome.requestFailedFallback" = "요청 실패 · 원본 전사 사용";
 "history.keep.title" = "기록 보관";
-"history.keep.subtitle" = "Typeflux이 이 기기에서 로컬 받아쓰기 기록을 보관하는 기간을 선택하세요.";
+"history.keep.subtitle" = "Typeflux Classic이 이 기기에서 로컬 받아쓰기 기록을 보관하는 기간을 선택하세요.";
 "history.privacy.title" = "귀하의 데이터는 비공개로 유지됩니다";
 "history.privacy.subtitle" = "음성 받아쓰기 기록은 이 Mac에만 저장됩니다. 자동 정리는 만료된 로컬 항목과 연결된 오디오 파일을 제거합니다.";
 "history.export.title" = "아카이브 내보내기";
@@ -592,7 +593,7 @@
 "vocabulary.filter.automatic" = "자동 추가됨";
 "vocabulary.filter.manual" = "수동으로 추가됨";
 "vocabulary.filter.otherApps" = "기타 앱";
-"vocabulary.intro.title" = "Typeflux이 이름, 제품, 도메인 용어를 더욱 안정적으로 포착할 수 있도록 도와주세요.";
+"vocabulary.intro.title" = "Typeflux Classic이 이름, 제품, 도메인 용어를 더욱 안정적으로 포착할 수 있도록 도와주세요.";
 "vocabulary.intro.subtitle" = "수동 항목은 Whisper 호환 전사 백엔드에 인식 힌트로 전송됩니다.";
 "vocabulary.search.placeholder" = "단어 검색...";
 "vocabulary.empty.title" = "아직 어휘 용어가 없습니다.";
@@ -660,7 +661,7 @@
 "settings.personaAppBindings.openButton" = "앱별 페르소나";
 "settings.personas.newButton" = "페르소나 추가";
 "settings.personaAppBindings.enabled.title" = "기능 활성화";
-"settings.personaAppBindings.enabled.subtitle" = "끄면 Typeflux는 모든 앱별 페르소나 규칙을 무시하고 기본 페르소나로 돌아갑니다.";
+"settings.personaAppBindings.enabled.subtitle" = "끄면 Typeflux Classic은 모든 앱별 페르소나 규칙을 무시하고 기본 페르소나로 돌아갑니다.";
 "settings.personaAppBindings.addTitle" = "앱별 페르소나 추가";
 "settings.personaAppBindings.addSubtitle" = "앱 식별자를 입력하고 페르소나를 선택하거나, 검색 버튼으로 시스템 앱 목록에서 고르세요.";
 "settings.personaAppBindings.listTitle" = "설정된 앱";
@@ -904,7 +905,7 @@
 "settings.models.googleCloud.oauth.authorize" = "Google 인증";
 "settings.models.googleCloud.oauth.reauthorize" = "다시 인증";
 "settings.models.googleCloud.oauth.disconnect" = "연결 해제";
-"settings.models.googleCloud.oauth.connected" = "Google 인증이 연결되었습니다. Typeflux가 Speech-to-Text 액세스 토큰을 자동으로 갱신합니다.";
+"settings.models.googleCloud.oauth.connected" = "Google 인증이 연결되었습니다. Typeflux Classic이 Speech-to-Text 액세스 토큰을 자동으로 갱신합니다.";
 "settings.models.googleCloud.oauth.disconnected" = "Google 인증 연결을 해제했습니다.";
 "settings.models.googleCloud.cloudGatewayHint" = "Project ID와 API Key로 Google Cloud Speech-to-Text v2 StreamingRecognize를 직접 호출합니다.";
 "settings.models.useGoogleCloud" = "Google 사용";
@@ -937,10 +938,10 @@
 "settings.models.localSTT.prepareFailed" = "로컬 음성 모델 준비에 실패했습니다.";
 "settings.models.localSTT.deleted" = "모델 파일이 삭제되었습니다.";
 "settings.models.localSTT.transferProgress" = "%@ 다운로드됨(%@ / %@)";
-"notification.localModelReady.title" = "Typeflux";
+"notification.localModelReady.title" = "Typeflux Classic";
 "notification.localModelReady.body" = "로컬 모델이 준비되었습니다.";
 "workflow.localModelDownloadingAlert.title" = "로컬 음성 모델 다운로드 중";
-"workflow.localModelDownloadingAlert.message" = "%@ 모델은 아직 다운로드 중이어서 사용할 수 없습니다. 준비가 완료되면 Typeflux가 시스템 알림으로 알려드립니다.";
+"workflow.localModelDownloadingAlert.message" = "%@ 모델은 아직 다운로드 중이어서 사용할 수 없습니다. 준비가 완료되면 Typeflux Classic이 시스템 알림으로 알려드립니다.";
 "workflow.localModelDownloadingAlert.progress" = "현재 진행률: %d%%";
 "workflow.localModelDownloadingAlert.failedTitle" = "로컬 음성 모델 다운로드 실패";
 "workflow.localModelDownloadingAlert.failedMessage" = "다운로드에 실패했습니다: %@. 네트워크가 사용 가능할 때 단축키를 다시 누르면 재시도할 수 있습니다.";
@@ -970,7 +971,7 @@
 "workflow.vocabulary.autoAdded.single" = "어휘에 %@을(를) 추가했습니다.";
 "workflow.vocabulary.autoAdded.multiple" = "어휘에 %d 용어를 추가했습니다.";
 
-"onboarding.window.title" = "Typeflux에 오신 것을 환영합니다.";
+"onboarding.window.title" = "Typeflux Classic에 오신 것을 환영합니다.";
 "onboarding.step.language" = "언어";
 "onboarding.step.models" = "모델";
 "onboarding.step.permissions" = "권한";
@@ -985,7 +986,7 @@
 "onboarding.welcome.feature3.desc" = "선택적 언어 모델이 받아쓰기를 실시간으로 다듬어 줍니다.";
 
 "onboarding.language.title" = "언어를 선택하세요";
-"onboarding.language.subtitle" = "Typeflux 인터페이스의 표시 언어를 선택하세요.";
+"onboarding.language.subtitle" = "Typeflux Classic 인터페이스의 표시 언어를 선택하세요.";
 "onboarding.account.title" = "다시 오신 것을 환영합니다";
 "onboarding.account.subtitle" = "클라우드 음성 인식과 AI 추론 기능을 해방하세요";
 "onboarding.account.cloudReady" = "음성 인식 및 대형 언어 모델 서비스가 준비되었습니다. 추가 API 키가 필요 없습니다.";
@@ -1023,9 +1024,9 @@
 "onboarding.llmConfig.incompleteAlert.skip" = "건너뛰기";
 
 "onboarding.permissions.title" = "권한 부여";
-"onboarding.permissions.subtitle" = "Typeflux에 음성을 캡처하고 다른 앱에 텍스트를 삽입하려면 몇 가지 시스템 권한이 필요합니다.";
+"onboarding.permissions.subtitle" = "Typeflux Classic에 음성을 캡처하고 다른 앱에 텍스트를 삽입하려면 몇 가지 시스템 권한이 필요합니다.";
 "onboarding.permissions.instruction.title" = "필수 권한을 모두 완료하세요";
-"onboarding.permissions.instruction.subtitle" = "각 권한 오른쪽의 버튼을 클릭하고 macOS 대화상자 또는 시스템 설정에서 허용한 뒤 Typeflux로 돌아오세요.";
+"onboarding.permissions.instruction.subtitle" = "각 권한 오른쪽의 버튼을 클릭하고 macOS 대화상자 또는 시스템 설정에서 허용한 뒤 Typeflux Classic으로 돌아오세요.";
 "onboarding.permissions.incompleteAlert.title" = "권한이 완료되지 않았습니다";
 "onboarding.permissions.incompleteAlert.message" = "계속하기 전에 필수 권한을 완료하세요. 각 권한 버튼을 클릭하고 macOS에서 허용하세요.";
 "onboarding.permissions.privacyCallout.title" = "개인정보 보호 우선";
@@ -1034,12 +1035,12 @@
 "onboarding.shortcuts.title" = "키보드 단축키";
 "onboarding.shortcuts.subtitle" = "기본 단축키입니다. 모든 설정이 완료되었습니다. 변경할 필요가 없습니다.";
 "onboarding.shortcuts.globeKeyNotice.title" = "FN / 🌐(지구본) 키를 먼저 비워 주세요";
-"onboarding.shortcuts.globeKeyNotice.message" = "macOS 는 기본적으로 FN / 🌐 키에 「이모티콘과 기호」를 배정하므로 Typeflux 가 이 키를 사용할 수 없습니다. 키보드 설정을 열어 「FN / 🌐 키를 눌렀을 때」를 「아무 작업도 하지 않음」으로 바꾸기만 하면 됩니다.";
+"onboarding.shortcuts.globeKeyNotice.message" = "macOS 는 기본적으로 FN / 🌐 키에 「이모티콘과 기호」를 배정하므로 Typeflux Classic이 이 키를 사용할 수 없습니다. 키보드 설정을 열어 「FN / 🌐 키를 눌렀을 때」를 「아무 작업도 하지 않음」으로 바꾸기만 하면 됩니다.";
 "onboarding.shortcuts.globeKeyNotice.button" = "키보드 설정 열기";
 "onboarding.shortcuts.globeKeyNotice.ready.title" = "FN / 🌐 키가 준비되었습니다";
-"onboarding.shortcuts.globeKeyNotice.ready.message" = "키보드 설정이 완료되어 Typeflux 가 FN / 🌐 키를 단축키로 사용할 수 있습니다. 그래도 반응이 없다면 한 번 로그아웃 후 다시 로그인하거나, Mac 을 재시작해 주세요.";
+"onboarding.shortcuts.globeKeyNotice.ready.message" = "키보드 설정이 완료되어 Typeflux Classic이 FN / 🌐 키를 단축키로 사용할 수 있습니다. 그래도 반응이 없다면 한 번 로그아웃 후 다시 로그인하거나, Mac 을 재시작해 주세요.";
 "onboarding.shortcuts.externalKeyboard.title" = "외장 키보드에서 FN 키를 사용할 수 없나요?";
-"onboarding.shortcuts.externalKeyboard.message" = "오른쪽 Command 또는 오른쪽 Option 을 대신 사용할 수 있습니다. Typeflux 는 음성 입력을 해당 키로, 무엇이든 묻기를 해당 키 빠른 두 번 누르기로 변경합니다.";
+"onboarding.shortcuts.externalKeyboard.message" = "오른쪽 Command 또는 오른쪽 Option 을 대신 사용할 수 있습니다. Typeflux Classic은 음성 입력을 해당 키로, 무엇이든 묻기를 해당 키 빠른 두 번 누르기로 변경합니다.";
 "onboarding.shortcuts.externalKeyboard.useRightCommand" = "오른쪽 Command 사용";
 "onboarding.shortcuts.externalKeyboard.useRightOption" = "오른쪽 Option 사용";
 "onboarding.shortcuts.replacement.rightCommand" = "오른쪽 Command";
@@ -1049,8 +1050,8 @@
 "onboarding.shortcuts.replacement.active.message" = "단축키가 변경되었습니다. 음성 입력은 %@, 무엇이든 묻기는 %@×2 를 사용합니다.";
 "onboarding.shortcuts.replacement.restore" = "FN 단축키 복원";
 "onboarding.shortcuts.replacement.appliedAlert.title" = "단축키가 업데이트되었습니다";
-"onboarding.shortcuts.replacement.appliedAlert.message" = "Typeflux 가 이제 음성 입력에 %@, 무엇이든 묻기에 %@×2 를 사용합니다.";
-"onboarding.shortcuts.replacement.restoredAlert.message" = "Typeflux 가 기본 FN / 🌐 단축키로 복원되었습니다.";
+"onboarding.shortcuts.replacement.appliedAlert.message" = "Typeflux Classic이 이제 음성 입력에 %@, 무엇이든 묻기에 %@×2 를 사용합니다.";
+"onboarding.shortcuts.replacement.restoredAlert.message" = "Typeflux Classic이 기본 FN / 🌐 단축키로 복원되었습니다.";
 "onboarding.shortcuts.activation.hint" = "말한 내용을 텍스트로 입력";
 "onboarding.shortcuts.ask.hint" = "음성으로 질문하거나 선택한 글 수정";
 "onboarding.shortcuts.persona.hint" = "페르소나 전환 또는 선택한 글 재작성";
