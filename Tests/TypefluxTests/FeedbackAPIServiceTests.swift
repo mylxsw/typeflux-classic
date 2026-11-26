@@ -463,6 +463,15 @@ private actor FeedbackStubSession: CloudHTTPSession {
     }
 }
 
+private actor PresignCounter {
+    private var count = 0
+
+    func next() -> Int {
+        count += 1
+        return count
+    }
+}
+
 private struct FeedbackNoOpProber: CloudEndpointProbing {
     func probe(baseURL _: URL, nonce _: String, timeout _: TimeInterval) async throws -> CloudEndpointProbeResult {
         CloudEndpointProbeResult(latencyMs: 1, serverID: nil, serverVersion: nil, nonceMatches: true)
@@ -477,5 +486,354 @@ private extension FeedbackAPIServiceTests {
             httpVersion: nil,
             headerFields: nil
         )!
+    }
+}
+
+// MARK: - Bounded proxy PUT contract
+
+extension FeedbackAPIServiceTests {
+    private static let proxyTargetJSON = """
+    {"code":"OK","data":{"type":"bounded_proxy_put","method":"PUT","url":"/api/v1/feedback/uploads/upload-9","bucket":"feedback","region":"auto","key":"feedback-images/u/2026/10/upload-9/screen.png","expires_at":1777961100,"max_size_bytes":5242880,"headers":{"Content-Type":"image/png"},"fields":{},"image_url":"https://cdn.example/feedback-images/u/2026/10/upload-9/screen.png","upload_id":"upload-9"}}
+    """
+
+    private func proxyTarget(
+        url: String,
+        type: String = FeedbackAPIService.apiProxyUploadType,
+        headers: [String: String] = ["Content-Type": "image/png"],
+        issuingAPIBaseURL: URL? = URL(string: "https://api.example")
+    ) -> FeedbackUploadTarget {
+        FeedbackUploadTarget(
+            type: type,
+            method: "PUT",
+            url: url,
+            bucket: "feedback",
+            region: "auto",
+            key: "feedback-images/u/screen.png",
+            expiresAt: 1_777_961_100,
+            maxSizeBytes: 5_242_880,
+            headers: headers,
+            fields: [:],
+            imageURL: "https://cdn.example/feedback-images/u/screen.png",
+            uploadID: "upload-9",
+            issuingAPIBaseURL: issuingAPIBaseURL
+        )
+    }
+
+    func testRelativeProxyTargetResolvesAgainstIssuingFailoverEndpointWithSameBearer() async throws {
+        let session = FeedbackStubSession()
+        await session.setHandler { request in
+            if request.url?.host == "api.example" {
+                return (Data(), Self.httpResponse(url: request.url!, status: 503))
+            }
+            if request.url?.path == "/api/v1/feedback/uploads/presign" {
+                XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer token-1")
+                return (Data(Self.proxyTargetJSON.utf8), Self.httpResponse(url: request.url!, status: 200))
+            }
+            XCTAssertEqual(
+                request.url?.absoluteString,
+                "https://api-fallback.example/api/v1/feedback/uploads/upload-9"
+            )
+            XCTAssertEqual(request.httpMethod, "PUT")
+            XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer token-1")
+            XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "image/png")
+            XCTAssertNil(request.value(forHTTPHeaderField: "Content-Length"))
+            XCTAssertEqual(request.httpBody, Data("png-bytes".utf8))
+            return (Data(), Self.httpResponse(url: request.url!, status: 204))
+        }
+        let executor = makeExecutor(
+            session: session,
+            baseURLs: [baseURL, URL(string: "https://api-fallback.example")!]
+        )
+
+        let target = try await FeedbackAPIService.createImageUploadTarget(
+            filename: "screen.png",
+            contentType: "image/png",
+            sizeBytes: 9,
+            token: "token-1",
+            executor: executor
+        )
+        XCTAssertEqual(target.type, "bounded_proxy_put")
+        XCTAssertEqual(target.issuingAPIBaseURL?.host, "api-fallback.example")
+
+        try await FeedbackAPIService.uploadImage(
+            data: Data("png-bytes".utf8),
+            filename: "screen.png",
+            contentType: "image/png",
+            to: target,
+            token: "token-1",
+            session: session
+        )
+        let hosts = await session.requestedHosts
+        XCTAssertEqual(hosts, ["api.example", "api-fallback.example", "api-fallback.example"])
+    }
+
+    func testCanonicalAbsoluteTargetFromFailoverEndpointUploadsToTheCanonicalAPIOrigin() async throws {
+        // FEEDBACK_UPLOAD_API_BASE_URL names api.example; the fallback
+        // endpoint issued the ticket because api.example returned 503.
+        let canonicalJSON = Self.proxyTargetJSON.replacingOccurrences(
+            of: #""url":"/api/v1/feedback/uploads/upload-9""#,
+            with: #""url":"https://api.example/api/v1/feedback/uploads/upload-9""#
+        )
+        let session = FeedbackStubSession()
+        let presignCalls = PresignCounter()
+        await session.setHandler { request in
+            if request.url?.path == "/api/v1/feedback/uploads/presign" {
+                if await presignCalls.next() == 1 {
+                    return (Data(), Self.httpResponse(url: request.url!, status: 503))
+                }
+                return (Data(canonicalJSON.utf8), Self.httpResponse(url: request.url!, status: 200))
+            }
+            XCTAssertEqual(request.url?.absoluteString, "https://api.example/api/v1/feedback/uploads/upload-9")
+            XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer token-1")
+            return (Data(), Self.httpResponse(url: request.url!, status: 204))
+        }
+        let executor = makeExecutor(
+            session: session,
+            baseURLs: [baseURL, URL(string: "https://api-fallback.example")!]
+        )
+
+        let target = try await FeedbackAPIService.createImageUploadTarget(
+            filename: "screen.png", contentType: "image/png", sizeBytes: 9, token: "token-1", executor: executor
+        )
+        XCTAssertEqual(target.issuingAPIBaseURL?.host, "api-fallback.example")
+        XCTAssertEqual(target.trustedAPIBaseURLs.map(\.host), ["api.example", "api-fallback.example"])
+        XCTAssertTrue(try FeedbackAPIService.resolveUploadURL(for: target).isAPIOrigin)
+
+        try await FeedbackAPIService.uploadImage(
+            data: Data("png-bytes".utf8), filename: "screen.png", contentType: "image/png",
+            to: target, token: "token-1", session: session
+        )
+        let hosts = await session.requestedHosts
+        XCTAssertEqual(hosts, ["api.example", "api-fallback.example", "api.example"])
+    }
+
+    func testCanonicalOriginOutsideTheConfiguredAPIEndpointsIsRejected() async throws {
+        let session = FeedbackStubSession()
+        let untrustedJSON = Self.proxyTargetJSON.replacingOccurrences(
+            of: #""url":"/api/v1/feedback/uploads/upload-9""#,
+            with: #""url":"https://canonical.example/api/v1/feedback/uploads/upload-9","trustedAPIBaseURLs":["https://canonical.example"]"#
+        )
+        let ticketSession = FeedbackStubSession()
+        await ticketSession.setHandler { request in
+            (Data(untrustedJSON.utf8), Self.httpResponse(url: request.url!, status: 200))
+        }
+        let executor = makeExecutor(session: ticketSession, baseURLs: [baseURL])
+        let target = try await FeedbackAPIService.createImageUploadTarget(
+            filename: "screen.png", contentType: "image/png", sizeBytes: 9, token: "token-1", executor: executor
+        )
+        XCTAssertEqual(target.trustedAPIBaseURLs, [baseURL])
+
+        do {
+            try await FeedbackAPIService.uploadImage(
+                data: Data("png".utf8), filename: "screen.png", contentType: "image/png",
+                to: target, token: "token-1", session: session
+            )
+            XCTFail("An unknown origin must not receive the bearer")
+        } catch let error as FeedbackAPIError {
+            XCTAssertEqual(error, .invalidResponse)
+        }
+        let calls = await session.callCount
+        XCTAssertEqual(calls, 0)
+    }
+
+    func testTrustedAPIOriginMustMatchSchemeAndPort() throws {
+        var target = proxyTarget(
+            url: "http://api.example/api/v1/feedback/uploads/upload-9",
+            issuingAPIBaseURL: URL(string: "https://api-fallback.example")
+        )
+        target.trustedAPIBaseURLs = [baseURL]
+        XCTAssertThrowsError(try FeedbackAPIService.resolveUploadURL(for: target))
+
+        target = proxyTarget(
+            url: "https://api.example:8443/api/v1/feedback/uploads/upload-9",
+            issuingAPIBaseURL: URL(string: "https://api-fallback.example")
+        )
+        target.trustedAPIBaseURLs = [baseURL]
+        XCTAssertThrowsError(try FeedbackAPIService.resolveUploadURL(for: target))
+    }
+
+    func testAbsoluteSameOriginProxyTargetCarriesBearer() async throws {
+        let session = FeedbackStubSession()
+        await session.setHandler { request in
+            XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer token-2")
+            return (Data(), Self.httpResponse(url: request.url!, status: 204))
+        }
+
+        try await FeedbackAPIService.uploadImage(
+            data: Data("png".utf8),
+            filename: "screen.png",
+            contentType: "image/png",
+            to: proxyTarget(url: "https://API.example:443/api/v1/feedback/uploads/upload-9"),
+            token: "token-2",
+            session: session
+        )
+        let calls = await session.callCount
+        XCTAssertEqual(calls, 1)
+    }
+
+    func testProxyUploadFallsBackToTheImageContentType() async throws {
+        let session = FeedbackStubSession()
+        await session.setHandler { request in
+            XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "image/webp")
+            return (Data(), Self.httpResponse(url: request.url!, status: 204))
+        }
+
+        try await FeedbackAPIService.uploadImage(
+            data: Data("webp".utf8),
+            filename: "screen.webp",
+            contentType: "image/webp",
+            to: proxyTarget(url: "/api/v1/feedback/uploads/upload-9", headers: [:]),
+            token: "token-1",
+            session: session
+        )
+    }
+
+    func testAnonymousProxyUploadSendsNoAuthorization() async throws {
+        let session = FeedbackStubSession()
+        await session.setHandler { request in
+            XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
+            return (Data(), Self.httpResponse(url: request.url!, status: 204))
+        }
+
+        try await FeedbackAPIService.uploadImage(
+            data: Data("png".utf8),
+            filename: "screen.png",
+            contentType: "image/png",
+            to: proxyTarget(url: "/api/v1/feedback/uploads/upload-9"),
+            token: "",
+            session: session
+        )
+    }
+
+    func testLegacyStorageTargetNeverReceivesBearerOrForwardedAuthorizationHeader() async throws {
+        let session = FeedbackStubSession()
+        await session.setHandler { request in
+            XCTAssertEqual(request.url?.host, "s3.example")
+            XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
+            return (Data(), Self.httpResponse(url: request.url!, status: 200))
+        }
+
+        try await FeedbackAPIService.uploadImage(
+            data: Data("png".utf8),
+            filename: "screen.png",
+            contentType: "image/png",
+            to: proxyTarget(
+                url: "https://s3.example/upload?X-Amz-Signature=abc",
+                type: "s3_presigned_put",
+                headers: ["Content-Type": "image/png", "authorization": "Bearer leaked"]
+            ),
+            token: "token-1",
+            session: session
+        )
+    }
+
+    func testLegacyStorageTargetNeverReceivesBearerEvenOnAnAPIOrigin() async throws {
+        let session = FeedbackStubSession()
+        await session.setHandler { request in
+            XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
+            XCTAssertNil(request.value(forHTTPHeaderField: "Host"))
+            return (Data(), Self.httpResponse(url: request.url!, status: 200))
+        }
+        try await FeedbackAPIService.uploadImage(
+            data: Data("png".utf8),
+            filename: "screen.png",
+            contentType: "image/png",
+            to: proxyTarget(
+                url: "https://api.example/storage/upload",
+                type: "s3_presigned_put",
+                headers: ["Host": "outside.example"]
+            ),
+            token: "token-1",
+            session: session
+        )
+        let calls = await session.callCount
+        XCTAssertEqual(calls, 1)
+    }
+
+    func testRejectsUnsafeUploadTargetsWithoutSendingRequests() async throws {
+        let unsafeTargets = [
+            // A proxy target must stay on the issuing API origin.
+            proxyTarget(url: "https://evil.example/api/v1/feedback/uploads/upload-9"),
+            // Protocol-relative URLs resolve to another host.
+            proxyTarget(url: "//evil.example/upload", type: "s3_presigned_put"),
+            // Different port or scheme is a different origin.
+            proxyTarget(url: "https://api.example:8443/api/v1/feedback/uploads/upload-9"),
+            proxyTarget(url: "http://api.example/api/v1/feedback/uploads/upload-9"),
+            // Relative URLs need the issuing API origin.
+            proxyTarget(url: "/api/v1/feedback/uploads/upload-9", issuingAPIBaseURL: nil),
+            proxyTarget(url: "https://outside.example/upload", type: "unknown_upload_type"),
+            proxyTarget(url: "https://user@api.example/api/v1/feedback/uploads/upload-9"),
+            // Storage uploads must use HTTPS.
+            proxyTarget(url: "http://s3.example/upload", type: "s3_presigned_put"),
+            proxyTarget(url: "ftp://s3.example/upload", type: "s3_presigned_put"),
+        ]
+        let session = FeedbackStubSession()
+
+        for target in unsafeTargets {
+            do {
+                try await FeedbackAPIService.uploadImage(
+                    data: Data("png".utf8),
+                    filename: "screen.png",
+                    contentType: "image/png",
+                    to: target,
+                    token: "token-1",
+                    session: session
+                )
+                XCTFail("Expected \(target.url) to be rejected")
+            } catch let error as FeedbackAPIError {
+                XCTAssertEqual(error, .invalidResponse, target.url)
+            }
+        }
+        let calls = await session.callCount
+        XCTAssertEqual(calls, 0)
+    }
+
+    func testProxyUploadMapsRevokedSessionAndConsumedTarget() async throws {
+        for (status, expected) in [
+            (401, FeedbackAPIError.unauthorized),
+            (409, FeedbackAPIError.serverError(
+                code: "UPLOAD_FAILED",
+                message: #"HTTP 409: {"code":"FEEDBACK_UPLOAD_CONFLICT"}"#
+            )),
+        ] {
+            let session = FeedbackStubSession()
+            await session.setHandler { request in
+                let body = status == 409 ? Data(#"{"code":"FEEDBACK_UPLOAD_CONFLICT"}"#.utf8) : Data()
+                return (body, Self.httpResponse(url: request.url!, status: status))
+            }
+            do {
+                try await FeedbackAPIService.uploadImage(
+                    data: Data("png".utf8),
+                    filename: "screen.png",
+                    contentType: "image/png",
+                    to: proxyTarget(url: "/api/v1/feedback/uploads/upload-9"),
+                    token: "token-1",
+                    session: session
+                )
+                XCTFail("Expected HTTP \(status) to fail")
+            } catch let error as FeedbackAPIError {
+                XCTAssertEqual(error, expected)
+            }
+        }
+    }
+
+    func testStorageUnauthorizedIsAnUploadFailureNotASessionLoss() async throws {
+        let session = FeedbackStubSession()
+        await session.setHandler { request in
+            (Data(), Self.httpResponse(url: request.url!, status: 401))
+        }
+        do {
+            try await FeedbackAPIService.uploadImage(
+                data: Data("png".utf8),
+                filename: "screen.png",
+                contentType: "image/png",
+                to: proxyTarget(url: "https://s3.example/upload", type: "s3_presigned_put"),
+                token: "token-1",
+                session: session
+            )
+            XCTFail("Expected failure")
+        } catch let error as FeedbackAPIError {
+            XCTAssertEqual(error, .serverError(code: "UPLOAD_FAILED", message: "HTTP 401"))
+        }
     }
 }

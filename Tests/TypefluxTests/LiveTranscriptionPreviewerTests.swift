@@ -4,7 +4,7 @@ import XCTest
 
 final class LiveTranscriptionPreviewerTests: XCTestCase {
     func testStartUsesLocalBackendForLocalModelProvider() async throws {
-        let settingsStore = SettingsStore()
+        let settingsStore = try makeSettingsStore()
         settingsStore.sttProvider = .localModel
 
         let localBackend = MockLivePreviewBackend()
@@ -28,7 +28,7 @@ final class LiveTranscriptionPreviewerTests: XCTestCase {
     }
 
     func testStartDoesNotUseLocalBackendForTypefluxCloudWhenLocalOptimizationIsEnabled() async throws {
-        let settingsStore = SettingsStore()
+        let settingsStore = try makeSettingsStore()
         settingsStore.sttProvider = .typefluxOfficial
         settingsStore.localOptimizationEnabled = true
 
@@ -52,7 +52,7 @@ final class LiveTranscriptionPreviewerTests: XCTestCase {
     }
 
     func testStartUsesLocalBackendForUnpaidRemoteProvider() async throws {
-        let settingsStore = SettingsStore()
+        let settingsStore = try makeSettingsStore()
         settingsStore.sttProvider = .whisperAPI
 
         let localBackend = MockLivePreviewBackend()
@@ -77,7 +77,7 @@ final class LiveTranscriptionPreviewerTests: XCTestCase {
     }
 
     func testPrepareForStartPreservesPendingBuffersUntilBackendStarts() async throws {
-        let settingsStore = SettingsStore()
+        let settingsStore = try makeSettingsStore()
         settingsStore.sttProvider = .whisperAPI
         settingsStore.localOptimizationEnabled = false
         settingsStore.whisperBaseURL = ""
@@ -121,6 +121,13 @@ final class LiveTranscriptionPreviewerTests: XCTestCase {
         let transcribeCallCount = await transcriber.transcribeCallCount()
         XCTAssertEqual(transcribeCallCount, 1)
         _ = await backend.finish()
+    }
+
+    private func makeSettingsStore() throws -> SettingsStore {
+        let suiteName = "LiveTranscriptionPreviewerTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        addTeardownBlock { defaults.removePersistentDomain(forName: suiteName) }
+        return SettingsStore(defaults: defaults)
     }
 
     private func makeTestBuffer(sampleCount: AVAudioFrameCount) throws -> AVAudioPCMBuffer {
