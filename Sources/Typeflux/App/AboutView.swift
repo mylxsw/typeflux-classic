@@ -8,7 +8,6 @@ struct AboutView: View {
     private let developerURL = URL(string: "https://gulu.ai")!
     private let websiteURL = URL(string: "https://typeflux.app")!
     private let privacyURL = URL(string: "https://typeflux.app/privacy")!
-    private let projectURL = URL(string: "https://github.com/mylxsw/typeflux")!
 
     var body: some View {
         ZStack {
@@ -115,7 +114,7 @@ struct AboutView: View {
                 title: L("about.project"),
                 value: "Typeflux",
                 subtitle: L("about.project.subtitle"),
-                url: projectURL
+                url: TypefluxProduct.repositoryURL
             )
 
             divider

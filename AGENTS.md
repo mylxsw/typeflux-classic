@@ -12,7 +12,7 @@ Use the package manifest in `Package.swift` as the source of truth.
 - `swift test` or `make test`: run the full test suite.
 - `swift test --filter TypefluxTests.LLMRouterTests`: run one test class.
 - `scripts/setup_dev_cert.sh` **(run once)**: create a local self-signed code-signing identity ("Typeflux Dev") in a dedicated passwordless keychain. Required for stable macOS privacy permission grants (microphone, accessibility) across rebuilds.
-- `make run`: build, bundle, and launch `~/Applications/Typeflux Dev.app`.
+- `make run`: build, bundle, and launch `~/Applications/Typeflux Classic Dev.app`.
 - `make dev`: launch the dev app with terminal logs attached.
 - `make coverage`: run coverage and write HTML output to `coverage-report/`.
 - `make format`: format code via `scripts/format.sh`.

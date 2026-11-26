@@ -110,7 +110,7 @@ append_path_if_missing() {
 APP_PATHS=(
   "/Applications/Typeflux.app"
   "$HOME/Applications/Typeflux.app"
-  "$HOME/Applications/Typeflux Dev.app"
+  "$HOME/Applications/Typeflux Classic Dev.app"
 )
 
 if [[ -n "${TYPEFLUX_DEV_APP_DIR:-}" ]]; then
@@ -121,7 +121,7 @@ while IFS= read -r -d '' app_path; do
   append_path_if_missing "$app_path"
 done < <(
   find "$ROOT_DIR/.build" "$ROOT_DIR/.xcode-app-derived" \
-    -type d \( -name 'Typeflux.app' -o -name 'Typeflux Dev.app' \) -print0 2>/dev/null
+    -type d \( -name 'Typeflux.app' -o -name 'Typeflux Classic Dev.app' \) -print0 2>/dev/null
 )
 
 while IFS= read -r -d '' app_path; do

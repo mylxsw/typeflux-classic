@@ -23,10 +23,6 @@ final class AutoUpdater {
 
     private static let autoCheckInterval: TimeInterval = 3 * 3600
 
-    private var websiteURL: URL? {
-        URL(string: AppServerConfiguration.apiBaseURL)
-    }
-
     private var initialAutoCheckWorkItem: DispatchWorkItem?
     private var autoCheckTimer: Timer?
     private weak var settingsStore: SettingsStore?
@@ -108,6 +104,8 @@ final class AutoUpdater {
                     return
                 }
 
+                guard AutoUpdateRequestSupport.isClassicVersion(info.latestVersion) else { return }
+
                 if info.shouldUpdate {
                     prepareUpdate(info: info, manual: manual)
                 } else if manual {
@@ -183,10 +181,8 @@ final class AutoUpdater {
                             relaunch: true
                         )
                     }
-                } else if let url = self?.websiteURL {
-                    NSWorkspace.shared.open(url)
                 } else {
-                    self?.showCheckFailedAlert(message: L("updater.checkFailed.noData"))
+                    NSWorkspace.shared.open(TypefluxProduct.repositoryURL.appendingPathComponent("releases/latest"))
                 }
             case .skip:
                 if let downloadedArchiveURL {
@@ -512,11 +508,23 @@ enum AutoUpdateRequestSupport {
         currentVersion: String,
         architecture: String? = packageArchitecture()
     ) -> [URLQueryItem] {
-        var items = [URLQueryItem(name: "version", value: currentVersion)]
+        var items = [
+            URLQueryItem(name: "version", value: currentVersion),
+            URLQueryItem(name: "product", value: TypefluxProduct.identifier)
+        ]
         if let architecture, !architecture.isEmpty {
             items.append(URLQueryItem(name: "arch", value: architecture))
         }
         return items
+    }
+
+    static func isClassicVersion(_ version: String) -> Bool {
+        let normalized = version.trimmingCharacters(in: .whitespacesAndNewlines)
+        // Accept only the Classic version line, including its prereleases and build metadata.
+        return normalized.range(
+            of: #"^[vV]?0(?:\.[0-9]+){0,2}(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$"#,
+            options: .regularExpression
+        ) != nil
     }
 
     static func packageArchitecture() -> String {

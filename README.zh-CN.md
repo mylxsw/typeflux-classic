@@ -4,8 +4,7 @@
 
 按住 `Fn` 即可语音输入，双击 `Fn` 可以随口提问。Typeflux 会把快速、准确的语音转文字直接输入到任意 macOS 应用中。免费、开源，并支持本地模型 - 你的声音不必离开你的 Mac。
 
-[![Tests](https://github.com/mylxsw/typeflux/actions/workflows/test.yml/badge.svg)](https://github.com/mylxsw/typeflux/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/mylxsw/typeflux/graph/badge.svg)](https://codecov.io/gh/mylxsw/typeflux)
+[![Tests](https://github.com/mylxsw/typeflux-classic/actions/workflows/test.yml/badge.svg)](https://github.com/mylxsw/typeflux-classic/actions/workflows/test.yml)
 
 [English](./README.md) | 简体中文
 
@@ -19,9 +18,9 @@
 
 ## 下载
 
-**[⬇ 下载最新版本 (.dmg)](https://github.com/mylxsw/typeflux/releases/latest)**
+**[⬇ 下载最新版本 (.dmg)](https://github.com/mylxsw/typeflux-classic/releases/latest)**
 
-1. 从最新 Release 下载 `Typeflux.dmg`
+1. 从最新 Release 下载对应 Mac 架构的 Classic DMG
 2. 打开 DMG，把 `Typeflux.app` 拖到 **Applications**
 3. 启动应用，并授予麦克风和辅助功能权限
 
@@ -116,8 +115,8 @@ Fn ×2 → 提问 → 松开 → 回答、编辑或执行操作
 ## 从源码构建
 
 ```bash
-git clone https://github.com/mylxsw/typeflux
-cd typeflux
+git clone https://github.com/mylxsw/typeflux-classic
+cd typeflux-classic
 
 # 一次性设置：创建本地代码签名身份，让 macOS
 # 权限（麦克风、辅助功能）在多次重建后保持稳定。
@@ -128,7 +127,7 @@ make dev          # 启动并附带终端日志
 make full-dev     # 使用内置 SenseVoice 资源启动开发应用
 make full-release # 在本地构建完整的已公证生产安装包
 make release-continue # 继续中断的本地发布流程
-swift test        # 运行测试
+make test SUITE=TypefluxCloudRequestHeadersTests
 ```
 
 > ⚠️ 如果跳过 `setup_dev_cert.sh`，`make run` 仍然可用，但 macOS 会在每次构建后重新请求权限（ad-hoc 签名）。

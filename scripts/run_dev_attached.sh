@@ -2,10 +2,15 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP_DIR="${TYPEFLUX_DEV_APP_DIR:-${TYPEFLUX_DEV_APP_DIR:-$HOME/Applications/Typeflux Dev.app}}"
+APP_DIR="${TYPEFLUX_DEV_APP_DIR:-$HOME/Applications/Typeflux Classic Dev.app}"
 APP_EXEC="$APP_DIR/Contents/MacOS/Typeflux"
 LOG_PID=""
 DEV_VARIANT="${TYPEFLUX_DEV_VARIANT:-minimal}"
+
+if ps -axww -o comm= | grep -Fx "$APP_EXEC" >/dev/null; then
+  echo "Error: quit the development app at $APP_DIR before rebuilding it." >&2
+  exit 1
+fi
 
 profile_supports_apple_sign_in() {
   local profile_path="$1"
@@ -265,12 +270,6 @@ if [[ "$use_apple_sign_in_entitlements" == true ]]; then
 else
   echo "Warning: Sign In with Apple is disabled for this dev build."
   echo "Warning: To enable it, provide TYPEFLUX_DEV_PROVISIONING_PROFILE with a matching macOS provisioning profile that includes the Sign In with Apple capability."
-fi
-
-if pgrep -f "$APP_EXEC" >/dev/null 2>&1; then
-  echo "Typeflux is already running from $APP_EXEC, stopping the previous instance first..."
-  pkill -f "$APP_EXEC" >/dev/null 2>&1 || true
-  sleep 1
 fi
 
 echo "App launched in attached dev mode: $APP_DIR"

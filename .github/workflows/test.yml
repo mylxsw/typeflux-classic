@@ -1,6 +1,8 @@
 name: Tests
 
 on:
+  pull_request:
+    branches: [main]
   issue_comment:
     types: [created]
 
@@ -8,23 +10,66 @@ permissions:
   contents: read
 
 concurrency:
-  group: tests-autotest-${{ github.event.issue.number }}
+  group: classic-tests-${{ github.event.pull_request.number || github.event.issue.number }}
   cancel-in-progress: true
 
 jobs:
   test:
     if: >-
-      github.event.issue.pull_request &&
+      github.event_name == 'pull_request' ||
+      (github.event.issue.pull_request &&
       github.event.issue.state == 'open' &&
       contains(github.event.comment.body, '@autotest') &&
-      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))
     runs-on: macos-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: refs/pull/${{ github.event.issue.number }}/merge
+          ref: refs/pull/${{ github.event.pull_request.number || github.event.issue.number }}/merge
+          fetch-depth: 2
+          persist-credentials: false
 
-      - name: Run tests
-        run: swift test
+      - name: Build
+        run: make build
+
+      - name: Run affected tests
+        run: |
+          set -euo pipefail
+
+          changed_files="$(git diff --name-only HEAD^1 HEAD)"
+          suites=()
+          while IFS= read -r path; do
+            name="${path##*/}"
+            case "$path" in
+              Tests/TypefluxTests/*Tests.swift)
+                [[ ! -f "$path" ]] || suites+=("${name%.swift}")
+                ;;
+              Sources/Typeflux/*.swift)
+                suite="${name%.swift}Tests"
+                [[ ! -f "Tests/TypefluxTests/$suite.swift" ]] || suites+=("$suite")
+                ;;
+            esac
+
+            # Cover shared entry points that do not have a same-named test file.
+            case "$path" in
+              */TypefluxCloudRequestHeaders.swift | */CloudRequestExecutor.swift)
+                suites+=(TypefluxCloudRequestHeadersTests TypefluxOfficialTranscriberTests AppAnalyticsReporterTests)
+                ;;
+              */AutoUpdater.swift | app/Info.plist)
+                suites+=(AutoUpdateArchiveInstallerTests)
+                ;;
+              Package.swift | Package.resolved | .github/workflows/test.yml)
+                suites+=(TypefluxCloudRequestHeadersTests TypefluxOfficialTranscriberTests AppAnalyticsReporterTests)
+                suites+=(AutoUpdateArchiveInstallerTests FileHistoryStoreTests SQLiteHistoryStoreTests)
+                ;;
+            esac
+          done <<< "$changed_files"
+
+          if [[ -z "${suites[0]:-}" ]]; then
+            echo "No affected test suites selected."
+            exit 0
+          fi
+          filter="$(printf '%s\n' "${suites[@]}" | sort -u | paste -sd '|' -)"
+          make test FILTER="$filter"

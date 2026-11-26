@@ -15,6 +15,7 @@ final class AppAnalyticsReporterTests: XCTestCase {
         let events = queuedEvents(defaults: defaults)
         XCTAssertEqual(events.map(\.eventName), ["app_first_open"])
         XCTAssertEqual(events[0].clientID, "test-client")
+        XCTAssertEqual(events[0].properties["product"], "classic")
         XCTAssertEqual(events[0].properties["app_version"], "0.4.0")
     }
 
@@ -117,6 +118,7 @@ final class AppAnalyticsReporterTests: XCTestCase {
 
         let events = queuedEvents(defaults: defaults)
         XCTAssertEqual(events.count, 2)
+        XCTAssertEqual(events[0].properties["product"], "classic")
         XCTAssertEqual(events[0].properties["model_kind"], "stt")
         XCTAssertNil(events[0].properties["transcript"])
         XCTAssertEqual(events[0].properties["session_id"], events[1].properties["session_id"])

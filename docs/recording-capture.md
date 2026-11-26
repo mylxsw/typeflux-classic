@@ -44,8 +44,8 @@ Use the signed, microphone-authorized development app. An unbundled SwiftPM
 executable is not a valid microphone-permission or packaged-app test.
 
 ```sh
-"$HOME/Applications/Typeflux Dev.app/Contents/MacOS/Typeflux" audio-capture-check compare 10
-"$HOME/Applications/Typeflux Dev.app/Contents/MacOS/Typeflux" audio-capture-check pipeline 3
+"$HOME/Applications/Typeflux Classic Dev.app/Contents/MacOS/Typeflux" audio-capture-check compare 10
+"$HOME/Applications/Typeflux Classic Dev.app/Contents/MacOS/Typeflux" audio-capture-check pipeline 3
 ```
 
 These commands are available only in debug builds. `compare` alternates an

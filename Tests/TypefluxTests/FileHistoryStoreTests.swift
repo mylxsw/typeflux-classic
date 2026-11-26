@@ -223,6 +223,13 @@ final class FileHistoryStoreTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: secondAudioURL.path))
     }
 
+    func testMarkdownExportIdentifiesClassicProduct() throws {
+        let url = try store.exportMarkdown()
+        let markdown = try String(contentsOf: url, encoding: .utf8)
+
+        XCTAssertTrue(markdown.contains("- Product: classic\n"))
+    }
+
     // MARK: - exportMarkdown
 
     func testExportMarkdownGeneratesFile() throws {

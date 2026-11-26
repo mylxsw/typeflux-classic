@@ -95,7 +95,7 @@ final class FileHistoryStore: HistoryStore {
         let records = list()
         let dateFmt = ISO8601DateFormatter()
 
-        var md = "# Typeflux History\n\n"
+        var md = "# Typeflux History\n\n- Product: \(TypefluxProduct.identifier)\n\n"
         for r in records {
             md += "## \(dateFmt.string(from: r.date))\n\n"
             md += "- Mode: \(r.mode.rawValue)\n"
