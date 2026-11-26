@@ -1150,7 +1150,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
 
     func testGenerateRewriteThrowsTimeoutWhenStreamDoesNotFinish() async {
         let controller = makeWorkflowController(
-            llmService: SlowProcessingLLMService(delay: .milliseconds(200)),
+            llmService: PendingProcessingLLMService(),
             configureSettings: configureReadyLLM
         )
 
@@ -1177,17 +1177,18 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         let controller = makeWorkflowController(
             llmService: ProgressingProcessingLLMService(
                 chunks: ["one", " two", " three", " four"],
-                delay: .milliseconds(40)
+                delay: .milliseconds(150)
             ),
             configureSettings: configureReadyLLM
         )
+        // Four delays outlast the first-output budget. Leave room for CI scheduling between chunks.
         let budget = LLMRewriteTimeoutBudget(
             estimatedInputUnits: 200,
-            baseSeconds: 0.05,
-            firstOutputSeconds: 0.05,
-            stallSeconds: 0.1,
-            totalSeconds: 0.3,
-            watchdogSeconds: 0.4
+            baseSeconds: 0.4,
+            firstOutputSeconds: 0.4,
+            stallSeconds: 3,
+            totalSeconds: 8,
+            watchdogSeconds: 9
         )
 
         let result = try await controller.generateRewrite(
@@ -1198,6 +1199,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
                 personaPrompt: "Rewrite this"
             ),
             sessionID: controller.processingSessionID,
+            showsStreamingPreview: false,
             timeoutBudget: budget
         )
 
@@ -1247,7 +1249,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         let controller = makeWorkflowController(
             textInjector: textInjector,
             sttTranscriber: MockProcessingTranscriber(transcript: transcript),
-            llmService: SlowProcessingLLMService(delay: .milliseconds(200)),
+            llmService: PendingProcessingLLMService(),
             historyStore: historyStore,
             configureSettings: configureReadyLLM
         )
@@ -1296,7 +1298,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
             let historyStore = MockProcessingHistoryStore()
             let controller = makeWorkflowController(
                 textInjector: textInjector,
-                sttTranscriber: MockProcessingTranscriber(error: URLError(.cannotConnectToHost)),
+                sttTranscriber: PendingCloudProcessingTranscriber(),
                 localFallbackTranscriber: MockProcessingTranscriber(transcript: transcript),
                 llmService: CountingProcessingLLMService(
                     rewriteText: "Incomplete rewrite",
@@ -1306,7 +1308,9 @@ final class WorkflowControllerProcessingTests: XCTestCase {
                 configureSettings: {
                     self.configureReadyLLM(settingsStore: $0)
                     $0.sttProvider = .typefluxOfficial
-                }
+                },
+                hasPaidCloudSubscription: { true },
+                cloudPriorityWindow: 0
             )
             let snapshot = TextSelectionSnapshot(
                 selectedRange: CFRange(location: 0, length: replaceSelection ? 5 : 0),
@@ -1386,7 +1390,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
             let controller = makeWorkflowController(
                 textInjector: textInjector,
                 sttTranscriber: MockProcessingTranscriber(transcript: "Do not insert this transcript"),
-                llmService: SlowProcessingLLMService(delay: .milliseconds(200), onStart: { started.fulfill() }),
+                llmService: PendingProcessingLLMService(onStart: { started.fulfill() }),
                 configureSettings: configureReadyLLM
             )
             let sessionID = controller.processingSessionID
@@ -1453,7 +1457,8 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         let controller = makeWorkflowController(
             sttTranscriber: MockProcessingTranscriber(error: URLError(.cannotConnectToHost)),
             historyStore: historyStore,
-            configureSettings: { $0.sttProvider = .whisperAPI }
+            configureSettings: { $0.sttProvider = .whisperAPI },
+            hasPaidCloudSubscription: { true }
         )
 
         await controller.process(
@@ -2885,7 +2890,8 @@ final class WorkflowControllerProcessingTests: XCTestCase {
         configureSettings: ((SettingsStore) -> Void)? = nil,
         hasPaidCloudSubscription: @escaping @Sendable () async -> Bool = {
             await MainActor.run { AuthState.shared.canUseCloudASR }
-        }
+        },
+        cloudPriorityWindow: TimeInterval? = nil
     ) -> WorkflowController {
         let suiteName = "WorkflowControllerProcessingTests.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
@@ -2914,6 +2920,7 @@ final class WorkflowControllerProcessingTests: XCTestCase {
                 soniox: sttTranscriber,
                 typefluxOfficial: sttTranscriber,
                 typefluxCloudLoginFallbackLocalModel: localFallbackTranscriber,
+                typefluxOfficialCloudPriorityWindow: cloudPriorityWindow,
                 hasPaidTypefluxCloudSubscription: hasPaidCloudSubscription
             ),
             llmService: llmService,
@@ -3264,28 +3271,17 @@ private final class CountingProcessingLLMService: LLMService {
     }
 }
 
-private final class SlowProcessingLLMService: LLMService {
-    private let delay: Duration
+private final class PendingProcessingLLMService: LLMService {
     private let onStart: (() -> Void)?
 
-    init(delay: Duration, onStart: (() -> Void)? = nil) {
-        self.delay = delay
+    init(onStart: (() -> Void)? = nil) {
         self.onStart = onStart
     }
 
     func streamRewrite(request _: LLMRewriteRequest) -> AsyncThrowingStream<String, Error> {
-        AsyncThrowingStream { continuation in
-            onStart?()
-            Task {
-                do {
-                    try await Task.sleep(for: delay)
-                    continuation.yield("late")
-                    continuation.finish()
-                } catch {
-                    continuation.finish(throwing: error)
-                }
-            }
-        }
+        onStart?()
+        // These tests exercise timeout or cancellation before any output.
+        return AsyncThrowingStream { _ in }
     }
 
     func complete(systemPrompt _: String, userPrompt _: String) async throws -> String {
@@ -3796,6 +3792,13 @@ private final class MockWorkflowLocalModelManager: LocalSTTModelManaging {
 
     func storagePath(for configuration: LocalSTTConfiguration) -> String {
         "/tmp/\(configuration.model.rawValue)"
+    }
+}
+
+private struct PendingCloudProcessingTranscriber: Transcriber {
+    func transcribe(audioFile _: AudioFile) async throws -> String {
+        try await Task.sleep(for: .seconds(30))
+        throw URLError(.timedOut)
     }
 }
 
