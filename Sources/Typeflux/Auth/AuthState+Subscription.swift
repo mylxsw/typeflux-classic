@@ -5,9 +5,26 @@ extension AuthState {
     // MARK: - Subscription
 
     var canUseCloudASR: Bool {
-        !isLoadingSubscription
+        !isCheckingCloudASRAccess
             && subscriptionError == nil
             && subscription.cloudASRAllowed
+    }
+
+    var confirmedCloudASRAccess: Bool? {
+        guard isLoggedIn, subscriptionSnapshotGeneration == sessionGeneration else { return nil }
+        return subscription.cloudASRAllowed
+    }
+
+    var isCheckingCloudASRAccess: Bool {
+        if !FeatureProcess.owns(.host) {
+            return isLoadingSubscription || isSyncingSubscription
+        }
+        return subscriptionLoadGeneration == sessionGeneration || subscriptionSyncGeneration == sessionGeneration
+    }
+
+    var settledCloudASRAccess: Bool? {
+        guard !isCheckingCloudASRAccess, subscriptionError == nil else { return nil }
+        return confirmedCloudASRAccess
     }
 
     func refreshSubscriptionIfNeeded() {
@@ -17,39 +34,90 @@ extension AuthState {
 
     @discardableResult
     func refreshSubscription() async -> BillingSubscriptionSnapshot? {
+        if FeatureProcess.enabled, !FeatureProcess.owns(.host) {
+            isLoadingSubscription = true
+            defer { isLoadingSubscription = false }
+            guard await FeatureAuth.refresh(action: "refreshSubscription") else {
+                subscriptionError = L("billing.subscription.refreshFailed"); return nil
+            }
+            subscriptionError = nil
+            return subscription
+        }
         guard let token = accessToken else {
             subscription = .none
             return nil
         }
-        guard !isLoadingSubscription else { return subscription }
+        // Only a load for the current session is shared; one still running
+        // for a replaced session must not keep the new session unloaded.
+        let generation = sessionGeneration
+        guard subscriptionLoadGeneration != generation else { return subscription }
 
+        subscriptionLoadGeneration = generation
         isLoadingSubscription = true
-        defer { isLoadingSubscription = false }
+        defer {
+            if subscriptionLoadGeneration == generation {
+                subscriptionLoadGeneration = nil
+                isLoadingSubscription = false
+                if sessionGeneration == generation {
+                    NotificationCenter.default.post(name: .authSubscriptionCheckDidFinish, object: self)
+                }
+            }
+        }
 
         do {
             let snapshot = try await fetchSubscription(token)
+            // A snapshot for a session that was logged out or replaced
+            // meanwhile must not be shown for, or notify about, the new one.
+            guard generation == sessionGeneration else { return nil }
             applySubscriptionSnapshot(snapshot)
             return snapshot
-        } catch let error as AuthError {
-            subscriptionError = error.localizedDescription
-            return nil
         } catch {
+            guard generation == sessionGeneration else { return nil }
             subscriptionError = error.localizedDescription
             return nil
         }
     }
 
+    /// Asks the server to reconcile the subscription and applies the result.
+    /// Like `refreshSubscription`, a sync belongs to the session that started
+    /// it: its snapshot or error is dropped when that session was logged out
+    /// or replaced meanwhile, and the current session's subscription is
+    /// returned instead.
     @discardableResult
     func syncSubscription() async throws -> BillingSubscriptionSnapshot {
+        if FeatureProcess.enabled, !FeatureProcess.owns(.host) {
+            isSyncingSubscription = true
+            defer { isSyncingSubscription = false }
+            guard await FeatureAuth.refresh(action: "syncSubscription") else { throw FeatureRPC.Failure.unavailable }
+            subscriptionError = nil
+            return subscription
+        }
         guard let token = accessToken else {
             throw AuthError.unauthorized
         }
-        guard !isSyncingSubscription else { return subscription }
+        let generation = sessionGeneration
+        guard subscriptionSyncGeneration != generation else { return subscription }
 
+        subscriptionSyncGeneration = generation
         isSyncingSubscription = true
-        defer { isSyncingSubscription = false }
+        defer {
+            if subscriptionSyncGeneration == generation {
+                subscriptionSyncGeneration = nil
+                isSyncingSubscription = false
+                if sessionGeneration == generation {
+                    NotificationCenter.default.post(name: .authSubscriptionCheckDidFinish, object: self)
+                }
+            }
+        }
 
-        let snapshot = try await syncBillingSubscription(token)
+        let snapshot: BillingSubscriptionSnapshot
+        do {
+            snapshot = try await syncBillingSubscription(token)
+        } catch {
+            guard generation == sessionGeneration else { return subscription }
+            throw error
+        }
+        guard generation == sessionGeneration else { return subscription }
         applySubscriptionSnapshot(snapshot)
         return snapshot
     }
@@ -61,13 +129,23 @@ extension AuthState {
             usageCredits = nil
             return nil
         }
-        guard !isLoadingUsage else { return usageStats }
+        let generation = sessionGeneration
+        guard usageLoadGeneration != generation else { return usageStats }
 
+        usageLoadGeneration = generation
         isLoadingUsage = true
-        defer { isLoadingUsage = false }
+        defer {
+            if usageLoadGeneration == generation {
+                usageLoadGeneration = nil
+                isLoadingUsage = false
+            }
+        }
 
         do {
             let snapshot = try await fetchCurrentPeriodUsageStats(token)
+            // Usage of a session that was logged out or replaced meanwhile
+            // must not be shown for the new one.
+            guard generation == sessionGeneration else { return nil }
             usageStats = snapshot.stats
             usageCredits = snapshot.credits
             usagePeriodStart = snapshot.periodStart
@@ -75,6 +153,7 @@ extension AuthState {
             usageError = nil
             return snapshot.stats
         } catch let error as AuthError {
+            guard generation == sessionGeneration else { return nil }
             if error.authErrorCode == "USAGE_PERIOD_UNAVAILABLE" {
                 usageStats = .empty
                 usageCredits = nil
@@ -86,7 +165,59 @@ extension AuthState {
             }
             return nil
         } catch {
+            guard generation == sessionGeneration else { return nil }
             usageError = error.localizedDescription
+            return nil
+        }
+    }
+
+    /// Refreshes the subscription and the period's usage unless they were
+    /// fetched within `maxAge` (the account card asks on every hover).
+    func refreshAccountSummary(maxAge: TimeInterval = 60, now: Date = Date()) async {
+        guard isLoggedIn else { return }
+        if let last = lastAccountSummaryRefresh, now.timeIntervalSince(last) < maxAge { return }
+        lastAccountSummaryRefresh = now
+        await refreshTokenIfNeeded()
+        await refreshSubscription()
+        await refreshUsage()
+    }
+
+    /// Makes the next `refreshAccountSummary` fetch, e.g. after opening billing.
+    func invalidateAccountSummary() {
+        lastAccountSummaryRefresh = nil
+    }
+
+    /// Loads the per-day / per-feature credit breakdown. Failures (including a
+    /// server that predates the endpoint) clear it so the charts hide quietly.
+    @discardableResult
+    func refreshUsageBreakdown(timeZone: TimeZone = .current) async -> CloudUsageBreakdown? {
+        guard let token = accessToken else {
+            usageBreakdown = nil
+            return nil
+        }
+        let generation = sessionGeneration
+        guard usageBreakdownLoadGeneration != generation else { return usageBreakdown }
+
+        usageBreakdownLoadGeneration = generation
+        isLoadingUsageBreakdown = true
+        defer {
+            if usageBreakdownLoadGeneration == generation {
+                usageBreakdownLoadGeneration = nil
+                isLoadingUsageBreakdown = false
+            }
+        }
+
+        do {
+            let breakdown = try await fetchCurrentPeriodUsageBreakdown(token, timeZone)
+            guard generation == sessionGeneration else { return nil }
+            usageBreakdown = breakdown
+            return breakdown
+        } catch is CancellationError {
+            return usageBreakdown
+        } catch {
+            guard generation == sessionGeneration else { return nil }
+            logger.info("Usage breakdown unavailable: \(error.localizedDescription, privacy: .public)")
+            usageBreakdown = nil
             return nil
         }
     }
@@ -95,7 +226,7 @@ extension AuthState {
         guard let token = accessToken else {
             throw AuthError.unauthorized
         }
-        let session = try await createCheckoutSession(token, planCode)
+        let session = try await withinSession { try await createCheckoutSession(token, planCode) }
         if !subscription.hasPaidSubscription {
             pendingCheckoutSubscriptionEntitlement = true
         }
@@ -107,16 +238,41 @@ extension AuthState {
         guard let token = accessToken else {
             throw AuthError.unauthorized
         }
-        let session = try await createPortalSession(token)
-        return session.url
+        return try await withinSession { try await createPortalSession(token) }.url
     }
 
     func requestBillingPageToken() async throws -> URL {
         guard let token = accessToken else {
             throw AuthError.unauthorized
         }
-        let response = try await issueBillingPageToken(token)
-        return response.plansURL
+        return try await withinSession { try await issueBillingPageToken(token) }.plansURL
+    }
+
+    /// The billing page opened on `tab`, e.g. `BillingPlansLink.creditsTab`.
+    func requestBillingPageToken(tab: String?) async throws -> URL {
+        try await BillingPlansLink.url(requestBillingPageToken(), tab: tab)
+    }
+
+    /// Runs a billing link request for the current session. A link is signed
+    /// for the account that requested it, and its failure describes that
+    /// account: when the session was logged out or replaced meanwhile, the
+    /// outcome is neither returned (so no old link is opened and no checkout
+    /// polling starts) nor reported to whoever is signed in now; the request
+    /// ends in `BillingSessionReplacedError` instead. A token refresh keeps
+    /// the session, so it does not discard the outcome.
+    private func withinSession<T>(_ request: () async throws -> T) async throws -> T {
+        let generation = sessionGeneration
+        let outcome: Result<T, Error>
+        do {
+            outcome = try .success(await request())
+        } catch {
+            outcome = .failure(error)
+        }
+        guard generation == sessionGeneration else {
+            logger.info("Discarding billing link outcome for a replaced session")
+            throw BillingSessionReplacedError()
+        }
+        return try outcome.get()
     }
 
     private func startCheckoutPolling() {
@@ -142,6 +298,7 @@ extension AuthState {
         let hadPaidSubscription = subscription.hasPaidSubscription
         let subscriptionChanged = subscription != snapshot
         subscription = snapshot
+        subscriptionSnapshotGeneration = sessionGeneration
         subscriptionError = nil
         if subscriptionChanged {
             NotificationCenter.default.post(name: .authSubscriptionDidChange, object: self)

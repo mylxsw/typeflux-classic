@@ -18,6 +18,9 @@ extension Notification.Name {
     /// Posted after the server-backed subscription snapshot is refreshed.
     static let authSubscriptionDidChange = Notification.Name("AuthState.authSubscriptionDidChange")
 
+    /// Posted when a subscription read or sync finishes for the current session.
+    static let authSubscriptionCheckDidFinish = Notification.Name("AuthState.authSubscriptionCheckDidFinish")
+
     /// Posted on the main actor when a checkout-started subscription refresh
     /// observes that the account has become entitled to Typeflux Cloud or has
     /// upgraded from a free/non-paid plan to a paid Cloud subscription.
@@ -43,6 +46,7 @@ final class AuthState: ObservableObject {
     }
 
     static let shared = AuthState()
+    lazy var webLoginCoordinator = makeWebLoginCoordinator()
 
     let logger = Logger(subsystem: "ai.gulu.app.typeflux", category: "AuthState")
     let loadStoredToken: () -> (token: String, expiresAt: Int)?
@@ -57,6 +61,7 @@ final class AuthState: ObservableObject {
     let fetchSubscription: (String) async throws -> BillingSubscriptionSnapshot
     let syncBillingSubscription: (String) async throws -> BillingSubscriptionSnapshot
     let fetchCurrentPeriodUsageStats: (String) async throws -> CloudUsageCurrentPeriodStats
+    let fetchCurrentPeriodUsageBreakdown: (String, TimeZone) async throws -> CloudUsageBreakdown
     let createCheckoutSession: (String, String) async throws -> BillingCheckoutSession
     let createPortalSession: (String) async throws -> BillingPortalSession
     let issueBillingPageToken: (String) async throws -> BillingPageTokenResponse
@@ -74,21 +79,51 @@ final class AuthState: ObservableObject {
     @Published var usagePeriodEnd: String?
     @Published var isLoadingUsage: Bool = false
     @Published var usageError: String?
+    /// Credits per day and per feature; nil until loaded or when the server lacks the endpoint.
+    @Published var usageBreakdown: CloudUsageBreakdown?
+    @Published var isLoadingUsageBreakdown: Bool = false
 
     /// Refresh the access token when it expires within this window (7 days).
     static let refreshEarlyInterval: TimeInterval = 7 * 24 * 3600
 
-    /// Background timer interval: check every hour.
+    /// Longest delay between background refresh checks.
     static let timerInterval: TimeInterval = 3600
+    /// Shortest delay between background refresh checks, which also bounds
+    /// retries after a failed refresh.
+    static let minimumTimerInterval: TimeInterval = 60
+    /// `validAccessToken()` refreshes synchronously only inside this window.
+    static let validTokenRefreshLeadTime: TimeInterval = 60
     static let checkoutPollingAttempts = 120
     static let checkoutPollingInterval: Duration = .seconds(3)
 
     var refreshTimer: Timer?
     var checkoutPollingTask: Task<Void, Never>?
     var pendingCheckoutSubscriptionEntitlement = false
+    /// When the account summary (subscription + usage) was last fetched for the
+    /// account card; throttles refreshes triggered by hovering and app activation.
+    var lastAccountSummaryRefresh: Date?
     var inMemorySessionToken: (token: String, expiresAt: Int)?
     var cachedStoredToken: (token: String, expiresAt: Int)?
     var cachedRefreshToken: String?
+    /// The single in-flight refresh. The server revokes the whole refresh
+    /// family when a consumed refresh token is replayed, so concurrent callers
+    /// must share one exchange instead of racing with the same token.
+    var accessTokenRefreshTask: Task<AccessTokenRefreshResult, Never>?
+    /// Incremented on login and logout so a refresh that started for an older
+    /// session cannot overwrite or invalidate the current one.
+    var sessionGeneration = 0
+    /// Profile refreshes that are running; `isLoading` is true while any is.
+    var profileRefreshesInFlight = 0
+    /// The session that supplied the last subscription response from the server.
+    var subscriptionSnapshotGeneration: Int?
+    /// The session whose subscription, usage or usage breakdown load is
+    /// running, if any. The matching `isLoading…` flag belongs to that load.
+    var subscriptionLoadGeneration: Int?
+    var usageLoadGeneration: Int?
+    var usageBreakdownLoadGeneration: Int?
+    /// The session whose subscription sync is running, if any;
+    /// `isSyncingSubscription` belongs to that sync.
+    var subscriptionSyncGeneration: Int?
 
     var accessToken: String? {
         if let inMemorySessionToken,
@@ -138,6 +173,8 @@ final class AuthState: ObservableObject {
         fetchCurrentPeriodUsageStats: @escaping (String) async throws -> CloudUsageCurrentPeriodStats = { token in
             try await CloudUsageAPIService.fetchCurrentPeriodStats(token: token)
         },
+        fetchCurrentPeriodUsageBreakdown: @escaping (String, TimeZone) async throws -> CloudUsageBreakdown =
+            CloudUsageAPIService.fetchCurrentPeriodBreakdown(token:timeZone:),
         createCheckoutSession: @escaping (String, String) async throws -> BillingCheckoutSession = { token, planCode in
             try await BillingAPIService.createCheckoutSession(token: token, planCode: planCode)
         },
@@ -166,6 +203,7 @@ final class AuthState: ObservableObject {
         self.fetchSubscription = fetchSubscription
         syncBillingSubscription = syncSubscription
         self.fetchCurrentPeriodUsageStats = fetchCurrentPeriodUsageStats
+        self.fetchCurrentPeriodUsageBreakdown = fetchCurrentPeriodUsageBreakdown
         self.createCheckoutSession = createCheckoutSession
         self.createPortalSession = createPortalSession
         self.issueBillingPageToken = issueBillingPageToken
@@ -174,28 +212,48 @@ final class AuthState: ObservableObject {
 
     // MARK: - Login
 
-    func handleLoginSuccess(token: String, expiresAt: Int, refreshToken: String? = nil) async {
+    func handleLoginSuccess(token: String, expiresAt: Int, refreshToken: String? = nil,
+                            sessionAlreadyPersisted: Bool = false) async {
+        NotificationCenter.default.post(name: .accountSessionWillChange, object: nil)
         let normalizedExpiresAt = normalizeLoginExpiry(expiresAt)
+        sessionGeneration += 1
+        accessTokenRefreshTask = nil
         inMemorySessionToken = (token, normalizedExpiresAt)
         cachedStoredToken = (token, normalizedExpiresAt)
         cachedRefreshToken = refreshToken
-        saveStoredSession(token, normalizedExpiresAt, refreshToken)
+        if !sessionAlreadyPersisted {
+            saveStoredSession(token, normalizedExpiresAt, refreshToken)
+        }
         logger.info(
             "Login session saved: expiresAt=\(normalizedExpiresAt, privacy: .public), refreshTokenProvided=\((refreshToken?.isEmpty == false), privacy: .public)"
         )
         isLoggedIn = true
+        startRefreshTimer()
+        let generation = sessionGeneration
         await refreshProfile()
+        // A logout or another login during the profile fetch owns the
+        // session now; this login must not announce itself afterwards.
+        guard generation == sessionGeneration else { return }
         NotificationCenter.default.post(name: .authDidLogin, object: self)
     }
 
     // MARK: - Logout
 
-    func logout() {
+    func logout(clearRecentInputMemory: Bool = true) {
+        if FeatureProcess.enabled, FeatureProcess.role != .host {
+            FeatureProcess.send(.init(destination: .host, action: "logout"))
+            return
+        }
+        webLoginCoordinator.cancel()
+        let owner = clearRecentInputMemory ? userProfile?.id ?? loadStoredUserProfile()?.id ?? "local" : nil
+        NotificationCenter.default.post(name: .accountSessionWillChange, object: owner)
         if let refreshToken = cachedRefreshToken {
             Task {
                 try? await AuthAPIService.logout(refreshToken: refreshToken)
             }
         }
+        sessionGeneration += 1
+        accessTokenRefreshTask = nil
         inMemorySessionToken = nil
         cachedStoredToken = nil
         cachedRefreshToken = nil
@@ -203,13 +261,24 @@ final class AuthState: ObservableObject {
         isLoggedIn = false
         userProfile = nil
         subscription = .none
+        subscriptionSnapshotGeneration = nil
         subscriptionError = nil
+        subscriptionSyncGeneration = nil
         isSyncingSubscription = false
+        // Loads still running for the old session no longer own these flags.
+        subscriptionLoadGeneration = nil
+        isLoadingSubscription = false
+        usageLoadGeneration = nil
+        isLoadingUsage = false
+        usageBreakdownLoadGeneration = nil
+        isLoadingUsageBreakdown = false
         usageStats = .empty
         usageCredits = nil
         usagePeriodStart = nil
         usagePeriodEnd = nil
         usageError = nil
+        usageBreakdown = nil
+        lastAccountSummaryRefresh = nil
         pendingCheckoutSubscriptionEntitlement = false
         checkoutPollingTask?.cancel()
         checkoutPollingTask = nil
@@ -219,13 +288,46 @@ final class AuthState: ObservableObject {
 
     // MARK: - Token Refresh
 
-    /// Refreshes the access token when it will expire within 7 days.
-    /// Safe to call from multiple trigger points; skips silently when not needed.
+    /// Refreshes the access token when it is inside its refresh lead time
+    /// (see `accessTokenRefreshLeadTime`). Safe to call from multiple trigger
+    /// points; concurrent calls share one refresh request.
     func refreshTokenIfNeeded() async {
         guard isLoggedIn else { return }
+        let generation = sessionGeneration
         let result = await refreshStoredAccessToken(force: false)
-        if result == .invalidated {
-            logout()
+        if result == .invalidated, generation == sessionGeneration {
+            logout(clearRecentInputMemory: false)
         }
     }
+
+    /// Returns a usable access token, refreshing it first when it has expired
+    /// or is about to. Returns nil when the session is gone or was revoked.
+    func validAccessToken() async -> String? {
+        if FeatureProcess.enabled, FeatureProcess.role != .host {
+            let remaining = accessTokenExpiresAt.map { $0 - Int(Date().timeIntervalSince1970) } ?? 0
+            if remaining < Int(Self.validTokenRefreshLeadTime) { _ = await FeatureAuth.refresh() }
+            return accessToken
+        }
+        guard isLoggedIn else { return accessToken }
+        let remaining = accessTokenExpiresAt.map { TimeInterval($0) - Date().timeIntervalSince1970 } ?? 0
+        if remaining < Self.validTokenRefreshLeadTime, hasStoredRefreshToken {
+            let generation = sessionGeneration
+            let result = await refreshStoredAccessToken(force: true)
+            if result == .invalidated, generation == sessionGeneration {
+                logout(clearRecentInputMemory: false)
+            }
+        }
+        return accessToken
+    }
+
+    /// A usable access token together with the session it belongs to, read
+    /// without a suspension in between so the two always match.
+    func validSessionCredential() async -> TypefluxCloudSessionCredential? {
+        guard let token = await validAccessToken() else { return nil }
+        return TypefluxCloudSessionCredential(accessToken: token, session: sessionGeneration)
+    }
+}
+
+extension Notification.Name {
+    static let accountSessionWillChange = Notification.Name("Typeflux.accountSessionWillChange")
 }
