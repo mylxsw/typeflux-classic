@@ -20,6 +20,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_: Notification) {
         let settingsStore = SettingsStore()
+        settingsStore.importSharedRewriteModelSelection()
         AppLocalization.shared.setLanguage(settingsStore.appLanguage)
         AppAppearance.apply(settingsStore.appearanceMode)
         AppMenuController.install()

@@ -1016,6 +1016,12 @@ struct StudioView: View {
                 )
             )
 
+            if viewModel.modelDomain == .llm, viewModel.sharedRewriteSelectionUnavailable {
+                Label(L("settings.models.sharedRewriteUnavailable"), systemImage: "exclamationmark.circle")
+                    .font(.studioBody(StudioTheme.Typography.caption))
+                    .foregroundStyle(StudioTheme.textSecondary)
+            }
+
             GeometryReader { proxy in
                 HStack(alignment: .top, spacing: StudioTheme.Spacing.large) {
                     ScrollView {

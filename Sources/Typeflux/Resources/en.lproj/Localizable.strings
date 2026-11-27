@@ -1495,3 +1495,4 @@
 "billing.subscription.refreshFailed" = "Could not refresh your subscription. Please try again.";
 "auth.web.successTitle" = "Signed in successfully";
 "auth.web.successMessage" = "You’re ready to use Typeflux.";
+"settings.models.sharedRewriteUnavailable" = "The rewrite model selected in Typeflux is unavailable in Classic.";

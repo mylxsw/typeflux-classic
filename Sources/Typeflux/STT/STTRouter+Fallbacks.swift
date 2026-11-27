@@ -402,7 +402,12 @@ extension STTRouter {
         optimize: Bool = true,
         onUpdate: @escaping @Sendable (TranscriptionSnapshot) async -> Void
     ) async throws -> String {
-        try await RequestRetry.perform(operationName: "Typeflux Official STT request") { [self] in
+        if let cloud = typefluxOfficial as? TypefluxOfficialTranscriber {
+            return try await cloud.transcribeStream(
+                audioFile: audioFile, scenario: scenario, optimize: optimize, onUpdate: onUpdate
+            )
+        }
+        return try await RequestRetry.perform(operationName: "Typeflux Official STT request") { [self] in
             if let optimizeAware = typefluxOfficial as? ASROptimizeAwareTranscriber {
                 return try await optimizeAware.transcribeStream(
                     audioFile: audioFile,

@@ -1495,3 +1495,4 @@
 "billing.subscription.refreshFailed" = "訂閱資訊重新整理失敗，請重試。";
 "auth.web.successTitle" = "登入成功";
 "auth.web.successMessage" = "現在可以開始使用 Typeflux 了。";
+"settings.models.sharedRewriteUnavailable" = "完整版中選擇的潤飾模型在 Classic 中無法使用。";
