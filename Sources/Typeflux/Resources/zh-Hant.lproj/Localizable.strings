@@ -1,5 +1,5 @@
 "language.option.english" = "English";
-"language.option.simplifiedChinese" = "简体中文";
+"language.option.simplifiedChinese" = "簡體中文";
 "language.option.traditionalChinese" = "繁體中文";
 "language.option.japanese" = "日本語";
 "language.option.korean" = "한국어";
@@ -57,7 +57,7 @@
 "feedback.direct.title" = "問題回饋";
 "feedback.direct.subtitle" = "描述你遇到的問題或建議。Typeflux Classic 會提交到服務端並建立 Issue 方便後續追蹤。";
 "feedback.direct.contentLabel" = "回饋內容";
-"feedback.direct.contentPlaceholder" = "請簡單說說你遇到的問題或想法。\n例如：我按下快捷鍵後沒有開始轉寫，重新啟動 App 後還是一樣。\n也可以寫：我希望轉寫完成後自動複製到剪貼簿。";
+"feedback.direct.contentPlaceholder" = "請簡單說說你遇到的問題或想法。\n例如：我按下快速鍵後沒有開始轉寫，重新啟動 App 後還是一樣。\n也可以寫：我希望轉寫完成後自動複製到剪貼簿。";
 "feedback.direct.contactLabel" = "聯絡方式（選填）";
 "feedback.direct.contactPlaceholder" = "電子郵件或其他聯絡方式";
 "feedback.direct.imagesLabel" = "圖片";
@@ -80,7 +80,7 @@
 "studio.eyebrow.models" = "配置";
 "studio.eyebrow.personas" = "語音人設";
 "studio.eyebrow.vocabulary" = "自訂詞彙";
-"studio.eyebrow.history" = "會話歷史";
+"studio.eyebrow.history" = "語音輸入記錄";
 "studio.eyebrow.settings" = "設定";
 "studio.heading.home" = "自然說話，隨處輸入。";
 "studio.heading.models" = "模型配置";
@@ -88,12 +88,12 @@
 "studio.heading.vocabulary" = "詞庫";
 "studio.heading.history" = "歷史";
 "studio.heading.settings" = "設定";
-"studio.subheading.home" = "AI 驅動的語音輸入——說話即輸入，自動轉寫潤色，投遞到 Mac 上的任意位置。";
-"studio.subheading.models" = "選擇轉寫與改寫流程中使用的本地與遠端引擎。";
+"studio.subheading.home" = "開口就能輸入，自動轉成文字並潤飾，直接貼到 Mac 上目前使用的 App。";
+"studio.subheading.models" = "選擇轉錄與改寫使用的本機和遠端引擎。";
 "studio.subheading.personas" = "建立可重複使用的寫作風格，讓常用提示詞隨手可用。";
 "studio.subheading.vocabulary" = "管理語音輸入時需要更穩定辨識的詞語與名稱。";
-"studio.subheading.history" = "查看最近會話、檢查辨識文字並匯出歷史封存。";
-"studio.subheading.settings" = "在同一個介面中調整快捷鍵、外觀與行為。";
+"studio.subheading.history" = "查看近期語音輸入記錄、檢查轉錄結果，或匯出記錄。";
+"studio.subheading.settings" = "調整快速鍵、外觀和操作方式。";
 "studio.search.home" = "搜尋活動...";
 "studio.search.models" = "搜尋模型...";
 "studio.search.personas" = "搜尋人設...";
@@ -123,7 +123,7 @@
 "settings.servers.tag.notTested" = "未測速";
 "settings.launchAtLogin.title" = "開機自動啟動";
 "settings.launchAtLogin.subtitle" = "登入 Mac 後自動啟動 Typeflux Classic，無需手動打開。";
-"settings.activationHotkey" = "語音快捷鍵";
+"settings.activationHotkey" = "語音快速鍵";
 "settings.identity" = "身份與互動";
 "settings.appearance.title" = "明暗模式";
 "settings.overlayStyle.title" = "膠囊樣式";
@@ -158,7 +158,7 @@
 "settings.output.opencc.title" = "文本轉換與優化";
 "settings.output.opencc.subtitle" = "自動應用語言特定的規則，如繁簡轉換。";
 "settings.output.opencc.config.title" = "轉換規則";
-"settings.output.opencc.config.s2twp" = "簡體 → 繁體（台灣）";
+"settings.output.opencc.config.s2twp" = "簡體 → 繁體（臺灣）";
 "settings.output.opencc.config.s2tw" = "簡體 → 繁體";
 "settings.output.opencc.config.s2hk" = "簡體 → 繁體（香港）";
 "settings.output.opencc.config.t2s" = "繁體 → 簡體";
@@ -210,11 +210,13 @@
 "appMenu.selectAll" = "全選";
 
 "about.appName" = "Typeflux Classic";
-"about.subtitle" = "The voice-native typing experience";
+"about.subtitle" = "以語音為核心的輸入體驗";
 "about.details" = "詳情";
 "about.developer" = "開發者";
 "about.developer.subtitle" = "獨立開發者";
 "about.website" = "網站";
+"about.privacy" = "隱私";
+"about.privacy.value" = "隱私權政策";
 "about.project" = "專案";
 "about.project.subtitle" = "原始碼、問題回報與版本發佈";
 "about.build" = "建置版本";
@@ -229,8 +231,8 @@
 "permission.microphone.detail.restricted" = "麥克風權限受系統限制。";
 "permission.microphone.detail.unknown" = "麥克風權限需要注意。";
 "permission.speechRecognition.title" = "語音辨識";
-"permission.speechRecognition.summary" = "使用 Apple Speech 本地轉寫或回退方案時需要。";
-"permission.speechRecognition.detail.authorized" = "Apple Speech 已可在這台 Mac 上轉寫錄音。";
+"permission.speechRecognition.summary" = "使用 Apple Speech 轉錄音訊或作為備用辨識服務時需要此權限。";
+"permission.speechRecognition.detail.authorized" = "Apple Speech 已可在這臺 Mac 上轉寫錄音。";
 "permission.speechRecognition.detail.notDetermined" = "請授予語音辨識權限以使用 Apple Speech 轉寫。";
 "permission.speechRecognition.detail.denied" = "語音辨識權限已被拒絕，請前往系統設定重新啟用。";
 "permission.speechRecognition.detail.restricted" = "語音辨識權限受系統限制。";
@@ -249,7 +251,7 @@
 "history.retention.oneWeek.title" = "1 週";
 "history.retention.oneMonth.title" = "1 個月";
 "history.retention.forever.title" = "永久";
-"history.retention.never.detail" = "每次會話結束後都不保留本地歷史。";
+"history.retention.never.detail" = "每次語音輸入結束後，清除本機記錄。";
 "history.retention.oneDay.detail" = "自動刪除一天前的記錄。";
 "history.retention.oneWeek.detail" = "保留最近 7 天的聽寫歷史。";
 "history.retention.oneMonth.detail" = "保留最近 30 天的聽寫歷史。";
@@ -372,7 +374,7 @@
 "overlay.personaPicker.applyTitle" = "套用人設";
 "overlay.personaPicker.applyInstructions" = "選擇一個人設來改寫目前選取的文字。按 Enter 套用，按 Esc 取消。";
 "overlay.historyPicker.title" = "最近歷史";
-"overlay.historyPicker.instructions" = "使用上下鍵選擇記錄，按 Enter 貼到目前游標。";
+"overlay.historyPicker.instructions" = "用上下方向鍵選取記錄，再按 Enter 貼到目前的插入點。";
 "overlay.historyPicker.empty" = "還沒有可重用的歷史記錄。";
 "overlay.historyPicker.pasteFallbackTitle" = "歷史結果";
 "overlay.historyPicker.insertAtCursor" = "插入目前位置";
@@ -562,13 +564,13 @@
 "history.llmOutcome.failed" = "失敗";
 "history.llmOutcome.requestFailedFallback" = "請求失敗 · 已使用原始轉寫";
 "history.keep.title" = "保留歷史";
-"history.keep.subtitle" = "選擇 Typeflux Classic 在這台裝置上保留本地聽寫歷史的時間。";
+"history.keep.subtitle" = "選擇 Typeflux Classic 在這臺裝置上保留語音輸入記錄的時間。";
 "history.privacy.title" = "你的資料保持私密";
-"history.privacy.subtitle" = "語音聽寫歷史只保存在這台 Mac 上。自動清理會移除過期本地記錄和關聯音訊檔。";
+"history.privacy.subtitle" = "語音輸入記錄只儲存在這臺 Mac 上。過期的記錄和相關音訊檔會自動刪除。";
 "history.export.title" = "匯出封存";
 "history.export.subtitle" = "將歷史匯出為 Markdown，或清空目前時間線。";
 "history.export.chooseDirectory" = "選擇匯出資料夾";
-"history.export.chooseDirectoryMessage" = "Typeflux Classic 會將 Markdown 歷史封存儲存到這個資料夾。";
+"history.export.chooseDirectoryMessage" = "Typeflux Classic 會將 Markdown 歷史記錄儲存到這個資料夾。";
 "history.export.chooseDirectoryPrompt" = "匯出";
 "history.empty" = "還沒有歷史記錄。";
 "history.loadingMore" = "正在載入更多歷史...";
@@ -658,8 +660,8 @@
 "settings.personas.providers.llm" = "大語言模型服務商";
 "settings.personas.providers.llm.subtitle" = "選擇用於文字生成的大語言模型服務商。";
 "settings.personaDefault.title" = "預設人設";
-"settings.personaDefault.subtitle" = "選擇新聽寫會話預設採用的寫作身份。";
-"settings.personaDefault.enabled" = "新的聽寫會話會使用所選人設進行改寫。";
+"settings.personaDefault.subtitle" = "選擇語音輸入時預設使用的寫作風格。";
+"settings.personaDefault.enabled" = "新的語音輸入會依照所選人設改寫。";
 "settings.personaDefault.disabled" = "目前未啟用人設，聽寫內容會保持原始形式。";
 "settings.personaDefault.openPersonas" = "打開人設";
 "settings.personaAppBindings.title" = "應用專屬人設";
@@ -697,10 +699,10 @@
 "settings.personaAppBindings.picker.runningBadge" = "執行中";
 
 "settings.shortcuts.activation.title" = "語音輸入";
-"settings.shortcuts.activation.subtitle" = "使用一組快捷鍵開始語音輸入。可按住說話，也可快速輕觸後鎖定錄音。若目前已有選取內容，識別結果會直接覆蓋該選取範圍。";
+"settings.shortcuts.activation.subtitle" = "使用一組快速鍵開始語音輸入。可按住說話，也可快速輕觸後鎖定錄音。若目前已有選取內容，辨識結果會直接覆蓋該選取範圍。";
 "settings.shortcuts.activation.footnote" = "";
 "settings.shortcuts.quickInput.title" = "快速錄入";
-"settings.shortcuts.quickInput.subtitle" = "開啟後，按住快捷鍵說話並放開時會直接插入語音轉文字結果，不套用人設。快速輕觸鎖定錄音仍會依照目前人設流程處理。";
+"settings.shortcuts.quickInput.subtitle" = "開啟後，按住快速鍵說話並放開時會直接插入語音轉文字結果，不套用人設。快速輕觸鎖定錄音仍會依照目前人設流程處理。";
 "settings.shortcuts.ask.title" = "隨便問";
 "settings.shortcuts.ask.subtitle" = "連按兩次 Fn 即可開始錄音提問，回答會在視窗中展示。若有選取文字，明確的編輯請求也可以直接改寫選取範圍。";
 "settings.shortcuts.ask.footnote" = "";
@@ -711,28 +713,28 @@
 "settings.shortcuts.history.subtitle" = "在任何地方立即打開歷史記錄頁面。";
 "settings.shortcuts.history.footnote" = "";
 "settings.advanced.personaHotkeyApply.title" = "將人設套用到選取文字";
-"settings.advanced.personaHotkeyApply.subtitle" = "開啟後，人設快捷鍵會先檢查是否有選取文字；如果有，就用所選人設直接改寫該文字，而不只是切換預設人設。";
-"settings.shortcuts.recording" = "正在錄製新的快捷鍵";
+"settings.advanced.personaHotkeyApply.subtitle" = "開啟後，人設快速鍵會先檢查是否有選取文字；如果有，就用所選人設直接改寫該文字，而不只是切換預設人設。";
+"settings.shortcuts.recording" = "正在錄製新的快速鍵";
 "settings.shortcuts.recordingActivation" = "現在按下新的語音輸入按鍵或組合鍵。";
-"settings.shortcuts.recordingAsk" = "現在按下新的「隨便問」快捷鍵。也可以快速連按兩次同一個修飾鍵。";
-"settings.shortcuts.recordingPersona" = "現在按下用於打開人設選擇器的快捷鍵。";
-"settings.shortcuts.recordingHistory" = "現在按下用於打開歷史記錄的快捷鍵。";
+"settings.shortcuts.recordingAsk" = "現在按下新的「隨便問」快速鍵。也可以快速連按兩次同一個修飾鍵。";
+"settings.shortcuts.recordingPersona" = "現在按下用於打開人設選擇器的快速鍵。";
+"settings.shortcuts.recordingHistory" = "現在按下用於打開歷史記錄的快速鍵。";
 "settings.shortcuts.recordingGeneric" = "按下你想使用的按鍵或組合鍵。";
 "settings.shortcuts.record" = "錄製";
 "settings.shortcuts.stopRecording" = "停止錄製";
-"settings.shortcuts.activationConflict" = "語音輸入快捷鍵不能與「隨便問」、人設或歷史記錄快捷鍵相同。";
-"settings.shortcuts.activationUpdated" = "語音輸入快捷鍵已更新。";
-"settings.shortcuts.activationUnset" = "語音輸入快捷鍵已清除。";
-"settings.shortcuts.askConflict" = "「隨便問」快捷鍵不能與語音輸入、人設或歷史記錄快捷鍵相同。";
-"settings.shortcuts.askUpdated" = "「隨便問」快捷鍵已更新。";
-"settings.shortcuts.askUnset" = "「隨便問」快捷鍵已清除。";
+"settings.shortcuts.activationConflict" = "語音輸入快速鍵不能與「隨便問」、人設或歷史記錄快速鍵相同。";
+"settings.shortcuts.activationUpdated" = "語音輸入快速鍵已更新。";
+"settings.shortcuts.activationUnset" = "語音輸入快速鍵已清除。";
+"settings.shortcuts.askConflict" = "「隨便問」快速鍵不能與語音輸入、人設或歷史記錄快速鍵相同。";
+"settings.shortcuts.askUpdated" = "「隨便問」快速鍵已更新。";
+"settings.shortcuts.askUnset" = "「隨便問」快速鍵已清除。";
 "settings.shortcuts.doubleTapHelp" = "快速連按兩次這個按鍵。";
-"settings.shortcuts.personaConflict" = "人設快捷鍵不能與語音輸入、「隨便問」或歷史記錄快捷鍵相同。";
-"settings.shortcuts.personaUpdated" = "人設快捷鍵已更新。";
-"settings.shortcuts.personaUnset" = "人設快捷鍵已清除。";
-"settings.shortcuts.historyConflict" = "歷史記錄快捷鍵不能與語音輸入、「隨便問」或人設快捷鍵相同。";
-"settings.shortcuts.historyUpdated" = "歷史記錄快捷鍵已更新。";
-"settings.shortcuts.historyUnset" = "歷史記錄快捷鍵已清除。";
+"settings.shortcuts.personaConflict" = "人設快速鍵不能與語音輸入、「隨便問」或歷史記錄快速鍵相同。";
+"settings.shortcuts.personaUpdated" = "人設快速鍵已更新。";
+"settings.shortcuts.personaUnset" = "人設快速鍵已清除。";
+"settings.shortcuts.historyConflict" = "歷史記錄快速鍵不能與語音輸入、「隨便問」或人設快速鍵相同。";
+"settings.shortcuts.historyUpdated" = "歷史記錄快速鍵已更新。";
+"settings.shortcuts.historyUnset" = "歷史記錄快速鍵已清除。";
 "settings.shortcuts.unset" = "取消設定";
 "settings.shortcuts.none" = "未設定";
 
@@ -741,7 +743,7 @@
 "settings.permissions.ready" = "%@ 已就緒。";
 "settings.permissions.reviewInSystemSettings" = "請在系統設定中檢查 %@。";
 
-"settings.models.domain.stt" = "語音識別模型";
+"settings.models.domain.stt" = "語音辨識模型";
 "settings.models.domain.llm" = "大語言模型";
 "settings.models.configuration" = "配置";
 "settings.models.activation" = "啟用";
@@ -749,8 +751,8 @@
 "settings.models.customArchitecture.subtitle" = "你可以直接在元件化配置面板裡接入自訂閘道地址，或準備本地模型。";
 "settings.models.whisper.endpoint" = "Whisper 位址";
 "settings.models.whisper.model" = "Whisper 模型";
-"settings.models.appleFallback" = "啟用 Apple 回退";
-"settings.models.appleFallback.detail" = "關閉後，模型端報錯會立即顯示給使用者，而不會再自動回退到 Apple Speech。";
+"settings.models.appleFallback" = "使用 Apple Speech 作為備用服務";
+"settings.models.appleFallback.detail" = "關閉後，模型發生錯誤時會直接顯示錯誤訊息。";
 "settings.models.ollama.baseURL" = "Ollama 位址";
 "settings.models.ollama.autoSetup" = "自動本地準備";
 "settings.models.ollama.autoInstall" = "缺失時自動安裝或拉取模型";
@@ -794,7 +796,7 @@
 "settings.models.useAliCloud" = "使用阿里雲";
 "settings.models.useDoubao" = "使用豆包";
 "settings.models.useGroq" = "使用 Groq";
-"settings.models.useSoniox" = "Use Soniox";
+"settings.models.useSoniox" = "使用 Soniox";
 "settings.models.useTypefluxOfficial" = "使用 Typeflux 官方";
 "settings.models.useTypefluxCloud" = "使用 Typeflux Cloud";
 "settings.models.badge.local" = "本地";
@@ -811,7 +813,7 @@
 "settings.models.card.doubao.summary" = "透過豆包語音辨識 2.0 與位元組原生二進位 WebSocket 協議進行低延遲串流辨識。";
 "settings.models.card.googleCloud.summary" = "透過 Google Cloud Speech-to-Text 執行即時串流語音辨識。";
 "settings.models.card.groq.summary" = "透過 Groq 推理介面進行高速 Whisper 轉寫，預設模型為 whisper-large-v3-turbo。";
-"settings.models.card.soniox.summary" = "Real-time streaming recognition via Soniox V5 with high accuracy across 60+ languages.";
+"settings.models.card.soniox.summary" = "Soniox V5 即時串流辨識，精準支援 60 多種語言。";
 "settings.models.card.typefluxOfficial.summary" = "Typeflux 內建語音辨識服務。登入 Typeflux 帳號即可使用，無需額外的 API 金鑰。";
 "settings.models.card.typefluxCloud.summary" = "Typeflux 內建大型語言模型服務。登入 Typeflux 帳號即可使用，無需額外的 API 金鑰。";
 "settings.models.card.ollama.summary" = "在本地執行改寫與編輯任務，並可選擇自動準備模型。";
@@ -829,6 +831,8 @@
 "settings.models.card.minimax.summary" = "透過 MiniMax 的 OpenAI 相容端點使用其模型，並提供國際版與中國版 URL 選擇。";
 "settings.models.card.grok.summary" = "透過 xAI 的 OpenAI 相容端點使用 Grok 模型。";
 "settings.models.card.xiaomi.summary" = "透過小米 MiMo 的 OpenAI 相容端點使用 mimo-v2 系列模型。";
+"settings.models.card.openCodeZen.summary" = "透過 OpenCode Zen 閘道使用 GPT、Claude、Gemini、Qwen、GLM 等為程式開發最佳化的精選高階模型。";
+"settings.models.card.openCodeGo.summary" = "提供 DeepSeek、Qwen、GLM、Kimi、MiniMax 等低價開源程式開發模型。首月 $5，之後每月 $10。";
 "settings.models.badge.free" = "免費";
 "settings.models.freeSTT.hint" = "免費語音模型由程式碼設定管理，使用者只能從已設定的模型清單中選擇。";
 "settings.models.freeSTT.noSources" = "目前還沒有設定任何免費語音模型來源。請在 Sources/Typeflux/STT/FreeModels 下新增實作。";
@@ -852,7 +856,7 @@
 "settings.models.endpointPreset.china" = "中國版 URL";
 "settings.models.providers.stt" = "語音提供方";
 "settings.models.providers.llm" = "大語言模型提供方";
-"settings.models.providers.sttSubtitle" = "選擇預設辨識器，並在目前頁面完成憑證與回退配置。";
+"settings.models.providers.sttSubtitle" = "選擇預設辨識服務，並設定憑證和備用服務。";
 "settings.models.providers.llmSubtitle" = "選擇改寫與編輯流程的執行環境，並在右側微調本地或遠端設定。";
 "settings.models.overview.sttTitle" = "預設轉寫堆疊";
 "settings.models.overview.llmTitle" = "預設改寫堆疊";
@@ -867,13 +871,13 @@
 "settings.models.overview.doubao" = "語音辨識會透過位元組 WebSocket 即時串流到豆包語音辨識 2.0。";
 "settings.models.overview.googleCloud" = "語音辨識會直接即時串流到 Google Cloud Speech-to-Text。";
 "settings.models.overview.groq" = "語音辨識由 Groq 的高速推理介面透過 Whisper 模型處理。";
-"settings.models.overview.soniox" = "Speech recognition is streamed in real time to Soniox V5 via WebSocket.";
+"settings.models.overview.soniox" = "語音辨識透過 WebSocket 即時串流傳送至 Soniox V5，支援 60+ 種語言。";
 "settings.models.overview.typefluxOfficial" = "語音辨識由 Typeflux 內建服務處理。";
 "settings.models.overview.typefluxCloud" = "文字改寫和編輯由 Typeflux 內建大型語言模型服務處理。";
 "settings.models.mode.local" = "本地";
 "settings.models.mode.remote" = "遠端";
-"settings.models.fallback.enabled" = "已啟用回退";
-"settings.models.fallback.off" = "未啟用回退";
+"settings.models.fallback.enabled" = "已啟用備用服務";
+"settings.models.fallback.off" = "未啟用備用服務";
 "settings.models.configured" = "已配置";
 "settings.models.needsSetup" = "待配置";
 "settings.models.readyForUse" = "可立即使用";
@@ -889,7 +893,7 @@
 "settings.models.focused.doubao" = "適合希望透過豆包語音辨識 2.0 獲得最低延遲雲端聽寫路徑的情境。";
 "settings.models.focused.googleCloud" = "適合希望使用 Google Cloud Speech-to-Text 進行即時串流辨識的情境。";
 "settings.models.focused.groq" = "適合希望使用 Groq 加速推理進行快速雲端轉寫的情境。";
-"settings.models.focused.soniox" = "Use this for accurate real-time cloud transcription via Soniox V5 across 60+ languages.";
+"settings.models.focused.soniox" = "適合需要透過 Soniox V5 進行高精度即時雲端語音轉寫、支援 60+ 種語言的情境。";
 "settings.models.focused.typefluxOfficial" = "使用 Typeflux 內建語音辨識服務，只需登入即可，無需額外設定。";
 "settings.models.focused.typefluxCloud" = "使用 Typeflux 內建大型語言模型服務進行文字改寫和編輯。只需登入即可，無需額外設定。";
 "settings.models.routing" = "路由行為";
@@ -906,7 +910,7 @@
 "settings.models.routing.doubao" = "豆包語音辨識 2.0 會透過位元組二進位 WebSocket 協議處理即時串流 ASR。";
 "settings.models.routing.googleCloud" = "Google Cloud Speech-to-Text 會直接從此 Mac 處理即時串流 ASR。";
 "settings.models.routing.groq" = "Groq 會透過 Whisper 相容轉寫介面以加速推理處理聽寫。";
-"settings.models.routing.soniox" = "Soniox V5 handles real-time streaming ASR via WebSocket with high accuracy across 60+ languages.";
+"settings.models.routing.soniox" = "Soniox V5 透過 WebSocket 即時串流處理語音辨識，支援 60+ 種語言，準確率高。";
 "settings.models.googleCloud.streaming" = "StreamingRecognize";
 "settings.models.googleCloud.projectID" = "Project ID";
 "settings.models.googleCloud.oauth.authorize" = "授權 Google";
@@ -922,12 +926,12 @@
 "settings.models.typefluxOfficial.loginRequired" = "請登入您的 Typeflux 帳號以使用此服務。";
 "settings.models.typefluxCloud.loginRequired" = "請登入您的 Typeflux 帳號以使用此服務。";
 "settings.models.typefluxOfficial.signIn" = "登入";
-"settings.models.routing.fallback" = "回退策略";
+"settings.models.routing.fallback" = "備用辨識服務";
 "settings.models.routing.localSetup" = "本地準備";
 "settings.models.routing.readiness" = "就緒狀態";
 "settings.models.llm.providerEndpointHint" = "%@ 已預填官方 API 網址。API Key 為必填，Endpoint 和 Model 可依需求覆寫。";
-"settings.models.routing.fallbackEnabled" = "遠端轉寫失敗時，應用可以自動回退到 Apple Speech。";
-"settings.models.routing.fallbackDisabled" = "目前未啟用自動回退。";
+"settings.models.routing.fallbackEnabled" = "遠端語音辨識失敗時，會自動改用 Apple Speech。";
+"settings.models.routing.fallbackDisabled" = "目前未啟用備用辨識服務。";
 "settings.models.routing.localSetupAutomatic" = "缺失的本地模型會在需要時自動準備。";
 "settings.models.routing.localSetupManual" = "在啟用自動準備之前，本地模型需要手動準備。";
 "settings.models.routing.readinessConfigured" = "API Key、Endpoint 與 Model 已就緒，可直接用於雲端改寫。";
@@ -951,7 +955,7 @@
 "workflow.localModelDownloadingAlert.message" = "%@ 仍在下載中，暫時無法使用。下載完成後，Typeflux Classic 會透過系統通知提醒你。";
 "workflow.localModelDownloadingAlert.progress" = "目前進度：%d%%";
 "workflow.localModelDownloadingAlert.failedTitle" = "本地語音模型下載失敗";
-"workflow.localModelDownloadingAlert.failedMessage" = "下載失敗：%@。網路恢復後，再次按快捷鍵即可重新嘗試。";
+"workflow.localModelDownloadingAlert.failedMessage" = "下載失敗：%@。網路恢復後，再次按快速鍵即可重新嘗試。";
 "workflow.localModelDownloadingAlert.failedProgress" = "下載失敗";
 "cloud.autoSwitch.title" = "已啟用 Typeflux Cloud";
 "cloud.autoSwitch.body" = "語音辨識與 AI 模型已自動切換為 Typeflux Cloud 雲端服務，可隨時在「設定」中切換回您自己的模型。";
@@ -982,11 +986,11 @@
 "onboarding.step.language" = "語言";
 "onboarding.step.models" = "模型";
 "onboarding.step.permissions" = "權限";
-"onboarding.step.shortcuts" = "快捷鍵";
+"onboarding.step.shortcuts" = "快速鍵";
 
 "onboarding.welcome.tagline" = "為每個應用提供語音輸入。";
 "onboarding.welcome.feature1.title" = "按住說話";
-"onboarding.welcome.feature1.desc" = "按住快捷鍵錄音，放開即完成轉錄 — 文字自動插入任何應用。";
+"onboarding.welcome.feature1.desc" = "按住快速鍵錄音，放開即完成轉錄 — 文字自動插入任何應用。";
 "onboarding.welcome.feature2.title" = "隨處可用";
 "onboarding.welcome.feature2.desc" = "透過無障礙 API 向任意 macOS 應用注入文字。";
 "onboarding.welcome.feature3.title" = "AI 潤色";
@@ -1039,13 +1043,13 @@
 "onboarding.permissions.privacyCallout.title" = "隱私優先";
 "onboarding.permissions.privacyCallout.subtitle" = "你的音訊資料會盡可能在本機處理。未經你明確授權，我們不會儲存任何錄音。";
 
-"onboarding.shortcuts.title" = "鍵盤快捷鍵";
-"onboarding.shortcuts.subtitle" = "以下是預設快捷鍵設定，無需修改即可使用。";
+"onboarding.shortcuts.title" = "鍵盤快速鍵";
+"onboarding.shortcuts.subtitle" = "以下是預設快速鍵設定，無需修改即可使用。";
 "onboarding.shortcuts.globeKeyNotice.title" = "請先釋放 FN / 🌐（地球）鍵";
 "onboarding.shortcuts.globeKeyNotice.message" = "macOS 預設會用 FN / 🌐 鍵開啟「表情符號與符號」，這會讓 Typeflux Classic 無法使用它。請開啟鍵盤設定，將「按下 FN / 🌐 鍵時」改為「不執行任何操作」即可。";
 "onboarding.shortcuts.globeKeyNotice.button" = "開啟鍵盤設定";
 "onboarding.shortcuts.globeKeyNotice.ready.title" = "FN / 🌐 鍵已就緒";
-"onboarding.shortcuts.globeKeyNotice.ready.message" = "鍵盤設定已經到位，Typeflux Classic 可以使用 FN / 🌐 鍵作為快捷鍵了。若按鍵仍無回應，請嘗試登出後重新登入，或重新啟動 Mac。";
+"onboarding.shortcuts.globeKeyNotice.ready.message" = "鍵盤設定已經到位，Typeflux Classic 可以使用 FN / 🌐 鍵作為快速鍵了。若按鍵仍無回應，請嘗試登出後重新登入，或重新啟動 Mac。";
 "onboarding.shortcuts.externalKeyboard.title" = "使用外接鍵盤，且沒有可用的 FN 鍵？";
 "onboarding.shortcuts.externalKeyboard.message" = "你可以改用右側 Command 或右側 Option。Typeflux Classic 會將語音輸入改為這個按鍵，將「隨便問」改為快速連按兩次這個按鍵。";
 "onboarding.shortcuts.externalKeyboard.useRightCommand" = "使用右側 Command";
@@ -1053,17 +1057,17 @@
 "onboarding.shortcuts.replacement.rightCommand" = "右側 Command";
 "onboarding.shortcuts.replacement.rightOption" = "右側 Option";
 "onboarding.shortcuts.replacement.fn" = "FN / 🌐";
-"onboarding.shortcuts.replacement.active.title" = "%@ 快捷鍵已啟用";
-"onboarding.shortcuts.replacement.active.message" = "你的快捷鍵已經發生變化：語音輸入現在使用 %@，「隨便問」使用 %@×2。";
-"onboarding.shortcuts.replacement.restore" = "恢復 FN 快捷鍵";
-"onboarding.shortcuts.replacement.appliedAlert.title" = "快捷鍵已更新";
-"onboarding.shortcuts.replacement.appliedAlert.message" = "Typeflux Classic 現在使用 %@ 作為語音輸入快捷鍵，使用 %@×2 開啟「隨便問」。";
-"onboarding.shortcuts.replacement.restoredAlert.message" = "Typeflux Classic 已恢復預設的 FN / 🌐 快捷鍵。";
+"onboarding.shortcuts.replacement.active.title" = "%@ 快速鍵已啟用";
+"onboarding.shortcuts.replacement.active.message" = "你的快速鍵已經發生變化：語音輸入現在使用 %@，「隨便問」使用 %@×2。";
+"onboarding.shortcuts.replacement.restore" = "恢復 FN 快速鍵";
+"onboarding.shortcuts.replacement.appliedAlert.title" = "快速鍵已更新";
+"onboarding.shortcuts.replacement.appliedAlert.message" = "Typeflux Classic 現在使用 %@ 作為語音輸入快速鍵，使用 %@×2 開啟「隨便問」。";
+"onboarding.shortcuts.replacement.restoredAlert.message" = "Typeflux Classic 已恢復預設的 FN / 🌐 快速鍵。";
 "onboarding.shortcuts.activation.hint" = "把說的話輸入為文字";
 "onboarding.shortcuts.ask.hint" = "語音提問或修改選取文字";
 "onboarding.shortcuts.persona.hint" = "切換人設或改寫選取文字";
 "onboarding.shortcuts.history.hint" = "查看並貼上歷史內容";
-"onboarding.shortcuts.changeInSettings" = "隨時可在 設定 → 語音快捷鍵 中自訂快捷鍵。";
+"onboarding.shortcuts.changeInSettings" = "隨時可在 設定 → 語音快速鍵 中自訂快速鍵。";
 
 "onboarding.action.back" = "上一步";
 "onboarding.action.continue" = "下一步";
@@ -1073,7 +1077,7 @@
 
 // MARK: - Agent 框架
 
-"studio.section.agent" = "Agent";
+"studio.section.agent" = "代理程式";
 "studio.eyebrow.agent" = "Agent 框架";
 "studio.heading.agent" = "Agent 配置";
 "studio.subheading.agent" = "配置 Agent 框架、MCP 伺服器和工具整合。";
@@ -1081,12 +1085,12 @@
 "agent.beta.notice" = "目前 Agent 功能仍處於 Beta 階段，穩定性與行為表現可能會持續調整，請知悉後使用。";
 
 "settings.advanced.localOptimization.title" = "本地優化";
-"settings.advanced.localOptimization.subtitle" = "在背景下載本地語音識別模型，啟用後可加速語音識別速度，並支援離線使用。";
+"settings.advanced.localOptimization.subtitle" = "在背景下載本地語音辨識模型，啟用後可加速語音辨識速度，並支援離線使用。";
 "settings.advanced.localSTTMemoryOptimization.title" = "記憶體優化";
-"settings.advanced.localSTTMemoryOptimization.subtitle" = "啟用後，長時間未使用的本地語音模型會自動從記憶體中卸載，以降低資源占用。再次使用時會重新載入，首次回應可能會增加 3 到 5 秒。";
+"settings.advanced.localSTTMemoryOptimization.subtitle" = "啟用後，長時間未使用的本地語音模型會自動從記憶體中卸載，以降低資源佔用。再次使用時會重新載入，首次回應可能會增加 3 到 5 秒。";
 
 "settings.advanced.inputContextOptimization.title" = "使用輸入框上下文";
-"settings.advanced.inputContextOptimization.subtitle" = "暫時讀取游標附近的一小段文字，協助優化連續輸入、專有名詞與模糊詞。不會儲存到歷史記錄。";
+"settings.advanced.inputContextOptimization.subtitle" = "暫時讀取插入點附近的一小段文字，協助優化連續輸入、專有名詞與模糊詞。不會儲存到歷史記錄。";
 
 "settings.advanced.agentFramework.title" = "啟用 Agent 框架";
 "settings.advanced.agentFramework.subtitle" = "為「隨便問」功能啟用多輪 Agent 迴圈，支援工具呼叫和 MCP 伺服器整合。";
@@ -1149,7 +1153,7 @@
 "agent.jobs.detail.stepNumber" = "步驟 %d";
 "agent.jobs.detail.toolCall.arguments" = "呼叫參數";
 "agent.jobs.detail.reasoning" = "推理過程";
-"agent.jobs.detail.stepTokens" = "%d tokens";
+"agent.jobs.detail.stepTokens" = "%d 個詞元";
 "agent.jobs.detail.context.showMore" = "展開全部";
 "agent.jobs.detail.context.showLess" = "收起";
 "agent.jobs.cancel" = "取消任務";
@@ -1321,8 +1325,8 @@
 
 "agent.clarification.windowTitle" = "助手需要確認";
 "agent.clarification.assistantSectionTitle" = "助手";
-"agent.clarification.hotkeyHint" = "按住快捷鍵錄製回覆";
-"agent.clarification.recordingHint" = "錄音中... 說完後鬆開快捷鍵";
+"agent.clarification.hotkeyHint" = "按住快速鍵錄製回覆";
+"agent.clarification.recordingHint" = "錄音中... 說完後鬆開快速鍵";
 "agent.clarification.transcribingHint" = "思考中...";
 "cloudDataSync.title" = "詞庫與人設雲端同步";
 "cloudDataSync.subtitle" = "預設關閉。開啟後，僅同步自訂詞庫和自訂人設到目前帳號的其他裝置。";
@@ -1378,19 +1382,19 @@
 "workflow.typefluxCloud.localFallbackRequired" = "雲端語音辨識僅對付費方案開放，您的請求將由本機模型處理。";
 
 // Auxiliary dictation shortcut
-"settings.shortcuts.auxiliary.title" = "輔助快捷鍵";
+"settings.shortcuts.auxiliary.title" = "輔助快速鍵";
 "settings.shortcuts.auxiliary.subtitle" = "使用獨立人設進行語音輸入。";
 "settings.shortcuts.auxiliary.footnote" = "";
 "settings.shortcuts.auxiliary.persona" = "輔助輸入人設";
-"settings.shortcuts.auxiliaryConflict" = "快捷鍵與現有綁定衝突，請在設定中選擇其他按鍵。";
-"settings.shortcuts.auxiliaryUpdated" = "輔助快捷鍵已更新";
-"settings.shortcuts.auxiliaryUnset" = "輔助快捷鍵已取消綁定";
-"settings.shortcuts.recordingAuxiliary" = "按下輔助快捷鍵，或按兩下同一按鍵。";
+"settings.shortcuts.auxiliaryConflict" = "快速鍵與現有綁定衝突，請在設定中選擇其他按鍵。";
+"settings.shortcuts.auxiliaryUpdated" = "輔助快速鍵已更新";
+"settings.shortcuts.auxiliaryUnset" = "輔助快速鍵已取消綁定";
+"settings.shortcuts.recordingAuxiliary" = "按下輔助快速鍵，或按兩下同一按鍵。";
 "onboarding.shortcuts.auxiliary.hint" = "用另一套人設輸入";
-"onboarding.shortcuts.auxiliary.unset" = "未綁定快捷鍵，請前往設定配置。";
-"onboarding.shortcuts.auxiliary.externalKeyboard" = "輔助快捷鍵會同步使用所選按鍵 + 左 Shift，現有的自訂輔助綁定會保留。";
-"onboarding.shortcuts.auxiliary.active" = "輔助快捷鍵：%@";
-"settings.personaAuxiliary.subtitle" = "選擇輔助快捷鍵使用的寫作身份。";
+"onboarding.shortcuts.auxiliary.unset" = "未綁定快速鍵，請前往設定配置。";
+"onboarding.shortcuts.auxiliary.externalKeyboard" = "輔助快速鍵會同步使用所選按鍵 + 左 Shift，現有的自訂輔助綁定會保留。";
+"onboarding.shortcuts.auxiliary.active" = "輔助快速鍵：%@";
+"settings.personaAuxiliary.subtitle" = "選擇輔助快速鍵使用的寫作身份。";
 
 "account.card.aiRequests" = "AI 請求";
 "account.card.loading" = "正在載入…";
@@ -1448,7 +1452,7 @@
 "account.page.text" = "生成文字";
 "account.page.textDetail" = "辨識 + 潤飾";
 "account.page.today" = "今天";
-"account.page.tokens" = "%@ tokens";
+"account.page.tokens" = "%@ 個詞元";
 "account.page.usageSection" = "本期用量";
 "account.page.usageSince" = "%@ 起";
 "account.page.usedVsElapsed" = "本期已用 %@ · 已過 %@ 的週期";
