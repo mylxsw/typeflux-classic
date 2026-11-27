@@ -83,6 +83,7 @@ final class SettingsWindowController: NSObject {
         AppLocalization.shared.setLanguage(viewModel.appLanguage)
         let view = StudioView(viewModel: viewModel)
         let hosting = TransparentSettingsHostingView(rootView: view)
+        hosting.sizingOptions = []
 
         let window = NSWindow(
             contentRect: NSRect(
@@ -104,7 +105,12 @@ final class SettingsWindowController: NSObject {
         window.isOpaque = false
         window.backgroundColor = .clear
         window.hasShadow = true
-        window.contentView = hosting
+        // A hosting view installed directly as contentView can update the window's size limits.
+        let content = NSView(frame: NSRect(origin: .zero, size: window.contentRect(forFrameRect: window.frame).size))
+        hosting.frame = content.bounds
+        hosting.autoresizingMask = [.width, .height]
+        content.addSubview(hosting)
+        window.contentView = content
         window.isReleasedWhenClosed = false
         window.delegate = self
         var minimumWindowSize = NSSize(
