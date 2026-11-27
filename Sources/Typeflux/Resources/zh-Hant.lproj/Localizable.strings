@@ -1466,8 +1466,8 @@
 "account.status.resets" = "%@ 重置";
 "cloud.error.creditsExhausted" = "本月額度和加購額度都已用完。";
 "account.addon.title" = "加購額度";
-"account.addon.nextExpiry" = "最近到期：%@ credits，%@";
-"account.addon.expiringSoon" = "%@ credits 將於 %@ 到期，請在此之前用完。";
+"account.addon.nextExpiry" = "最近到期：%@ 額度，%@";
+"account.addon.expiringSoon" = "%@ 額度將於 %@ 到期，請在此之前用完。";
 "cloud.error.llmSignInRequired" = "請登入後使用 Typeflux Cloud 語言模型。";
 "cloud.error.asrSignInRequired" = "請登入後使用 Typeflux Cloud 語音辨識。";
 "auth.web.description" = "在 Typeflux 官網使用電子郵件、Google、GitHub 或 Apple 安全登入。";

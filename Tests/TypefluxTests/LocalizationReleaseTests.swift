@@ -55,6 +55,19 @@ final class LocalizationReleaseTests: XCTestCase {
                        "Remove allowances for entries that no longer match English")
     }
 
+    /// Each language has its own term, such as 额度 or クレジット.
+    func testTranslatedValuesDoNotUseTheEnglishWordCredit() throws {
+        var found: [String] = []
+
+        try forEachLocalizedTable { table, language, _, localized in
+            for (key, value) in localized where value.range(of: "credit", options: .caseInsensitive) != nil {
+                found.append(Entry(table: table, language: language, key: key).path)
+            }
+        }
+
+        XCTAssertEqual(found.sorted(), [], "Use the language's own term for credits")
+    }
+
     func testTraditionalChineseHasNoSimplifiedOnlyCharacters() throws {
         let converter = try Presets.Cn2t.converter(from: "cn", to: "tw")
         // These characters also have valid uses in Taiwan, such as 里 in 阿里雲.
