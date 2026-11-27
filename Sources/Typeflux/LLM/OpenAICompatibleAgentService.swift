@@ -316,13 +316,30 @@ enum RemoteAgentClient {
         )
         urlRequest.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let result = try await RemoteLLMClient.performJSONRequestWithCustomThinkingAdaptation(
-            urlRequest,
-            baseBody: baseBody,
-            provider: provider,
-            baseURL: baseURL,
-            candidate: tuningCandidate
-        )
+        let result: RemoteLLMClient.CustomThinkingJSONResult
+        do {
+            result = try await RemoteLLMClient.performJSONRequestWithCustomThinkingAdaptation(
+                urlRequest,
+                baseBody: baseBody,
+                provider: provider,
+                baseURL: baseURL,
+                candidate: tuningCandidate
+            )
+        } catch where body["tool_choice"] != nil && LLMAgentResponseSupport.isRejectedRequest(error) {
+            // Thinking models reject a forced tool_choice. The prompt still asks for the tool.
+            var autoBody = body
+            autoBody.removeValue(forKey: "tool_choice")
+            var autoBaseBody = baseBody
+            autoBaseBody.removeValue(forKey: "tool_choice")
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: autoBody)
+            result = try await RemoteLLMClient.performJSONRequestWithCustomThinkingAdaptation(
+                urlRequest,
+                baseBody: autoBaseBody,
+                provider: provider,
+                baseURL: baseURL,
+                candidate: tuningCandidate
+            )
+        }
         if let text = LLMAgentResponseSupport.extractOpenAICompatibleText(from: result.data) {
             RemoteLLMClient.recordCustomThinkingTuningSuccess(
                 provider: provider,

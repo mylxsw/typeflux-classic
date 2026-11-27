@@ -197,4 +197,11 @@ final class LLMAgentResponseSupportTests: XCTestCase {
     private func jsonData(_ object: [String: Any]) throws -> Data {
         try JSONSerialization.data(withJSONObject: object)
     }
+
+    func testRejectedRequestMatchesOnlyProviderParameterErrors() {
+        XCTAssertTrue(LLMAgentResponseSupport.isRejectedRequest(NSError(domain: "LLM", code: 422)))
+        XCTAssertTrue(LLMAgentResponseSupport.isRejectedRequest(NSError(domain: "LLM", code: 400)))
+        XCTAssertFalse(LLMAgentResponseSupport.isRejectedRequest(NSError(domain: "LLM", code: 503)))
+        XCTAssertFalse(LLMAgentResponseSupport.isRejectedRequest(NSError(domain: NSURLErrorDomain, code: 400)))
+    }
 }

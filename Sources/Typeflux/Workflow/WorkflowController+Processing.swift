@@ -187,17 +187,23 @@ extension WorkflowController {
             personaPrompt: personaPrompt,
             editableTarget: editableTarget
         )
-        let decision = try await RequestRetry.perform(operationName: "Ask selection decision") { [self] in
-            try await llmAgentService.runTool(
-                request: LLMAgentRequest(
-                    systemPrompt: prompts.system,
-                    userPrompt: prompts.user,
-                    tools: [AskSelectionDecision.tool],
-                    forcedToolName: AskSelectionDecision.tool.name,
-                    appSystemContext: appSystemContext
-                ),
-                decoding: AskSelectionDecision.self
-            )
+        let decision: AskSelectionDecision
+        do {
+            decision = try await RequestRetry.perform(operationName: "Ask selection decision") { [self] in
+                try await llmAgentService.runTool(
+                    request: LLMAgentRequest(
+                        systemPrompt: prompts.system,
+                        userPrompt: prompts.user,
+                        tools: [AskSelectionDecision.tool],
+                        forcedToolName: AskSelectionDecision.tool.name,
+                        appSystemContext: appSystemContext
+                    ),
+                    decoding: AskSelectionDecision.self
+                )
+            }
+        } catch let LLMAgentError.textResponse(text) where !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            // Without a forced tool_choice, a model may answer in plain text.
+            decision = AskSelectionDecision(answerEdit: .answer, content: text)
         }
 
         try ensureProcessingIsActive(sessionID)
