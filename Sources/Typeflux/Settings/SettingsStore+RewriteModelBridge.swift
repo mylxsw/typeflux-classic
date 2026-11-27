@@ -60,6 +60,12 @@ extension SettingsStore {
         ) { [weak self] _ in
             MainActor.assumeIsolated {
                 guard let self, let previous = self.lastBridgedRewriteModelSelection else { return }
+                if self.rewriteModelSelection == .cloud,
+                   self.defaults.string(forKey: Self.rewriteReferenceKey) == "cloud:default" {
+                    // The account coordinator already saved the canonical reference.
+                    self.lastBridgedRewriteModelSelection = .cloud
+                    return
+                }
                 self.exportSharedRewriteModelSelection(ifChangedFrom: previous)
             }
         }

@@ -129,27 +129,38 @@ final class ClassicCompatibilityContractTests: XCTestCase {
         let observer = store.observeCloudRewriteModelDefaults()
         defer { NotificationCenter.default.removeObserver(observer) }
 
-        let defaultsApplied = expectation(description: "Cloud defaults applied after login")
-        let prompt = AcceptCloudDefaults { defaultsApplied.fulfill() }
+        // The account coordinator owns the Cloud alias, even when there is no registry to match.
+        store.defaults.removeObject(forKey: registryKey)
+        store.isOnboardingCompleted = true
+        store.sttProvider = .appleSpeech
+        let auth = AuthState(loadStoredToken: { nil }, loadStoredRefreshToken: { nil }, loadStoredUserProfile: { nil })
+        auth.isLoggedIn = true
+        auth.subscription = BillingSubscriptionSnapshot(
+            planCode: BillingPlan.defaultPlanCode, status: "active", currentPeriodStart: nil,
+            currentPeriodEnd: nil, cancelAtPeriodEnd: false, entitled: true, paid: true, cloudASRAllowed: true
+        )
+        auth.subscriptionSnapshotGeneration = auth.sessionGeneration
         let coordinator = CloudLoginSyncCoordinator(
             settingsStore: store,
-            promptPresenter: prompt,
-            hasPaidCloudSubscription: { true }
+            authState: auth,
+            promptPresenter: RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
         )
-        let auth = AuthState(loadStoredToken: { nil }, loadStoredRefreshToken: { nil }, loadStoredUserProfile: { nil })
+        let defaultsApplied = expectation(description: "Cloud defaults applied after login")
+        let notification = NotificationCenter.default.addObserver(
+            forName: .cloudAccountModelDefaultsDidApply, object: store, queue: .main
+        ) { _ in defaultsApplied.fulfill() }
+
         NotificationCenter.default.post(name: .authDidLogin, object: auth)
         await fulfillment(of: [defaultsApplied], timeout: 2)
+        NotificationCenter.default.removeObserver(notification)
+        XCTAssertEqual(store.sttProvider, .typefluxOfficial)
         XCTAssertEqual(store.defaults.string(forKey: referenceKey), "cloud:default")
 
-        // An STT-only change can emit the same notification without changing the rewrite selection.
-        // Classic keeps a Typeflux-only reference when the local rewrite model did not change.
-        prompt.onApplied = {}
+        // A notification that leaves the legacy rewrite choice unchanged must preserve the reference.
         store.defaults.set("custom:fixture-endpoint", forKey: referenceKey)
-        XCTAssertFalse(store.importSharedRewriteModelSelection())
-        store.sttProvider = .appleSpeech
-        coordinator.offerCloudDefaultsIfNeeded()
-        XCTAssertEqual(store.sttProvider, .typefluxOfficial)
+        NotificationCenter.default.post(name: .cloudAccountModelDefaultsDidApply, object: store)
         XCTAssertEqual(store.defaults.string(forKey: referenceKey), "custom:fixture-endpoint")
+        withExtendedLifetime(coordinator) {}
     }
 
     func testReadsPersonaAndActivationHotkeyUsingClassicSettingsStore() throws {
@@ -212,18 +223,4 @@ final class ClassicCompatibilityContractTests: XCTestCase {
         defaults.setPersistentDomain(values, forName: suite)
         return (SettingsStore(defaults: defaults), suite, values)
     }
-}
-
-@MainActor
-private final class AcceptCloudDefaults: CloudModelDefaultsPrompting {
-    var onApplied: () -> Void
-
-    init(onApplied: @escaping () -> Void) {
-        self.onApplied = onApplied
-    }
-
-    func confirmSwitchToCloudDefaults() -> Bool { true }
-    func showCloudDefaultsApplied() { onApplied() }
-    func confirmSwitchToCloudLLMDefault() -> Bool { true }
-    func showCloudLLMDefaultApplied() { onApplied() }
 }
