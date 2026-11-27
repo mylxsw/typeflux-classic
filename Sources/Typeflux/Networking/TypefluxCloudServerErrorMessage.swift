@@ -14,6 +14,8 @@ enum TypefluxCloudServerErrorMessage {
         let normalizedCode = normalized(code)
 
         switch normalizedCode {
+        case "AGENT_IMPLEMENTATION_UNAVAILABLE":
+            return "ask.implementationUnavailable"
         case "AUTH_INVALID_CREDENTIALS":
             return "cloud.error.authInvalidCredentials"
         case "AUTH_USER_EXISTS":
@@ -31,6 +33,8 @@ enum TypefluxCloudServerErrorMessage {
             return "cloud.error.validation"
         case "RATE_LIMITED", "RATE_LIMIT_EXCEEDED", "TOO_MANY_REQUESTS":
             return "cloud.error.rateLimited"
+        case CloudCreditsExhaustedError.code:
+            return "cloud.error.creditsExhausted"
         case "QUOTA_EXCEEDED",
              "ASR_QUOTA_EXCEEDED",
              "LLM_QUOTA_EXCEEDED",

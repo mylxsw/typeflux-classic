@@ -140,6 +140,7 @@ enum TypefluxCloudScenario: String, CaseIterable, Hashable, Sendable {
 }
 
 enum TypefluxCloudRequestHeaders {
+    static let creditVersionField = "X-Typeflux-Credit-Version"
     static let scenarioField = "x-scenario"
     static let clientProductField = "x-client-product"
     static let clientIDField = "x-client-id"
@@ -159,6 +160,7 @@ enum TypefluxCloudRequestHeaders {
         provider: TypefluxCloudClientInfoProvider = .live
     ) {
         let info = provider.info()
+        request.setValue("2", forHTTPHeaderField: creditVersionField)
         request.setValue(info.userAgent, forHTTPHeaderField: "User-Agent")
         if !info.acceptLanguage.isEmpty {
             request.setValue(info.acceptLanguage, forHTTPHeaderField: "Accept-Language")
@@ -204,6 +206,7 @@ enum TypefluxCloudRequestHeaders {
     ) -> [String: String] {
         let info = provider.info()
         var merged = headers
+        merged[creditVersionField] = "2"
         merged["User-Agent"] = info.userAgent
         if !info.acceptLanguage.isEmpty {
             merged["Accept-Language"] = info.acceptLanguage

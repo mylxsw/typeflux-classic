@@ -78,6 +78,21 @@ final class TypefluxOfficialASRRoutingClientTests: XCTestCase {
         }
     }
 
+    func testFetchRoutePreservesFractionalExhaustedCreditDetails() async throws {
+        let session = RoutingStubSession()
+        await session.setHandler { request in
+            let data = Data(#"{"code":"CREDITS_EXHAUSTED","details":{"addon_remaining":0.25}}"#.utf8)
+            return (data, Self.httpResponse(url: request.url!, status: 402))
+        }
+        do {
+            _ = try await makeClient(session: session).fetchRoute(accessToken: "fixture", scenario: .voiceInput)
+            XCTFail("Expected exhausted credits")
+        } catch let error as CloudCreditsExhaustedError {
+            XCTAssertEqual(error.details?.addonRemaining, 0.25)
+            XCTAssertEqual(TypefluxCloudBillingError.fromError(error)?.reason, .quotaExceeded)
+        }
+    }
+
     func testFetchRouteExposesLocalFallbackDirective() async throws {
         let session = RoutingStubSession()
         await session.setHandler { request in

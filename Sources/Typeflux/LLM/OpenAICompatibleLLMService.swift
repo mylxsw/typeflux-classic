@@ -922,6 +922,9 @@ enum RemoteLLMClient {
             throw NSError(domain: "LLM", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid response."])
         }
         guard (200 ..< 300).contains(http.statusCode) else {
+            if http.statusCode == 402, let exhausted = CloudCreditsExhaustedError.parse(data: data) {
+                throw exhausted
+            }
             if let billingError = TypefluxCloudBillingError.fromHTTPStatus(http.statusCode, bodyData: data) {
                 throw billingError
             }
@@ -1112,6 +1115,9 @@ enum SSEClient {
                 errorBodyData.append(byte)
             }
             NetworkDebugLogger.logResponse(http, data: errorBodyData)
+            if http.statusCode == 402, let exhausted = CloudCreditsExhaustedError.parse(data: errorBodyData) {
+                throw exhausted
+            }
             if let billingError = TypefluxCloudBillingError.fromHTTPStatus(http.statusCode, bodyData: errorBodyData) {
                 throw billingError
             }

@@ -2,6 +2,18 @@
 import XCTest
 
 final class TypefluxOfficialTranscriberTests: XCTestCase {
+    func testWebSocketReceiveFailurePreservesBillingAndDirectiveErrors() {
+        let exhausted = CloudCreditsExhaustedError(details: .init(addonRemaining: 0.25))
+        XCTAssertEqual(TypefluxOfficialASRError.receiveFailure(exhausted) as? CloudCreditsExhaustedError, exhausted)
+        let directive = TypefluxCloudASRDirectiveError()
+        XCTAssertTrue(TypefluxOfficialASRError.receiveFailure(directive) is TypefluxCloudASRDirectiveError)
+        let billing = TypefluxCloudBillingError(reason: .subscriptionRequired, serverMessage: nil)
+        XCTAssertEqual(TypefluxOfficialASRError.receiveFailure(billing) as? TypefluxCloudBillingError, billing)
+        guard case .unexpectedClose? = TypefluxOfficialASRError.receiveFailure(URLError(.badURL)) as? TypefluxOfficialASRError else {
+            return XCTFail("Expected an unexpected close for an unknown transport error")
+        }
+    }
+
     func testStartMessageDisablesOptimizeWhenLLMRewriteIsIncluded() throws {
         let message = TypefluxOfficialASRStartMessageFactory.make(
             optimize: false,

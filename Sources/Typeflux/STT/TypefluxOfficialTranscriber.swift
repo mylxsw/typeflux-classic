@@ -314,6 +314,8 @@ final class TypefluxOfficialTranscriber: ASROptimizeAwareTranscriber, TypefluxCl
                 throw CancellationError()
             } catch let error where TypefluxCloudASRDirectiveError.fromError(error) != nil {
                 throw TypefluxCloudASRDirectiveError()
+            } catch let exhausted as CloudCreditsExhaustedError {
+                throw exhausted
             } catch let error where TypefluxCloudBillingError.fromError(error) != nil {
                 throw TypefluxCloudBillingError.fromError(error) ?? error
             } catch let error as TypefluxOfficialASRError {
@@ -385,6 +387,13 @@ enum TypefluxOfficialASRError: LocalizedError {
     case connectionFailed(String)
     case serverError(String)
     case unexpectedClose
+
+    static func receiveFailure(_ error: Error) -> Error {
+        if let exhausted = error as? CloudCreditsExhaustedError { return exhausted }
+        if let directive = TypefluxCloudASRDirectiveError.fromError(error) { return directive }
+        if let billing = TypefluxCloudBillingError.fromError(error) { return billing }
+        return TypefluxOfficialASRError.unexpectedClose
+    }
 
     var errorDescription: String? {
         switch self {
@@ -890,10 +899,9 @@ private actor TypefluxOfficialASRSession {
                     finalSegments: finalSegments
                 ) {
                     logger.error("WebSocket receive error: \(error.localizedDescription)")
-                    sessionError = sessionError
-                        ?? TypefluxCloudASRDirectiveError.fromError(error)
-                        ?? TypefluxCloudBillingError.fromError(error)
-                        ?? TypefluxOfficialASRError.unexpectedClose
+                    if sessionError == nil {
+                        sessionError = TypefluxOfficialASRError.receiveFailure(error)
+                    }
                 }
                 completed = true
             }
@@ -956,6 +964,11 @@ private actor TypefluxOfficialASRSession {
                 return
             }
             logger.error("ASR server error: \(errorText)")
+            if let exhausted = CloudCreditsExhaustedError.parse(data: data) {
+                sessionError = exhausted
+                completed = true
+                return
+            }
             sessionError = errorCode.flatMap(TypefluxCloudASRDirectiveError.fromServerCode)
                 ?? TypefluxCloudASRDirectiveError.fromMessage(errorText)
                 ?? TypefluxCloudBillingError.fromMessage(errorText)
@@ -1158,10 +1171,9 @@ private actor TypefluxOfficialRealtimePCMStream: PCM16RealtimeTranscriptionSessi
                        finalSegments: finalSegments
                    ) {
                     logger.error("WebSocket receive error: \(error.localizedDescription)")
-                    sessionError = sessionError
-                        ?? TypefluxCloudASRDirectiveError.fromError(error)
-                        ?? TypefluxCloudBillingError.fromError(error)
-                        ?? TypefluxOfficialASRError.unexpectedClose
+                    if sessionError == nil {
+                        sessionError = TypefluxOfficialASRError.receiveFailure(error)
+                    }
                 }
                 completed = true
             }
@@ -1207,6 +1219,11 @@ private actor TypefluxOfficialRealtimePCMStream: PCM16RealtimeTranscriptionSessi
                 return
             }
             logger.error("ASR server error: \(errorText)")
+            if let exhausted = CloudCreditsExhaustedError.parse(data: data) {
+                sessionError = exhausted
+                completed = true
+                return
+            }
             sessionError = errorCode.flatMap(TypefluxCloudASRDirectiveError.fromServerCode)
                 ?? TypefluxCloudASRDirectiveError.fromMessage(errorText)
                 ?? TypefluxCloudBillingError.fromMessage(errorText)

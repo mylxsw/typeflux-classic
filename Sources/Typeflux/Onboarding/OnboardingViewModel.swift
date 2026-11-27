@@ -121,6 +121,7 @@ final class OnboardingViewModel: ObservableObject {
     @Published var showShortcutReplacementAppliedAlert = false
 
     private let settingsStore: SettingsStore
+    lazy var accountLogin = authState.makeWebLoginCoordinator()
     private let authState: AuthState
     private let globeKeyReader: GlobeKeyPreferenceReading
     private let localModelManager: (any LocalSTTModelManaging)?

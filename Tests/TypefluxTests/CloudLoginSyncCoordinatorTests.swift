@@ -1,3 +1,4 @@
+import AppKit
 @testable import Typeflux
 import XCTest
 
@@ -7,60 +8,233 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
         let settingsStore = makeSettingsStore()
         settingsStore.sttProvider = .whisperAPI
         settingsStore.localOptimizationEnabled = true
+        settingsStore.onboardingSpeechDeferred = true
+        settingsStore.onboardingAIDeferred = true
+        settingsStore.defaults.set("old-model", forKey: "ask.model.default")
+        settingsStore.defaults.set("old-model", forKey: "llm.profile.reference")
         settingsStore.llmProvider = .openAICompatible
         settingsStore.llmRemoteProvider = .openAI
 
+        let authState = makeAuthState(subscription: activeSubscription())
         let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
         let coordinator = CloudLoginSyncCoordinator(
             settingsStore: settingsStore,
-            promptPresenter: prompt,
-            hasPaidCloudSubscription: { true }
+            authState: authState,
+            promptPresenter: prompt
         )
-        let authState = makeAuthState(subscription: activeSubscription())
 
-        await authState.handleLoginSuccess(
-            token: "token-1",
-            expiresAt: Int(Date().timeIntervalSince1970) + 3600
-        )
+        await signIn(authState)
 
         try await waitForPromptCount(1, in: prompt)
 
         XCTAssertEqual(settingsStore.sttProvider, .typefluxOfficial)
         XCTAssertFalse(settingsStore.localOptimizationEnabled)
+        XCTAssertFalse(settingsStore.onboardingSpeechDeferred)
+        XCTAssertFalse(settingsStore.onboardingAIDeferred)
+        XCTAssertEqual(settingsStore.defaults.string(forKey: "ask.model.default"), "old-model")
+        XCTAssertEqual(settingsStore.rewriteModelReference, "cloud:default")
         XCTAssertEqual(settingsStore.llmProvider, .openAICompatible)
         XCTAssertEqual(settingsStore.llmRemoteProvider, .typefluxCloud)
         XCTAssertEqual(prompt.confirmCallCount, 1)
-        XCTAssertEqual(prompt.successCallCount, 1)
         withExtendedLifetime(coordinator) {}
     }
 
-    func testFreePlanOffersCloudLLMWithoutChangingSTTProvider() async throws {
+    func testConvenienceRefreshCannotTurnCloudVoiceAccessIntoARewriteOnlyOffer() async throws {
+        let settings = makeSettingsStore()
+        settings.sttProvider = .aliCloud
+        settings.llmRemoteProvider = .openAI
+        let allowed = BillingSubscriptionSnapshot(
+            planCode: "free", status: "free", currentPeriodStart: nil, currentPeriodEnd: nil,
+            cancelAtPeriodEnd: false, entitled: true, paid: false, cloudASRAllowed: true
+        )
+        let refreshStarted = expectation(description: "settings subscription refresh")
+        let (finishRefresh, release) = AsyncStream<Void>.makeStream()
+        defer { release.finish() }
+        var requestCount = 0
+        let state = makeAuthState { _ in
+            requestCount += 1
+            if requestCount == 2 {
+                refreshStarted.fulfill()
+                for await _ in finishRefresh { break }
+            }
+            return allowed
+        }
+        await signIn(state)
+        let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
+        let coordinator = CloudLoginSyncCoordinator(settingsStore: settings, authState: state, promptPresenter: prompt)
+
+        let settingsRefresh = Task { await state.refreshSubscription() }
+        await fulfillment(of: [refreshStarted], timeout: 2)
+        XCTAssertTrue(state.isLoadingSubscription)
+        XCTAssertFalse(state.canUseCloudASR)
+        NotificationCenter.default.post(name: .authDidLogin, object: state)
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertEqual(prompt.confirmCallCount, 0)
+
+        release.finish()
+        _ = await settingsRefresh.value
+        try await waitForPromptCount(1, in: prompt)
+        XCTAssertEqual(prompt.cloudDefaultsConfirmCallCount, 1)
+        XCTAssertEqual(settings.sttProvider, .typefluxOfficial)
+        XCTAssertEqual(settings.llmRemoteProvider, .typefluxCloud)
+        withExtendedLifetime(coordinator) {}
+    }
+
+    func testFailedSubscriptionCheckWaitsForRecoveryBeforeOfferingAChoice() async throws {
+        let settings = makeSettingsStore()
+        settings.sttProvider = .aliCloud
+        settings.llmRemoteProvider = .openAI
+        var failCheck = true
+        let allowed = activeSubscription()
+        let state = makeAuthState { _ in
+            if failCheck { throw URLError(.notConnectedToInternet) }
+            return allowed
+        }
+        let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
+        let coordinator = CloudLoginSyncCoordinator(settingsStore: settings, authState: state, promptPresenter: prompt)
+        await signIn(state)
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertNil(state.confirmedCloudASRAccess)
+        XCTAssertEqual(prompt.confirmCallCount, 0)
+        XCTAssertEqual(settings.sttProvider, .aliCloud)
+        XCTAssertEqual(settings.llmRemoteProvider, .openAI)
+
+        failCheck = false
+        await state.refreshSubscription()
+        try await waitForPromptCount(1, in: prompt)
+        XCTAssertEqual(prompt.cloudDefaultsConfirmCallCount, 1)
+        XCTAssertEqual(settings.sttProvider, .typefluxOfficial)
+        XCTAssertEqual(settings.llmRemoteProvider, .typefluxCloud)
+
+        await state.refreshSubscription()
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertEqual(prompt.confirmCallCount, 1)
+        withExtendedLifetime(coordinator) {}
+    }
+
+    func testReplacementLoginCannotUsePreviousAccountsVoiceAccess() async throws {
+        let settings = makeSettingsStore()
+        settings.sttProvider = .aliCloud
+        settings.llmRemoteProvider = .openAI
+        let allowed = activeSubscription()
+        var replacementReady = false
+        let state = makeAuthState { token in
+            if token == "first" { return allowed }
+            if !replacementReady { throw URLError(.timedOut) }
+            return allowed
+        }
+        await signIn(state, token: "first")
+        XCTAssertEqual(state.confirmedCloudASRAccess, true)
+        state.subscriptionSyncGeneration = state.sessionGeneration
+        state.isSyncingSubscription = true
+        let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
+        let coordinator = CloudLoginSyncCoordinator(settingsStore: settings, authState: state, promptPresenter: prompt)
+
+        await signIn(state, token: "second")
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertNil(state.confirmedCloudASRAccess)
+        XCTAssertEqual(prompt.confirmCallCount, 0)
+
+        replacementReady = true
+        await state.refreshSubscription()
+        try await waitForPromptCount(1, in: prompt)
+        XCTAssertEqual(settings.sttProvider, .typefluxOfficial)
+        XCTAssertEqual(settings.llmRemoteProvider, .typefluxCloud)
+        withExtendedLifetime(coordinator) {}
+    }
+
+    func testManualModelChangeSupersedesAWaitingLoginOffer() async throws {
+        let settings = makeSettingsStore()
+        settings.sttProvider = .aliCloud
+        settings.llmRemoteProvider = .openAI
+        let allowed = activeSubscription()
+        var failCheck = true
+        let state = makeAuthState { _ in
+            if failCheck { throw URLError(.timedOut) }
+            return allowed
+        }
+        let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
+        let coordinator = CloudLoginSyncCoordinator(settingsStore: settings, authState: state, promptPresenter: prompt)
+        await signIn(state)
+
+        settings.sttProvider = .localModel
+        failCheck = false
+        await state.refreshSubscription()
+        try await Task.sleep(for: .milliseconds(100))
+
+        XCTAssertEqual(prompt.confirmCallCount, 0)
+        XCTAssertEqual(settings.sttProvider, .localModel)
+        XCTAssertEqual(settings.llmRemoteProvider, .openAI)
+        withExtendedLifetime(coordinator) {}
+    }
+
+    func testSigningOutWhileConfirmingCannotSwitchModels() async throws {
+        let settings = makeSettingsStore()
+        settings.sttProvider = .aliCloud
+        settings.llmRemoteProvider = .openAI
+        let state = makeAuthState(subscription: activeSubscription())
+        let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true) {
+            state.logout(clearRecentInputMemory: false)
+        }
+        let coordinator = CloudLoginSyncCoordinator(settingsStore: settings, authState: state, promptPresenter: prompt)
+
+        await signIn(state)
+        try await waitForPromptCount(1, in: prompt)
+
+        XCTAssertFalse(state.isLoggedIn)
+        XCTAssertEqual(settings.sttProvider, .aliCloud)
+        XCTAssertEqual(settings.llmRemoteProvider, .openAI)
+        withExtendedLifetime(coordinator) {}
+    }
+
+    func testPermissionRevokedWhileConfirmingDoesNotSwitchEitherModel() async throws {
+        let settings = makeSettingsStore()
+        settings.sttProvider = .aliCloud
+        settings.llmRemoteProvider = .openAI
+        let state = makeAuthState(subscription: activeSubscription())
+        let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true) {
+            state.subscription = .none
+        }
+        let coordinator = CloudLoginSyncCoordinator(settingsStore: settings, authState: state, promptPresenter: prompt)
+
+        await signIn(state)
+        try await waitForPromptCount(1, in: prompt)
+        await Task.yield()
+
+        XCTAssertEqual(prompt.cloudDefaultsConfirmCallCount, 1)
+        XCTAssertEqual(settings.sttProvider, .aliCloud)
+        XCTAssertEqual(settings.llmRemoteProvider, .openAI)
+        withExtendedLifetime(coordinator) {}
+    }
+
+    func testAccountWithoutCloudSpeechAccessDoesNotOfferPartialSwitch() async throws {
         let settingsStore = makeSettingsStore()
         settingsStore.sttProvider = .whisperAPI
+        settingsStore.onboardingSpeechDeferred = true
+        settingsStore.onboardingAIDeferred = true
+        settingsStore.defaults.set("old-model", forKey: "llm.profile.reference")
         settingsStore.llmProvider = .openAICompatible
         settingsStore.llmRemoteProvider = .openAI
 
+        let authState = makeAuthState(subscription: .none)
         let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
         let coordinator = CloudLoginSyncCoordinator(
             settingsStore: settingsStore,
-            promptPresenter: prompt,
-            hasPaidCloudSubscription: { false }
-        )
-        let authState = makeAuthState(subscription: .none)
-
-        await authState.handleLoginSuccess(
-            token: "token-1",
-            expiresAt: Int(Date().timeIntervalSince1970) + 3600
+            authState: authState,
+            promptPresenter: prompt
         )
 
-        try await waitForPromptCount(1, in: prompt)
+        await signIn(authState)
+
+        try await Task.sleep(for: .milliseconds(100))
 
         XCTAssertEqual(prompt.cloudDefaultsConfirmCallCount, 0)
-        XCTAssertEqual(prompt.cloudLLMConfirmCallCount, 1)
-        XCTAssertEqual(prompt.cloudLLMSuccessCallCount, 1)
         XCTAssertEqual(settingsStore.sttProvider, .whisperAPI)
+        XCTAssertTrue(settingsStore.onboardingSpeechDeferred)
+        XCTAssertTrue(settingsStore.onboardingAIDeferred)
+        XCTAssertEqual(settingsStore.rewriteModelReference, "old-model")
         XCTAssertEqual(settingsStore.llmProvider, .openAICompatible)
-        XCTAssertEqual(settingsStore.llmRemoteProvider, .typefluxCloud)
+        XCTAssertEqual(settingsStore.llmRemoteProvider, .openAI)
         withExtendedLifetime(coordinator) {}
     }
 
@@ -70,14 +244,18 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
         settingsStore.llmProvider = .ollama
         settingsStore.llmRemoteProvider = .openAI
 
+        let paid = activeSubscription()
+        let authState = makeAuthState(syncSubscription: { _ in paid }) { _ in .none }
+        await signIn(authState)
         let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
         let coordinator = CloudLoginSyncCoordinator(
             settingsStore: settingsStore,
-            promptPresenter: prompt,
-            hasPaidCloudSubscription: { true }
+            authState: authState,
+            promptPresenter: prompt
         )
 
-        NotificationCenter.default.post(name: .authCheckoutSubscriptionDidBecomeEntitled, object: nil)
+        authState.pendingCheckoutSubscriptionEntitlement = true
+        _ = try await authState.syncSubscription()
 
         try await waitForPromptCount(1, in: prompt)
 
@@ -86,7 +264,6 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
         XCTAssertEqual(settingsStore.llmRemoteProvider, .typefluxCloud)
         XCTAssertEqual(settingsStore.activePersonaID, SettingsStore.defaultPersonaID.uuidString)
         XCTAssertEqual(prompt.confirmCallCount, 1)
-        XCTAssertEqual(prompt.successCallCount, 1)
         withExtendedLifetime(coordinator) {}
     }
 
@@ -95,11 +272,12 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
         settingsStore.sttProvider = .localModel
         settingsStore.llmProvider = .ollama
 
+        let authState = makeAuthState(subscription: activeSubscription())
         let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
         let coordinator = CloudLoginSyncCoordinator(
             settingsStore: settingsStore,
-            promptPresenter: prompt,
-            hasPaidCloudSubscription: { true }
+            authState: authState,
+            promptPresenter: prompt
         )
         let expectation = expectation(description: "cloud defaults notification")
         let observer = NotificationCenter.default.addObserver(
@@ -110,7 +288,7 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
             expectation.fulfill()
         }
 
-        coordinator.offerCloudDefaultsIfNeeded()
+        await signIn(authState)
 
         await fulfillment(of: [expectation], timeout: 1)
         NotificationCenter.default.removeObserver(observer)
@@ -123,41 +301,49 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
         settingsStore.llmProvider = .openAICompatible
         settingsStore.llmRemoteProvider = .openAI
 
+        let authState = makeAuthState(subscription: activeSubscription())
+        await signIn(authState)
         let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: false)
         let coordinator = CloudLoginSyncCoordinator(
             settingsStore: settingsStore,
-            promptPresenter: prompt,
-            hasPaidCloudSubscription: { true }
+            authState: authState,
+            promptPresenter: prompt
         )
 
-        NotificationCenter.default.post(name: .authCheckoutSubscriptionDidBecomeEntitled, object: nil)
+        NotificationCenter.default.post(name: .authCheckoutSubscriptionDidBecomeEntitled, object: authState)
 
         try await waitForPromptCount(1, in: prompt)
         XCTAssertEqual(settingsStore.sttProvider, .whisperAPI)
         XCTAssertEqual(settingsStore.llmProvider, .openAICompatible)
         XCTAssertEqual(settingsStore.llmRemoteProvider, .openAI)
-        XCTAssertEqual(prompt.successCallCount, 0)
+        await authState.refreshSubscription()
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertEqual(prompt.confirmCallCount, 1)
         withExtendedLifetime(coordinator) {}
     }
 
     func testAppliesCloudDefaultsWhenOnlyOneProviderDiffers() async throws {
         let settingsStore = makeSettingsStore()
-        // STT is already Cloud, but LLM is not — should still switch + notify.
+        // A scene-specific rewrite selection takes precedence over the legacy provider.
         settingsStore.sttProvider = .typefluxOfficial
         settingsStore.llmProvider = .openAICompatible
-        settingsStore.llmRemoteProvider = .openAI
+        settingsStore.llmRemoteProvider = .typefluxCloud
+        settingsStore.defaults.set("custom:previous", forKey: "llm.profile.reference")
 
+        let authState = makeAuthState(subscription: activeSubscription())
+        await signIn(authState)
         let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
         let coordinator = CloudLoginSyncCoordinator(
             settingsStore: settingsStore,
-            promptPresenter: prompt,
-            hasPaidCloudSubscription: { true }
+            authState: authState,
+            promptPresenter: prompt
         )
 
-        NotificationCenter.default.post(name: .authCheckoutSubscriptionDidBecomeEntitled, object: nil)
+        NotificationCenter.default.post(name: .authCheckoutSubscriptionDidBecomeEntitled, object: authState)
 
         try await waitForPromptCount(1, in: prompt)
         XCTAssertEqual(settingsStore.llmRemoteProvider, .typefluxCloud)
+        XCTAssertEqual(settingsStore.rewriteModelReference, "cloud:default")
         withExtendedLifetime(coordinator) {}
     }
 
@@ -167,19 +353,20 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
         settingsStore.llmProvider = .openAICompatible
         settingsStore.llmRemoteProvider = .typefluxCloud
 
+        let authState = makeAuthState(subscription: activeSubscription())
+        await signIn(authState)
         let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
         let coordinator = CloudLoginSyncCoordinator(
             settingsStore: settingsStore,
-            promptPresenter: prompt,
-            hasPaidCloudSubscription: { true }
+            authState: authState,
+            promptPresenter: prompt
         )
 
-        NotificationCenter.default.post(name: .authCheckoutSubscriptionDidBecomeEntitled, object: nil)
+        NotificationCenter.default.post(name: .authCheckoutSubscriptionDidBecomeEntitled, object: authState)
 
         try await Task.sleep(nanoseconds: 150_000_000)
 
         XCTAssertEqual(prompt.confirmCallCount, 0)
-        XCTAssertEqual(prompt.successCallCount, 0)
         XCTAssertEqual(settingsStore.sttProvider, .typefluxOfficial)
         XCTAssertEqual(settingsStore.llmProvider, .openAICompatible)
         XCTAssertEqual(settingsStore.llmRemoteProvider, .typefluxCloud)
@@ -192,22 +379,24 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
         settingsStore.llmProvider = .ollama
         settingsStore.llmRemoteProvider = .openAI
 
+        let authState = makeAuthState(subscription: activeSubscription())
+        await signIn(authState)
         let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
         let coordinator = CloudLoginSyncCoordinator(
             settingsStore: settingsStore,
-            promptPresenter: prompt,
-            hasPaidCloudSubscription: { true }
+            authState: authState,
+            promptPresenter: prompt
         )
 
         NotificationCenter.default.post(
             name: Notification.Name("SomeOtherNotification"),
             object: nil
         )
+        await signIn(makeAuthState(subscription: activeSubscription()))
 
         try await Task.sleep(nanoseconds: 150_000_000)
 
         XCTAssertEqual(prompt.confirmCallCount, 0)
-        XCTAssertEqual(prompt.successCallCount, 0)
         XCTAssertEqual(settingsStore.sttProvider, .whisperAPI)
         XCTAssertEqual(settingsStore.llmProvider, .ollama)
         XCTAssertEqual(settingsStore.llmRemoteProvider, .openAI)
@@ -216,12 +405,40 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
 
     // MARK: - Helpers
 
-    private func makeSettingsStore() -> SettingsStore {
-        let defaults = UserDefaults(suiteName: "CloudLoginSyncCoordinatorTests.\(UUID().uuidString)")!
-        return SettingsStore(defaults: defaults)
+    func testOnboardingOwnsCloudSelectionWithoutAnotherModal() async throws {
+        let settings = makeSettingsStore()
+        settings.isOnboardingCompleted = false
+        let prompt = RecordingCloudModelDefaultsPrompt(shouldConfirm: true)
+        let state = makeAuthState(subscription: activeSubscription())
+        let coordinator = CloudLoginSyncCoordinator(settingsStore: settings, authState: state, promptPresenter: prompt)
+
+        await signIn(state)
+        try await Task.sleep(for: .milliseconds(100))
+
+        XCTAssertEqual(prompt.confirmCallCount, 0)
+        XCTAssertEqual(settings.sttProvider, .localModel)
+        withExtendedLifetime(coordinator) {}
     }
 
-    private func makeAuthState(subscription: BillingSubscriptionSnapshot) -> AuthState {
+    func makeSettingsStore() -> SettingsStore {
+        let defaults = UserDefaults(suiteName: "CloudLoginSyncCoordinatorTests.\(UUID().uuidString)")!
+        let settings = SettingsStore(defaults: defaults)
+        settings.isOnboardingCompleted = true
+        return settings
+    }
+
+    func signIn(_ authState: AuthState, token: String = "token-1") async {
+        await authState.handleLoginSuccess(token: token, expiresAt: Int(Date().timeIntervalSince1970) + 3600)
+    }
+
+    func makeAuthState(subscription: BillingSubscriptionSnapshot) -> AuthState {
+        makeAuthState { _ in subscription }
+    }
+
+    func makeAuthState(
+        syncSubscription: ((String) async throws -> BillingSubscriptionSnapshot)? = nil,
+        fetchSubscription: @escaping (String) async throws -> BillingSubscriptionSnapshot
+    ) -> AuthState {
         AuthState(
             loadStoredToken: { nil },
             loadStoredRefreshToken: { nil },
@@ -240,11 +457,12 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
                     updatedAt: "2024-04-09T12:00:00Z"
                 )
             },
-            fetchSubscription: { _ in subscription }
+            fetchSubscription: fetchSubscription,
+            syncSubscription: syncSubscription ?? fetchSubscription
         )
     }
 
-    private func activeSubscription() -> BillingSubscriptionSnapshot {
+    func activeSubscription() -> BillingSubscriptionSnapshot {
         BillingSubscriptionSnapshot(
             planCode: BillingPlan.defaultPlanCode,
             status: "active",
@@ -255,7 +473,7 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
         )
     }
 
-    private func waitForPromptCount(
+    func waitForPromptCount(
         _ expectedCount: Int,
         in prompt: RecordingCloudModelDefaultsPrompt
     ) async throws {
@@ -270,36 +488,21 @@ final class CloudLoginSyncCoordinatorTests: XCTestCase {
 }
 
 @MainActor
-private final class RecordingCloudModelDefaultsPrompt: CloudModelDefaultsPrompting {
+final class RecordingCloudModelDefaultsPrompt: CloudModelDefaultsPrompting {
     private let shouldConfirm: Bool
+    private let onConfirm: () -> Void
     private(set) var confirmCallCount = 0
-    private(set) var successCallCount = 0
     private(set) var cloudDefaultsConfirmCallCount = 0
-    private(set) var cloudLLMConfirmCallCount = 0
-    private(set) var cloudLLMSuccessCallCount = 0
 
-    init(shouldConfirm: Bool) {
+    init(shouldConfirm: Bool, onConfirm: @escaping () -> Void = {}) {
         self.shouldConfirm = shouldConfirm
+        self.onConfirm = onConfirm
     }
 
     func confirmSwitchToCloudDefaults() -> Bool {
         confirmCallCount += 1
         cloudDefaultsConfirmCallCount += 1
+        onConfirm()
         return shouldConfirm
-    }
-
-    func showCloudDefaultsApplied() {
-        successCallCount += 1
-    }
-
-    func confirmSwitchToCloudLLMDefault() -> Bool {
-        confirmCallCount += 1
-        cloudLLMConfirmCallCount += 1
-        return shouldConfirm
-    }
-
-    func showCloudLLMDefaultApplied() {
-        successCallCount += 1
-        cloudLLMSuccessCallCount += 1
     }
 }

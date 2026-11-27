@@ -1,0 +1,43 @@
+import Combine
+import Foundation
+
+/// Routes every login entry without presenting an intermediate native window.
+@MainActor
+final class WebLoginEntryController {
+    private let coordinator: WebLoginCoordinator
+    private let reportSuccess: () -> Void
+    private let reportFailure: (WebLoginFailure) -> Void
+    private var observation: AnyCancellable?
+    private var reportedFailure = false
+
+    init(coordinator: WebLoginCoordinator,
+         reportFailure: @escaping (WebLoginFailure) -> Void, reportSuccess: @escaping () -> Void = {}) {
+        self.coordinator = coordinator
+        self.reportFailure = reportFailure
+        self.reportSuccess = reportSuccess
+        observation = coordinator.$phase.removeDuplicates().sink { [weak self, weak coordinator] phase in
+            // Published values arrive before the property is updated.
+            Task { @MainActor [weak self] in
+                guard let self, coordinator?.phase == phase else { return }
+                if case .failed = phase { showCurrentFailure() }
+                else {
+                    reportedFailure = false
+                    if phase == .succeeded { reportSuccess() }
+                }
+            }
+        }
+    }
+
+    func show() {
+        if coordinator.phase == .waiting { coordinator.reopen(); return }
+        guard !coordinator.isBusy else { return }
+        reportedFailure = false
+        Task { await coordinator.start() }
+    }
+
+    func showCurrentFailure() {
+        guard case let .failed(failure) = coordinator.phase, !reportedFailure else { return }
+        reportedFailure = true
+        reportFailure(failure)
+    }
+}
