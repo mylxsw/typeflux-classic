@@ -9,6 +9,21 @@ protocol TypefluxOfficialASRRoutingClient: Sendable {
         accessToken: String,
         scenario: TypefluxCloudScenario
     ) async throws -> TypefluxOfficialASRRouteDecision
+
+    /// Issuance for a new gateway attempt bypasses any speculative route cache.
+    func issueRoute(
+        accessToken: String,
+        scenario: TypefluxCloudScenario
+    ) async throws -> TypefluxOfficialASRRouteDecision
+}
+
+extension TypefluxOfficialASRRoutingClient {
+    func issueRoute(
+        accessToken: String,
+        scenario: TypefluxCloudScenario
+    ) async throws -> TypefluxOfficialASRRouteDecision {
+        try await fetchRoute(accessToken: accessToken, scenario: scenario)
+    }
 }
 
 enum TypefluxOfficialASRRoutingError: LocalizedError, Equatable {

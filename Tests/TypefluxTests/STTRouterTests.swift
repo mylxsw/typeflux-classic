@@ -588,6 +588,37 @@ final class STTRouterTests: XCTestCase {
         XCTAssertEqual(result, "cloud result")
     }
 
+    func testTypefluxOfficialDoesNotRetryTheRecordingAfterGatewayReceivesAudio() async throws {
+        settings.sttProvider = .typefluxOfficial
+        settings.useAppleSpeechFallback = false
+        let (first, second) = try await LocalASRGateway.startPair(.closeOnAudio, .succeed("unexpected retry"))
+        defer {
+            first.stop()
+            second.stop()
+        }
+        let routing = RecordingRoutingClient(servers: [first.baseURL, second.baseURL])
+        let cloud = TypefluxOfficialTranscriber(
+            routingClient: routing, serverRegistry: RecordingRegistry(), accessTokenProvider: { "test-access" }
+        )
+        let router = makeRouter(typefluxOfficialOverride: cloud)
+        let file = try ASRTestAudio.writeSilentWAV()
+        defer { try? FileManager.default.removeItem(at: file) }
+
+        do {
+            _ = try await router.transcribe(audioFile: AudioFile(fileURL: file, duration: 0.1))
+            XCTFail("Expected the recording to fail")
+        } catch {
+            guard case .unexpectedClose? = error as? TypefluxOfficialASRError else {
+                return XCTFail("Expected an unexpected disconnect, got \(error)")
+            }
+        }
+
+        let issued = await routing.accessTokens.count
+        XCTAssertEqual(issued, 1)
+        XCTAssertEqual(first.connectionCount, 1)
+        XCTAssertEqual(second.connectionCount, 0)
+    }
+
     func testTypefluxOfficialBillingFailureDoesNotFallBackToAppleSpeech() async throws {
         let billingError = TypefluxCloudBillingError(reason: .subscriptionRequired, serverMessage: nil)
         settings.sttProvider = .typefluxOfficial

@@ -2425,6 +2425,39 @@ final class WorkflowControllerProcessingTests: XCTestCase {
     }
 
     @MainActor
+    func testTypefluxRealtimeFailureDoesNotReplayRecordedAudio() async {
+        let textInjector = MockProcessingTextInjector()
+        let historyStore = MockProcessingHistoryStore()
+        let failure = TypefluxOfficialASRError.unexpectedClose
+        let controller = makeWorkflowController(
+            textInjector: textInjector,
+            sttTranscriber: MockProcessingTranscriber(transcript: "unexpected replay"),
+            historyStore: historyStore,
+            configureSettings: { $0.sttProvider = .typefluxOfficial },
+            hasPaidCloudSubscription: { true }
+        )
+
+        await controller.process(
+            audioFile: AudioFile(fileURL: URL(fileURLWithPath: "/tmp/mock.wav"), duration: 1),
+            realtimeTranscriptionSession: FailedRealtimeAudioInput(failure),
+            usesTypefluxRealtimeGateway: true,
+            record: HistoryRecord(date: Date(), recordingStatus: .succeeded, transcriptionStatus: .running),
+            selectionSnapshot: TextSelectionSnapshot(),
+            selectedText: nil,
+            askContextText: nil,
+            inputContext: nil,
+            personaPrompt: nil,
+            recordingIntent: .dictation,
+            sessionID: controller.processingSessionID
+        )
+
+        XCTAssertTrue(textInjector.insertedTexts.isEmpty)
+        XCTAssertEqual(historyStore.list().last?.transcriptionStatus, .failed)
+        let reason = failure.localizedDescription
+        XCTAssertTrue(historyStore.list().last?.errorMessage?.contains(reason) == true)
+    }
+
+    @MainActor
     func testLockedPersonaRewriteReusesRealtimeSessionWhenOptimizeDiffers() async {
         let textInjector = MockProcessingTextInjector()
         let historyStore = MockProcessingHistoryStore()
