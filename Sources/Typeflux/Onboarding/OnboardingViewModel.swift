@@ -688,8 +688,7 @@ final class OnboardingViewModel: ObservableObject {
             llmModel = settingsStore.llmModel(for: .typefluxCloud)
             llmAPIKey = settingsStore.llmAPIKey(for: .typefluxCloud)
             settingsStore.sttProvider = .typefluxOfficial
-            settingsStore.llmProvider = .openAICompatible
-            settingsStore.llmRemoteProvider = .typefluxCloud
+            selectCloudRewriteModel()
         case .stt:
             settingsStore.sttProvider = sttProvider
             switch sttProvider {
@@ -726,6 +725,7 @@ final class OnboardingViewModel: ObservableObject {
                 break
             }
         case .llm:
+            let previous = settingsStore.rewriteModelSelection
             settingsStore.llmProvider = llmProvider
             if llmProvider == .openAICompatible {
                 settingsStore.llmRemoteProvider = llmRemoteProvider
@@ -736,6 +736,7 @@ final class OnboardingViewModel: ObservableObject {
                 settingsStore.ollamaBaseURL = ollamaBaseURL
                 settingsStore.ollamaModel = ollamaModel
             }
+            settingsStore.exportSharedRewriteModelSelection(ifChangedFrom: previous)
         case .permissions, .shortcuts:
             break
         }
@@ -750,10 +751,16 @@ final class OnboardingViewModel: ObservableObject {
         llmModel = settingsStore.llmModel(for: .typefluxCloud)
         llmAPIKey = settingsStore.llmAPIKey(for: .typefluxCloud)
         settingsStore.sttProvider = .typefluxOfficial
-        settingsStore.llmProvider = .openAICompatible
-        settingsStore.llmRemoteProvider = .typefluxCloud
+        selectCloudRewriteModel()
         sttConnectionTestState = .idle
         llmConnectionTestState = .idle
+    }
+
+    private func selectCloudRewriteModel() {
+        let previous = settingsStore.rewriteModelSelection
+        settingsStore.llmProvider = .openAICompatible
+        settingsStore.llmRemoteProvider = .typefluxCloud
+        settingsStore.exportSharedRewriteModelSelection(ifChangedFrom: previous)
     }
 
     private func complete() {

@@ -12,10 +12,12 @@ final class AppCoordinator {
     private var authAnalyticsObserver: NSObjectProtocol?
     private var authLogoutObserver: NSObjectProtocol?
     private var authSubscriptionObserver: NSObjectProtocol?
+    private var cloudRewriteModelObserver: NSObjectProtocol?
     private var permissionAnalyticsTimer: Timer?
 
     // swiftlint:disable:next function_body_length
     func start() {
+        cloudRewriteModelObserver = di.settingsStore.observeCloudRewriteModelDefaults()
         di.analyticsReporter.reportFirstOpenIfNeeded()
         di.analyticsReporter.report(
             eventName: "app_launch",
@@ -169,6 +171,8 @@ final class AppCoordinator {
     }
 
     func stop() {
+        if let cloudRewriteModelObserver { NotificationCenter.default.removeObserver(cloudRewriteModelObserver) }
+        cloudRewriteModelObserver = nil
         if let authAnalyticsObserver { NotificationCenter.default.removeObserver(authAnalyticsObserver) }
         if let authLogoutObserver { NotificationCenter.default.removeObserver(authLogoutObserver) }
         if let authSubscriptionObserver { NotificationCenter.default.removeObserver(authSubscriptionObserver) }

@@ -3,6 +3,40 @@ import XCTest
 
 @MainActor
 final class SettingsViewModelCloudDefaultsTests: XCTestCase {
+    func testSettingsModelEditorExportsOnlyCommittedActiveChanges() throws {
+        let settings = try ClassicCompatibilityContractTests.makeFixtureSettings("defaults-endpoint")
+        defer { settings.store.defaults.removePersistentDomain(forName: settings.suite) }
+        let referenceKey = "llm.profile.reference"
+        let store = settings.store
+        store.llmRemoteProvider = .gemini
+        let viewModel = StudioViewModel(
+            settingsStore: store,
+            historyStore: EmptyHistoryStore(),
+            initialSection: .models,
+            modelManager: NoopOllamaModelManager(),
+            localModelManager: NoopLocalSTTModelManager()
+        )
+        viewModel.sharedRewriteSelectionUnavailable = !store.importSharedRewriteModelSelection()
+        viewModel.setModelDomain(.llm)
+        viewModel.focusModelProvider(.openAI)
+        viewModel.setLLMModel("gpt-4o-mini")
+        viewModel.applyModelConfiguration(shouldShowToast: false)
+        XCTAssertTrue(viewModel.sharedRewriteSelectionUnavailable)
+        XCTAssertEqual(store.defaults.string(forKey: referenceKey), "custom:fixture-endpoint")
+
+        viewModel.setLLMRemoteProvider(.openAI)
+        XCTAssertFalse(viewModel.sharedRewriteSelectionUnavailable)
+        XCTAssertEqual(store.defaults.string(forKey: referenceKey), "custom:fixture-openai")
+
+        viewModel.setLLMModel("new-model")
+        XCTAssertEqual(store.defaults.string(forKey: referenceKey), "custom:fixture-openai")
+        viewModel.applyModelConfiguration(shouldShowToast: false)
+        XCTAssertNil(store.defaults.object(forKey: referenceKey))
+
+        viewModel.setLLMModelSelection(.ollama, suggestedModel: "qwen3:8b")
+        XCTAssertEqual(store.defaults.string(forKey: referenceKey), "custom:fixture-ollama")
+    }
+
     func testCloudDefaultsNotificationSyncsModelSelectionState() async throws {
         let suiteName = "SettingsViewModelCloudDefaultsTests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))

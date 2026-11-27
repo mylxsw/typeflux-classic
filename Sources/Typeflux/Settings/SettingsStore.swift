@@ -105,6 +105,7 @@ final class SettingsStore {
     static let englishPersonaID = UUID(uuidString: "2A7A4A74-A8AC-4F3C-9FB1-5A433EDFA002")!
 
     let defaults: UserDefaults
+    var lastBridgedRewriteModelSelection: RewriteModelSelection?
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
