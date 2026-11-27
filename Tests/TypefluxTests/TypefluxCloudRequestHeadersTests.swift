@@ -79,13 +79,25 @@ final class TypefluxCloudRequestHeadersTests: XCTestCase {
         XCTAssertEqual(headers[TypefluxCloudRequestHeaders.scenarioField], "ask-anything")
         XCTAssertEqual(headers["x-client-product"], "classic")
         XCTAssertEqual(headers["X-Typeflux-Credit-Version"], "2")
-        XCTAssertNil(headers["X-Typeflux-Feature"])
-        XCTAssertNil(headers["X-Typeflux-Model-Catalog"])
+        XCTAssertEqual(headers["X-Typeflux-Feature"], "ask-selection")
+        XCTAssertEqual(headers["X-Typeflux-Model-Catalog"], "1")
         XCTAssertNil(headers["X-Typeflux-Dictionary-Version"])
         XCTAssertNil(headers["X-Typeflux-Capabilities"])
         XCTAssertNil(headers["X-Typeflux-Agent-Capabilities"])
         XCTAssertEqual(headers["User-Agent"], "Typeflux/1.2.3")
         XCTAssertEqual(headers[TypefluxCloudRequestHeaders.clientIDField], "client-123")
+    }
+
+    func testOnlyAskRequestsSelectAServerFeatureRoute() {
+        for scenario in TypefluxCloudScenario.allCases where scenario != .askAnything {
+            let headers = TypefluxCloudRequestHeaders.applyingScenario(
+                scenario,
+                provider: .typefluxCloud,
+                clientInfoProvider: .fixture
+            )
+            XCTAssertNil(headers["X-Typeflux-Feature"], scenario.rawValue)
+            XCTAssertNil(headers["X-Typeflux-Model-Catalog"], scenario.rawValue)
+        }
     }
 
     func testNonTypefluxCloudScenarioHeadersDoNotIncludeClientInfo() {
@@ -98,6 +110,7 @@ final class TypefluxCloudRequestHeadersTests: XCTestCase {
 
         XCTAssertEqual(headers["x-request-id"], "req-1")
         XCTAssertNil(headers[TypefluxCloudRequestHeaders.scenarioField])
+        XCTAssertNil(headers["X-Typeflux-Feature"])
         XCTAssertNil(headers["x-client-product"])
         XCTAssertNil(headers["User-Agent"])
         XCTAssertNil(headers[TypefluxCloudRequestHeaders.clientIDField])

@@ -137,11 +137,19 @@ enum TypefluxCloudScenario: String, CaseIterable, Hashable, Sendable {
     case textRewrite = "text-rewrite"
     case automaticVocabulary = "automatic-vocabulary"
     case modelSetup = "model-setup"
+
+    /// Server feature route. Without it, Ask falls back to the rewrite route,
+    /// whose model and tuning reject Ask's tool calls.
+    var feature: String? {
+        self == .askAnything ? "ask-selection" : nil
+    }
 }
 
 enum TypefluxCloudRequestHeaders {
     static let creditVersionField = "X-Typeflux-Credit-Version"
     static let scenarioField = "x-scenario"
+    static let featureField = "X-Typeflux-Feature"
+    static let modelCatalogField = "X-Typeflux-Model-Catalog"
     static let clientProductField = "x-client-product"
     static let clientIDField = "x-client-id"
     static let clientLocaleField = "x-client-locale"
@@ -231,6 +239,10 @@ enum TypefluxCloudRequestHeaders {
 
         var merged = applyingClientInfo(to: headers, provider: clientInfoProvider)
         merged[scenarioField] = scenario.rawValue
+        if let feature = scenario.feature {
+            merged[featureField] = feature
+            merged[modelCatalogField] = "1"
+        }
         return merged
     }
 }
