@@ -1485,7 +1485,7 @@
 "auth.web.storageFailed" = "Your session could not be saved in Keychain. Unlock Keychain and start again.";
 "auth.web.invalidResponse" = "The sign-in service returned an unexpected response. Start sign-in again; if this continues, contact support.";
 "auth.web.networkUnavailable" = "Cannot reach the sign-in service. Check your connection, then try again.";
-"auth.web.transportBlocked" = "This app build cannot connect to the sign-in service. Update Typeflux or contact support.";
+"auth.web.transportBlocked" = "This app build cannot connect to the sign-in service. Update Typeflux Classic or contact support.";
 "auth.web.endpointUnavailable" = "Sign-in is temporarily unavailable. Try again later; if this continues, contact support.";
 "auth.web.requestRejected" = "The sign-in request was not accepted. Start sign-in again; if this continues, contact support.";
 "auth.web.serviceUnavailable" = "The sign-in service is temporarily unavailable. Try again later.";
@@ -1495,5 +1495,5 @@
 "auth.web.retry" = "Start sign-in again";
 "billing.subscription.refreshFailed" = "Could not refresh your subscription. Please try again.";
 "auth.web.successTitle" = "Signed in successfully";
-"auth.web.successMessage" = "You’re ready to use Typeflux.";
+"auth.web.successMessage" = "You’re ready to use Typeflux Classic.";
 "settings.models.sharedRewriteUnavailable" = "The rewrite model selected in Typeflux is unavailable in Classic.";

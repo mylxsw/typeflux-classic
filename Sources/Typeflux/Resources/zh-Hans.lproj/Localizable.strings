@@ -1485,7 +1485,7 @@
 "auth.web.storageFailed" = "无法将会话保存到钥匙串，请解锁钥匙串后重新登录。";
 "auth.web.invalidResponse" = "登录服务返回了无法识别的结果。请重新发起登录；若持续出现，请联系支持。";
 "auth.web.networkUnavailable" = "无法连接登录服务。请检查网络后重试。";
-"auth.web.transportBlocked" = "当前应用版本无法连接登录服务。请更新 Typeflux 或联系支持。";
+"auth.web.transportBlocked" = "当前应用版本无法连接登录服务。请更新 Typeflux Classic 或联系支持。";
 "auth.web.endpointUnavailable" = "登录服务暂时不可用。请稍后重试；若持续出现，请联系支持。";
 "auth.web.requestRejected" = "登录请求未被接受。请重新发起登录；若持续出现，请联系支持。";
 "auth.web.serviceUnavailable" = "登录服务暂时不可用。请稍后重试。";
@@ -1495,5 +1495,5 @@
 "auth.web.retry" = "重新发起登录";
 "billing.subscription.refreshFailed" = "订阅信息刷新失败，请重试。";
 "auth.web.successTitle" = "登录成功";
-"auth.web.successMessage" = "现在可以开始使用 Typeflux 了。";
+"auth.web.successMessage" = "现在可以开始使用 Typeflux Classic 了。";
 "settings.models.sharedRewriteUnavailable" = "完整版中选择的润色模型在 Classic 中不可用。";

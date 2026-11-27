@@ -1485,7 +1485,7 @@
 "auth.web.storageFailed" = "無法將工作階段儲存至鑰匙圈，請解鎖鑰匙圈後重新登入。";
 "auth.web.invalidResponse" = "登入服務傳回無法辨識的結果。請重新開始登入；若持續發生，請聯絡支援。";
 "auth.web.networkUnavailable" = "無法連線至登入服務。請檢查網路後重試。";
-"auth.web.transportBlocked" = "目前的 App 版本無法連線至登入服務。請更新 Typeflux 或聯絡支援。";
+"auth.web.transportBlocked" = "目前的 App 版本無法連線至登入服務。請更新 Typeflux Classic 或聯絡支援。";
 "auth.web.endpointUnavailable" = "登入服務暫時無法使用。請稍後重試；若持續發生，請聯絡支援。";
 "auth.web.requestRejected" = "登入請求未被接受。請重新開始登入；若持續發生，請聯絡支援。";
 "auth.web.serviceUnavailable" = "登入服務暫時無法使用。請稍後重試。";
@@ -1495,5 +1495,5 @@
 "auth.web.retry" = "重新開始登入";
 "billing.subscription.refreshFailed" = "訂閱資訊重新整理失敗，請重試。";
 "auth.web.successTitle" = "登入成功";
-"auth.web.successMessage" = "現在可以開始使用 Typeflux 了。";
+"auth.web.successMessage" = "現在可以開始使用 Typeflux Classic 了。";
 "settings.models.sharedRewriteUnavailable" = "完整版中選擇的潤飾模型在 Classic 中無法使用。";
