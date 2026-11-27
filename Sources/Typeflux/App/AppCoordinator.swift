@@ -2,7 +2,7 @@ import AppKit
 
 @MainActor
 final class AppCoordinator {
-    private let di = DIContainer()
+    let di = DIContainer()
 
     private var statusBarController: StatusBarController?
     private var workflowController: WorkflowController?
@@ -148,6 +148,7 @@ final class AppCoordinator {
         di.bundledModelAutoSetup.applyIfNeeded()
         di.autoModelDownloadService.triggerIfNeeded()
         AutoUpdater.shared.startAutoCheck(settingsStore: di.settingsStore)
+        startFullAppSwitch()
         UsageStatsStore.shared.backfillIfNeeded(from: di.historyStore) { [weak self] in
             guard let self else { return }
             di.usageDailySummaryReporter.reportIfNeeded(snapshot: .current(from: UsageStatsStore.shared))

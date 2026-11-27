@@ -74,7 +74,10 @@ jobs:
                 suites+=(WindowScreenFittingTests)
                 ;;
               */AutoUpdater.swift | app/Info.plist)
-                suites+=(AutoUpdateArchiveInstallerTests)
+                suites+=(AutoUpdateArchiveInstallerTests FullAppSwitchInstallerTests)
+                ;;
+              Sources/Typeflux/FullAppSwitch/*.swift | */AboutView.swift | */AppCoordinator+FullAppSwitch.swift)
+                suites+=(FullAppSwitchControllerTests FullAppSwitchViewsTests FullAppSwitchInstallerTests)
                 ;;
               Package.swift | Package.resolved | .github/workflows/test.yml)
                 suites+=(TypefluxCloudRequestHeadersTests TypefluxOfficialTranscriberTests AppAnalyticsReporterTests)

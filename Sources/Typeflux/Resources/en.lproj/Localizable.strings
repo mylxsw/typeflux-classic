@@ -222,6 +222,17 @@
 "about.build" = "Build";
 "about.build.subtitle" = "Read from the app bundle";
 "classic.fullVersion.link" = "Learn about the full Typeflux";
+"fullAppSwitch.action.switch" = "Switch to Typeflux";
+"fullAppSwitch.confirm.title" = "Switch to Typeflux?";
+"fullAppSwitch.confirm.dataKept" = "Your data and account are kept.";
+"fullAppSwitch.confirm.action" = "Switch";
+"fullAppSwitch.downloading" = "Downloading Typeflux";
+"fullAppSwitch.installing" = "Installing Typeflux";
+"fullAppSwitch.failed" = "Couldn't switch to Typeflux";
+"fullAppSwitch.error.identity" = "The download isn't a genuine Typeflux, so it wasn't installed.";
+"fullAppSwitch.error.unavailable" = "Typeflux isn't available right now.";
+"fullAppSwitch.error.busy" = "Finish the current recording, then try again.";
+"fullAppSwitch.error.download" = "Couldn't download Typeflux. Check your network connection and try again.";
 
 "permission.microphone.title" = "Microphone";
 "permission.microphone.summary" = "Required to capture audio from the system microphone.";

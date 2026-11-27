@@ -60,12 +60,28 @@ final class ClassicProductBrandingTests: XCTestCase {
         for language in AppLanguage.allCases {
             let table = try localizedTable(for: language)
             for (key, value) in table where !matches(Self.sharedServiceKeyPattern, key) {
-                guard !Self.fullTypefluxReferenceKeys.contains(key) else { continue }
+                guard !Self.fullTypefluxReferenceKeys.contains(key), !key.hasPrefix(Self.fullAppSwitchKeyPrefix) else { continue }
                 XCTAssertFalse(
                     matches(Self.bareProductNamePattern, value),
                     "Bare product name in \(key) for \(language.rawValue): \(value)"
                 )
             }
+        }
+    }
+
+    /// The switch to the full app names its target, the full Typeflux, and never Classic.
+    private static let fullAppSwitchKeyPrefix = "fullAppSwitch."
+
+    func testFullAppSwitchCopyNamesFullTypefluxInEveryLanguage() throws {
+        for language in AppLanguage.allCases {
+            let table = try localizedTable(for: language)
+            let switchCopy = table.filter { $0.key.hasPrefix(Self.fullAppSwitchKeyPrefix) }
+            XCTAssertFalse(switchCopy.isEmpty, "Missing switch copy in \(language.rawValue)")
+            for (key, value) in switchCopy {
+                XCTAssertFalse(value.contains("Classic"), "\(key) in \(language.rawValue): \(value)")
+            }
+            let action = try XCTUnwrap(table["fullAppSwitch.action.switch"], "Missing action in \(language.rawValue)")
+            XCTAssertTrue(action.contains("Typeflux"), action)
         }
     }
 

@@ -222,6 +222,17 @@
 "about.build" = "ビルド番号";
 "about.build.subtitle" = "アプリバンドルから読み取る";
 "classic.fullVersion.link" = "Typeflux 完全版について";
+"fullAppSwitch.action.switch" = "Typeflux に切り替える";
+"fullAppSwitch.confirm.title" = "Typeflux に切り替えますか？";
+"fullAppSwitch.confirm.dataKept" = "データとアカウントはそのまま残ります。";
+"fullAppSwitch.confirm.action" = "切り替える";
+"fullAppSwitch.downloading" = "Typeflux をダウンロード中";
+"fullAppSwitch.installing" = "Typeflux をインストール中";
+"fullAppSwitch.failed" = "Typeflux に切り替えられませんでした";
+"fullAppSwitch.error.identity" = "ダウンロードしたアプリは正規の Typeflux ではないため、インストールしませんでした。";
+"fullAppSwitch.error.unavailable" = "Typeflux は現在利用できません。";
+"fullAppSwitch.error.busy" = "現在の録音を終えてから、もう一度お試しください。";
+"fullAppSwitch.error.download" = "Typeflux をダウンロードできませんでした。ネットワーク接続を確認して、もう一度お試しください。";
 
 "permission.microphone.title" = "マイク";
 "permission.microphone.summary" = "システムマイクから音声をキャプチャするために必要です。";

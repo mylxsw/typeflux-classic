@@ -18,6 +18,7 @@ struct AboutView: View {
                 VStack(alignment: .leading, spacing: StudioTheme.Spacing.pageGroup) {
                     headerCard
                     detailsCard
+                        .refreshesFullAppAvailability()
                 }
                 .padding(StudioTheme.Insets.cardDefault)
                 .frame(maxWidth: 560, alignment: .leading)
@@ -128,7 +129,37 @@ struct AboutView: View {
                 value: versionDescription,
                 subtitle: L("about.build.subtitle")
             )
+
+            FullAppSwitchEntry(controller: .shared) {
+                divider
+                fullAppSwitchRow
+            }
         }
+    }
+
+    private var fullAppSwitchRow: some View {
+        Button {
+            FullAppSwitchWindowController.shared.present()
+        } label: {
+            HStack(alignment: .center, spacing: StudioTheme.Spacing.medium) {
+                detailIcon("arrow.left.arrow.right")
+                VStack(alignment: .leading, spacing: StudioTheme.Spacing.xxxSmall) {
+                    Text(verbatim: "Typeflux")
+                        .font(.studioBody(StudioTheme.Typography.caption, weight: .semibold))
+                        .foregroundStyle(StudioTheme.textSecondary)
+                    Text(L("fullAppSwitch.action.switch"))
+                        .font(.studioBody(StudioTheme.Typography.settingTitle, weight: .semibold))
+                        .foregroundStyle(StudioTheme.textPrimary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: StudioTheme.Typography.iconXSmall, weight: .semibold))
+                    .foregroundStyle(StudioTheme.textTertiary)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(StudioInteractiveButtonStyle())
+        .accessibilityIdentifier("about.fullApp.switch")
     }
 
     private func detailRow(icon: String, title: String, value: String, subtitle: String) -> some View {
