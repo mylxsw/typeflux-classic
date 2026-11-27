@@ -322,6 +322,6 @@ final class LocalizationReleaseTests: XCTestCase {
                 "auth.account.subscriptionStatusFree",
             ]
         ),
-        Allowance(reason: "Product name shown by macOS.", keys: ["CFBundleDisplayName"], table: "InfoPlist.strings")
+        Allowance(reason: "Product name shown by macOS.", keys: ["CFBundleDisplayName", "CFBundleName"], table: "InfoPlist.strings")
     ]
 }

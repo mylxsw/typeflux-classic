@@ -11,8 +11,10 @@ private final class TransparentSettingsHostingView<Content: View>: NSHostingView
 final class SettingsWindowController: NSObject {
     static let shared = SettingsWindowController()
 
+    /// The area the window has to fit when it opens; replaced by tests.
+    var visibleScreenFrame: () -> NSRect? = { NSScreen.main?.visibleFrame }
     private var settingsStore: SettingsStore?
-    private var window: NSWindow?
+    private(set) var window: NSWindow?
     private var viewModel: StudioViewModel?
     private var languageObserver: NSObjectProtocol?
     private var appearanceObserver: NSObjectProtocol?
@@ -105,13 +107,20 @@ final class SettingsWindowController: NSObject {
         window.contentView = hosting
         window.isReleasedWhenClosed = false
         window.delegate = self
-        let minimumWindowSize = NSSize(
+        var minimumWindowSize = NSSize(
             width: StudioTheme.Layout.settingsWindowMinWidth,
             height: StudioTheme.Layout.settingsWindowMinHeight
         )
+        let visibleFrame = visibleScreenFrame()
+        if let visibleFrame {
+            minimumWindowSize = WindowScreenFitting.size(minimumWindowSize, within: visibleFrame)
+        }
         window.minSize = minimumWindowSize
         window.contentMinSize = minimumWindowSize
         window.appearance = AppAppearance.nsAppearance(for: settingsStore.appearanceMode)
+        if let visibleFrame {
+            window.setFrame(WindowScreenFitting.frame(window.frame, within: visibleFrame), display: false)
+        }
 
         self.viewModel = viewModel
         self.window = window

@@ -336,6 +336,7 @@
 "localSTT.funASR.summary" = "Alibaba DAMO Academyが開発したParaformerアーキテクチャの中国語特化ASRモデル。高速かつ高精度。";
 "localSTT.funASR.parameterValue" = "220M";
 "localSTT.funASR.sizeValue" = "~180 MB";
+"localSTT.parameterCount" = "%@ パラメータ";
 "localSTT.prepare.runtimePreparing" = "ネイティブローカル音声ランタイムを準備しています...";
 "localSTT.prepare.cleaningLegacyRuntime" = "旧 Python ランタイムをクリーンアップしています...";
 "localSTT.prepare.runtimeDownloading" = "Sherpa-ONNX ネイティブランタイムをダウンロードしています...";
@@ -1484,7 +1485,7 @@
 "auth.web.storageFailed" = "キーチェーンに保存できませんでした。キーチェーンを解除してログインし直してください。";
 "auth.web.invalidResponse" = "ログインサービスから予期しない応答がありました。最初からやり直してください。続く場合はサポートに連絡してください。";
 "auth.web.networkUnavailable" = "ログインサービスに接続できません。ネットワークを確認して再試行してください。";
-"auth.web.transportBlocked" = "このアプリのバージョンではログインサービスに接続できません。Typeflux を更新するか、サポートに連絡してください。";
+"auth.web.transportBlocked" = "このアプリのバージョンではログインサービスに接続できません。Typeflux Classic を更新するか、サポートに連絡してください。";
 "auth.web.endpointUnavailable" = "ログインサービスを一時的に利用できません。後ほど再試行してください。続く場合はサポートに連絡してください。";
 "auth.web.requestRejected" = "ログイン要求が受け付けられませんでした。最初からやり直してください。続く場合はサポートに連絡してください。";
 "auth.web.serviceUnavailable" = "ログインサービスを一時的に利用できません。後ほど再試行してください。";
@@ -1494,5 +1495,5 @@
 "auth.web.retry" = "ログインをやり直す";
 "billing.subscription.refreshFailed" = "サブスクリプションを更新できませんでした。もう一度お試しください。";
 "auth.web.successTitle" = "ログインしました";
-"auth.web.successMessage" = "Typeflux を使い始められます。";
+"auth.web.successMessage" = "Typeflux Classic を使い始められます。";
 "settings.models.sharedRewriteUnavailable" = "Typeflux で選択した文章整形モデルは Classic では使用できません。";

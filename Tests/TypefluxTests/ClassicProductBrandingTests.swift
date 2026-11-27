@@ -34,7 +34,7 @@ final class ClassicProductBrandingTests: XCTestCase {
     /// A bare "Typeflux" that is not a path, an identifier, or a shared service / account name.
     private static let bareProductNamePattern = try! NSRegularExpression(
         pattern: #"(?<![/\w])Typeflux(?![_A-Za-z/])"#
-            + #"(?!\s*(Classic|Cloud|Official|account|账号|账户|帳號|帳戶|アカウント|계정|云端|雲端|クラウド|클라우드|官方|公式|공식|'s built-in))"#
+            + #"(?!\s*(Classic|Cloud|Official|website|のウェブサイト|웹사이트|官网|官網|account|账号|账户|帳號|帳戶|アカウント|계정|云端|雲端|クラウド|클라우드|官方|公式|공식|'s built-in))"#
     )
 
     func testProductNameIsTypefluxClassicInEveryLanguage() throws {
@@ -50,11 +50,17 @@ final class ClassicProductBrandingTests: XCTestCase {
         }
     }
 
+    /// Copy that deliberately names the full Typeflux app, which Classic shares settings with.
+    private static let fullTypefluxReferenceKeys: Set<String> = [
+        "classic.fullVersion.link",
+        "settings.models.sharedRewriteUnavailable"
+    ]
+
     func testNoBareTypefluxProductNameRemainsInUserVisibleCopy() throws {
         for language in AppLanguage.allCases {
             let table = try localizedTable(for: language)
             for (key, value) in table where !matches(Self.sharedServiceKeyPattern, key) {
-                guard key != "classic.fullVersion.link" else { continue }
+                guard !Self.fullTypefluxReferenceKeys.contains(key) else { continue }
                 XCTAssertFalse(
                     matches(Self.bareProductNamePattern, value),
                     "Bare product name in \(key) for \(language.rawValue): \(value)"
@@ -126,7 +132,8 @@ final class ClassicProductBrandingTests: XCTestCase {
         for localization in localizations {
             let strings = try infoPlist(at: "app/\(localization).lproj/InfoPlist.strings")
             XCTAssertEqual(strings["CFBundleDisplayName"] as? String, Self.productName, localization)
-            XCTAssertNil(strings["CFBundleName"], localization)
+            // The menu bar takes the application menu title from CFBundleName.
+            XCTAssertEqual(strings["CFBundleName"] as? String, Self.productName, localization)
         }
     }
 

@@ -25,7 +25,8 @@ enum AppMenuController {
     private static func buildApplicationMenu() -> NSMenu {
         let menu = NSMenu(title: L("about.appName"))
 
-        let appName = ProcessInfo.processInfo.processName
+        // The process is still named after the "Typeflux" executable.
+        let appName = L("about.appName")
         let aboutItem = NSMenuItem(
             title: L("appMenu.about", appName),
             action: #selector(AppMenuActionRouter.openAbout(_:)),

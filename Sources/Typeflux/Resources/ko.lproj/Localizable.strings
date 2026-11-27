@@ -336,6 +336,7 @@
 "localSTT.funASR.summary" = "Alibaba DAMO Academy가 개발한 Paraformer 아키텍처 기반의 중국어 특화 ASR 모델. 빠르고 정확합니다.";
 "localSTT.funASR.parameterValue" = "220M";
 "localSTT.funASR.sizeValue" = "~180 MB";
+"localSTT.parameterCount" = "%@ 파라미터";
 "localSTT.prepare.runtimePreparing" = "네이티브 로컬 음성 런타임을 준비 중입니다...";
 "localSTT.prepare.cleaningLegacyRuntime" = "레거시 Python 런타임을 정리 중입니다...";
 "localSTT.prepare.runtimeDownloading" = "Sherpa-ONNX 네이티브 런타임을 다운로드 중입니다...";
@@ -1484,7 +1485,7 @@
 "auth.web.storageFailed" = "키체인에 세션을 저장할 수 없습니다. 키체인을 잠금 해제하고 다시 로그인하세요.";
 "auth.web.invalidResponse" = "로그인 서비스에서 예상하지 못한 응답을 받았습니다. 로그인을 다시 시작하세요. 계속되면 지원팀에 문의하세요.";
 "auth.web.networkUnavailable" = "로그인 서비스에 연결할 수 없습니다. 네트워크를 확인한 후 다시 시도하세요.";
-"auth.web.transportBlocked" = "현재 앱 버전에서 로그인 서비스에 연결할 수 없습니다. Typeflux를 업데이트하거나 지원팀에 문의하세요.";
+"auth.web.transportBlocked" = "현재 앱 버전에서 로그인 서비스에 연결할 수 없습니다. Typeflux Classic을 업데이트하거나 지원팀에 문의하세요.";
 "auth.web.endpointUnavailable" = "로그인 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도하세요. 계속되면 지원팀에 문의하세요.";
 "auth.web.requestRejected" = "로그인 요청이 수락되지 않았습니다. 로그인을 다시 시작하세요. 계속되면 지원팀에 문의하세요.";
 "auth.web.serviceUnavailable" = "로그인 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도하세요.";
@@ -1494,5 +1495,5 @@
 "auth.web.retry" = "로그인 다시 시작";
 "billing.subscription.refreshFailed" = "구독 정보를 새로 고치지 못했습니다. 다시 시도해 주세요.";
 "auth.web.successTitle" = "로그인 완료";
-"auth.web.successMessage" = "이제 Typeflux를 사용할 수 있습니다.";
+"auth.web.successMessage" = "이제 Typeflux Classic을 사용할 수 있습니다.";
 "settings.models.sharedRewriteUnavailable" = "Typeflux에서 선택한 문장 다듬기 모델은 Classic에서 사용할 수 없습니다.";
