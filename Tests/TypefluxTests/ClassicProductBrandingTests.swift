@@ -126,7 +126,8 @@ final class ClassicProductBrandingTests: XCTestCase {
         for localization in localizations {
             let strings = try infoPlist(at: "app/\(localization).lproj/InfoPlist.strings")
             XCTAssertEqual(strings["CFBundleDisplayName"] as? String, Self.productName, localization)
-            XCTAssertNil(strings["CFBundleName"], localization)
+            // The menu bar takes the application menu title from CFBundleName.
+            XCTAssertEqual(strings["CFBundleName"] as? String, Self.productName, localization)
         }
     }
 

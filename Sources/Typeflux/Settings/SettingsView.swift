@@ -5770,7 +5770,7 @@ struct StudioView: View {
 
             HStack(spacing: StudioTheme.Spacing.xSmall) {
                 localSTTSpecPill(model.displayName)
-                localSTTSpecPill("\(specs.parameterValue) parameters")
+                localSTTSpecPill(specs.parameterCountText)
                 localSTTSpecPill(specs.sizeValue)
             }
 

@@ -336,6 +336,7 @@
 "localSTT.funASR.summary" = "Alibaba DAMO Academy가 개발한 Paraformer 아키텍처 기반의 중국어 특화 ASR 모델. 빠르고 정확합니다.";
 "localSTT.funASR.parameterValue" = "220M";
 "localSTT.funASR.sizeValue" = "~180 MB";
+"localSTT.parameterCount" = "%@ 파라미터";
 "localSTT.prepare.runtimePreparing" = "네이티브 로컬 음성 런타임을 준비 중입니다...";
 "localSTT.prepare.cleaningLegacyRuntime" = "레거시 Python 런타임을 정리 중입니다...";
 "localSTT.prepare.runtimeDownloading" = "Sherpa-ONNX 네이티브 런타임을 다운로드 중입니다...";

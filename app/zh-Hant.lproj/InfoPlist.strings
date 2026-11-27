@@ -1,2 +1,3 @@
 /* Localized bundle name. Info.plist keeps CFBundleDisplayName equal to the "Typeflux.app" file name so macOS applies this value. */
 "CFBundleDisplayName" = "Typeflux Classic";
+"CFBundleName" = "Typeflux Classic";

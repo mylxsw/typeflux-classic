@@ -182,7 +182,7 @@
 "menu.agentTasks.viewAll" = "查看所有任务";
 "menu.agentTasks.runningCount" = "%d 个运行中";
 "menu.appearance" = "外观";
-"menu.settings" = "系统设置";
+"menu.settings" = "Typeflux Classic 设置";
 "menu.setupGuide" = "新手引导";
 "menu.about" = "关于 Typeflux Classic";
 "menu.checkForUpdates" = "检查更新";
@@ -336,6 +336,7 @@
 "localSTT.funASR.summary" = "阿里巴巴达摩院开发的 Paraformer 架构中文 ASR 模型，速度快，准确率高。";
 "localSTT.funASR.parameterValue" = "220M";
 "localSTT.funASR.sizeValue" = "~180 MB";
+"localSTT.parameterCount" = "%@ 参数";
 "localSTT.prepare.runtimePreparing" = "正在准备原生本地语音运行时...";
 "localSTT.prepare.cleaningLegacyRuntime" = "正在清理旧版 Python 运行时...";
 "localSTT.prepare.runtimeDownloading" = "正在下载 Sherpa-ONNX 原生运行时...";
