@@ -6,6 +6,12 @@ struct LLMAgentToolCall: Equatable {
 }
 
 enum LLMAgentResponseSupport {
+    /// The provider refused the request parameters (HTTP 400 or 422).
+    static func isRejectedRequest(_ error: Error) -> Bool {
+        let nsError = error as NSError
+        return nsError.domain == "LLM" && (nsError.code == 400 || nsError.code == 422)
+    }
+
     static func openAICompatibleToolBody(
         model: String,
         systemPrompt: String,
