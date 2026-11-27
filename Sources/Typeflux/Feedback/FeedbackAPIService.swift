@@ -315,6 +315,9 @@ enum FeedbackAPIService {
         var request = URLRequest(url: url)
         request.httpMethod = target.method.isEmpty ? "POST" : target.method
         request.timeoutInterval = 60
+        if isAPIOrigin {
+            TypefluxCloudRequestHeaders.applyClientInfo(to: &request)
+        }
         let protectedHeaders: Set<String> = ["authorization", "host", "proxy-authorization"]
         for (name, value) in target.headers where !protectedHeaders.contains(name.lowercased()) {
             request.setValue(value, forHTTPHeaderField: name)

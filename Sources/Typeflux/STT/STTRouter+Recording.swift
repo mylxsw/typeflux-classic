@@ -1,4 +1,9 @@
 extension STTRouter {
+    func snapshotTypefluxCloudSession() async -> Int? {
+        guard typefluxOfficial is TypefluxOfficialTranscriber else { return nil }
+        return await MainActor.run { AuthState.shared.sessionGeneration }
+    }
+
     func prepareForRecording() async {
         if settingsStore.sttProvider != .localModel {
             guard await hasPaidTypefluxCloudSubscription() else { return }
@@ -113,7 +118,8 @@ extension STTRouter {
             return ObservedRealtimeTranscriptionSession(
                 upstream: session,
                 diagnostics: diagnostics,
-                asrOptimize: appliedOptimize
+                asrOptimize: appliedOptimize,
+                usesTypefluxOfficialGateway: provider is TypefluxOfficialTranscriber
             )
         } catch {
             NetworkDebugLogger.logError(context: failureContext, error: error)

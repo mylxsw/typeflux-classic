@@ -68,6 +68,13 @@ actor TypefluxOfficialASRRouteCache: TypefluxOfficialASRRoutingClient {
         return route
     }
 
+    func issueRoute(
+        accessToken: String,
+        scenario: TypefluxCloudScenario
+    ) async throws -> TypefluxOfficialASRRouteDecision {
+        try await upstream.issueRoute(accessToken: accessToken, scenario: scenario)
+    }
+
     func prefetch(accessToken: String, scenario: TypefluxCloudScenario = .voiceInput) async {
         if let entry = entries[scenario],
            entry.accessToken == accessToken,

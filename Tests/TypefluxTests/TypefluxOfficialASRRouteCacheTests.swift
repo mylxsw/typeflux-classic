@@ -20,6 +20,18 @@ final class TypefluxOfficialASRRouteCacheTests: XCTestCase {
         await cache.invalidate()
     }
 
+    func testIssuingRouteBypassesPrefetchedGrant() async throws {
+        let cache = TypefluxOfficialASRRouteCache(upstream: RouteSequenceClient())
+        await cache.prefetch(accessToken: "account-token")
+
+        let freshRoute = try await cache.issueRoute(accessToken: "account-token", scenario: .voiceInput)
+        let prefetchedRoute = try await cache.fetchRoute(accessToken: "account-token", scenario: .voiceInput)
+
+        XCTAssertEqual(freshRoute.token, "route-2")
+        XCTAssertEqual(prefetchedRoute.token, "route-1")
+        await cache.invalidate()
+    }
+
     func testUnusedRouteSchedulesRefreshThirtySecondsBeforeExpiry() async {
         let upstream = RouteSequenceClient(expiresInSeconds: 3_600)
         let sleepRecorder = RouteCacheSleepRecorder()

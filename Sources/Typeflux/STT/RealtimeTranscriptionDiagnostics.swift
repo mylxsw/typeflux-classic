@@ -70,6 +70,10 @@ final class NetworkTransportDiagnosticsRecorder: NSObject, URLSessionTaskDelegat
         value = NetworkTransportDiagnosticsSnapshot(endpoint: endpoint?.absoluteString)
     }
 
+    init(snapshot: NetworkTransportDiagnosticsSnapshot) {
+        value = snapshot
+    }
+
     func updateEndpoint(_ endpoint: URL?) {
         update { $0.endpoint = endpoint?.absoluteString }
     }
@@ -232,15 +236,18 @@ actor ObservedRealtimeTranscriptionSession: RealtimeTranscriptionSession,
     private let upstream: any RealtimeTranscriptionSession
     private let diagnostics: RealtimeTranscriptionDiagnostics
     nonisolated let asrOptimize: Bool?
+    nonisolated let usesTypefluxOfficialGateway: Bool
 
     init(
         upstream: any RealtimeTranscriptionSession,
         diagnostics: RealtimeTranscriptionDiagnostics,
-        asrOptimize: Bool?
+        asrOptimize: Bool?,
+        usesTypefluxOfficialGateway: Bool = false
     ) {
         self.upstream = upstream
         self.diagnostics = diagnostics
         self.asrOptimize = asrOptimize
+        self.usesTypefluxOfficialGateway = usesTypefluxOfficialGateway
     }
 
     func start() async {

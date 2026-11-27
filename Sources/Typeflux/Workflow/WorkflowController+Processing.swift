@@ -450,6 +450,8 @@ extension WorkflowController {
             )
             _ = await liveTranscriptionPreviewer?.finish()
             let realtimeTranscriptionSession = activeRealtimeTranscriptionSession
+            let usesTypefluxRealtimeGateway = (realtimeTranscriptionSession as? ObservedRealtimeTranscriptionSession)?
+                .usesTypefluxOfficialGateway == true
             let realtimeAudioBufferPump = activeRealtimeAudioBufferPump
             let recordingPreviewText = latestRecordingPreviewText.trimmingCharacters(in: .whitespacesAndNewlines)
             activeRealtimeTranscriptionSession = nil
@@ -648,6 +650,7 @@ extension WorkflowController {
                     audioFile: transcriptionAudioFile,
                     lowEnergyRetryAudioFile: retryAudioFile,
                     realtimeTranscriptionSession: completedRealtimeSession,
+                    usesTypefluxRealtimeGateway: usesTypefluxRealtimeGateway,
                     record: record,
                     selectionSnapshot: selectionSnapshot,
                     selectedText: selectedText,
@@ -941,6 +944,7 @@ extension WorkflowController {
         audioFile: AudioFile,
         lowEnergyRetryAudioFile: AudioFile? = nil,
         realtimeTranscriptionSession: (any RealtimeTranscriptionSession)? = nil,
+        usesTypefluxRealtimeGateway: Bool = false,
         record: HistoryRecord,
         selectionSnapshot: TextSelectionSnapshot,
         selectedText: String?,
@@ -1040,6 +1044,10 @@ extension WorkflowController {
                         )
                         rawTranscribedText = ""
                     } else {
+                        // Cloud realtime already owns failover. A batch fallback could replay audio.
+                        if usesTypefluxRealtimeGateway {
+                            throw error
+                        }
                         NetworkDebugLogger.logError(
                             context: "Realtime STT session failed; falling back to recorded audio",
                             error: error

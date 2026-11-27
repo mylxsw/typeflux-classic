@@ -168,6 +168,7 @@ final class WorkflowController {
     var hotkeyPressedAt: TimeInterval?
     var audioRecorderStartedAt: TimeInterval?
     var recordingStartupContext: RecordingStartupContext?
+    private var recordingCloudSession: Int?
     var recordingTimeoutTask: Task<Void, Never>?
     var processingWatchdogTask: Task<Void, Never>?
     var selectionTask: Task<TextSelectionSnapshot, Never>?
@@ -526,6 +527,7 @@ final class WorkflowController {
         shouldFinishRecordingAfterAudioStart = false
         audioRecorderStartedAt = nil
         recordingStartupContext = nil
+        recordingCloudSession = nil
         pendingRecordingStartID = nil
         suppressActivationTapUntil = nil
         recordingMode = .holdToTalk
@@ -1066,6 +1068,7 @@ final class WorkflowController {
     }
 
     func beginRecording(intent: RecordingIntent, startLocked: Bool, startID: UUID? = nil) async {
+        let cloudSession = await sttRouter.snapshotTypefluxCloudSession()
         if let startID, pendingRecordingStartID != startID {
             if !isRecording, pendingRecordingStartID == nil {
                 isAudioRecorderStarting = false
@@ -1074,6 +1077,7 @@ final class WorkflowController {
             return
         }
         RecordingStartupLatencyTrace.shared.mark("workflow.begin_recording")
+        recordingCloudSession = cloudSession
         let gestureDecision = recordingGestureDecision
         var effectiveIntent = recordingIntent == .askSelection && intent == .dictation
             ? RecordingIntent.askSelection
@@ -1184,19 +1188,21 @@ final class WorkflowController {
                 await livePreviewer?.prepareForStart()
             }
             let realtimeSession: (any RealtimeTranscriptionSession)? = if canUseRealtimeTranscription {
-                await sttRouter.makeRealtimeTranscriptionSession(
-                    scenario: .voiceInput,
-                    optimize: optimizeASR,
-                    onUpdate: { [weak self] snapshot in
-                        let trimmed = snapshot.text.trimmingCharacters(in: .whitespacesAndNewlines)
-                        guard !trimmed.isEmpty else { return }
-                        Task { @MainActor [weak self] in
-                            guard let self, isRecording else { return }
-                            latestRecordingPreviewText = trimmed
-                            overlayController.updateRecordingPreviewText(trimmed)
+                await TypefluxOfficialTranscriber.$recordingSession.withValue(cloudSession) {
+                    await sttRouter.makeRealtimeTranscriptionSession(
+                        scenario: .voiceInput,
+                        optimize: optimizeASR,
+                        onUpdate: { [weak self] snapshot in
+                            let trimmed = snapshot.text.trimmingCharacters(in: .whitespacesAndNewlines)
+                            guard !trimmed.isEmpty else { return }
+                            Task { @MainActor [weak self] in
+                                guard let self, isRecording else { return }
+                                latestRecordingPreviewText = trimmed
+                                overlayController.updateRecordingPreviewText(trimmed)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             } else {
                 nil
             }
@@ -1284,7 +1290,9 @@ final class WorkflowController {
             }
 
             Task { [weak self] in
-                await self?.sttRouter.prepareForRecording()
+                await TypefluxOfficialTranscriber.$recordingSession.withValue(cloudSession) {
+                    await self?.sttRouter.prepareForRecording()
+                }
             }
 
             // Set a timeout to auto-stop recording after 10 minutes
@@ -1318,6 +1326,7 @@ final class WorkflowController {
             audioRecorderStartedAt = nil
             let startupContext = recordingStartupContext
             recordingStartupContext = nil
+            recordingCloudSession = nil
             pendingRecordingStartID = nil
             suppressActivationTapUntil = nil
             recordingMode = .holdToTalk
@@ -1426,7 +1435,9 @@ final class WorkflowController {
         }
         let personaSnapshot = recordingPersonaSnapshot
         let startupContext = recordingStartupContext
+        let cloudSession = recordingCloudSession
         recordingStartupContext = nil
+        recordingCloudSession = nil
         recordingGestureDecision?.resolve()
         recordingGestureDecision = nil
         isRecording = false
@@ -1457,18 +1468,21 @@ final class WorkflowController {
 
         Task { [weak self] in
             guard let self else { return }
-            await finishRecordingAndProcess(
-                recordingStoppedAt: recordingStoppedAt,
-                startupContext: startupContext,
-                bypassPersonaRewrite: useQuickInput,
-                personaSnapshot: personaSnapshot
-            )
+            await TypefluxOfficialTranscriber.$recordingSession.withValue(cloudSession) {
+                await finishRecordingAndProcess(
+                    recordingStoppedAt: recordingStoppedAt,
+                    startupContext: startupContext,
+                    bypassPersonaRewrite: useQuickInput,
+                    personaSnapshot: personaSnapshot
+                )
+            }
         }
     }
 
     // MARK: - Clarification recording
 
     func beginClarificationRecording() async {
+        recordingCloudSession = await sttRouter.snapshotTypefluxCloudSession()
         isRecording = true
         isAudioRecorderStarted = false
         agentClarificationWindowController.updateRecordingState(.recording)
@@ -1486,6 +1500,7 @@ final class WorkflowController {
             isRecording = false
             isAudioRecorderStarted = false
             isClarificationRecording = false
+            recordingCloudSession = nil
             agentClarificationWindowController.updateRecordingState(.waitingForReply)
             let userMessage = Self.audioStartFailureMessage(for: error)
             NetworkDebugLogger.logError(context: "Clarification recording failed to start", error: error)
@@ -1500,6 +1515,8 @@ final class WorkflowController {
 
     func finishClarificationRecording() {
         guard isRecording, isClarificationRecording else { return }
+        let cloudSession = recordingCloudSession
+        recordingCloudSession = nil
         isRecording = false
         isAudioRecorderStarted = false
         isClarificationRecording = false
@@ -1514,7 +1531,9 @@ final class WorkflowController {
             }
 
             do {
-                let transcript = try await sttRouter.transcribe(audioFile: audioFile)
+                let transcript = try await TypefluxOfficialTranscriber.$recordingSession.withValue(cloudSession) {
+                    try await sttRouter.transcribe(audioFile: audioFile)
+                }
                 let trimmed = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard !trimmed.isEmpty else {
                     agentClarificationWindowController.updateRecordingState(.waitingForReply)
