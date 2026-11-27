@@ -2458,6 +2458,40 @@ final class WorkflowControllerProcessingTests: XCTestCase {
     }
 
     @MainActor
+    func testTypefluxRealtimeFailureUsesPreviewWithoutBatchTranscription() async {
+        let textInjector = MockProcessingTextInjector()
+        let historyStore = MockProcessingHistoryStore()
+        let batchTranscriber = SequencedProfileAwareTranscriber(transcripts: ["unexpected replay"])
+        let failure = TypefluxOfficialASRError.connectionFailed("Socket is not connected.")
+        let controller = makeWorkflowController(
+            textInjector: textInjector,
+            sttTranscriber: batchTranscriber,
+            historyStore: historyStore,
+            configureSettings: { $0.sttProvider = .typefluxOfficial },
+            hasPaidCloudSubscription: { true }
+        )
+
+        await controller.process(
+            audioFile: AudioFile(fileURL: URL(fileURLWithPath: "/tmp/mock.wav"), duration: 1),
+            realtimeTranscriptionSession: FailedRealtimeAudioInput(failure),
+            usesTypefluxRealtimeGateway: true,
+            record: HistoryRecord(date: Date(), recordingStatus: .succeeded, transcriptionStatus: .running),
+            selectionSnapshot: TextSelectionSnapshot(),
+            selectedText: nil,
+            askContextText: nil,
+            inputContext: nil,
+            personaPrompt: nil,
+            recordingIntent: .dictation,
+            sessionID: controller.processingSessionID,
+            recordingPreviewText: "preview transcript"
+        )
+
+        XCTAssertEqual(textInjector.insertedTexts, ["preview transcript"])
+        XCTAssertEqual(historyStore.list().last?.transcriptText, "preview transcript")
+        XCTAssertTrue(batchTranscriber.audioURLs.isEmpty)
+    }
+
+    @MainActor
     func testLockedPersonaRewriteReusesRealtimeSessionWhenOptimizeDiffers() async {
         let textInjector = MockProcessingTextInjector()
         let historyStore = MockProcessingHistoryStore()

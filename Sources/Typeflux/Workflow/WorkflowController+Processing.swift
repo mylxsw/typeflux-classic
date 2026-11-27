@@ -1036,10 +1036,6 @@ extension WorkflowController {
                         rawTranscribedText = try await realtimeTranscriptionSession.finish()
                     }
                 } catch {
-                    // Cloud realtime already owns failover. A batch fallback could replay audio.
-                    if usesTypefluxRealtimeGateway {
-                        throw error
-                    }
                     if Self.shouldUseRecordingPreviewOnTranscriptionFailure(error),
                        !fallbackPreviewText.isEmpty {
                         NetworkDebugLogger.logError(
@@ -1048,6 +1044,10 @@ extension WorkflowController {
                         )
                         rawTranscribedText = ""
                     } else {
+                        // Cloud realtime already owns failover. A batch fallback could replay audio.
+                        if usesTypefluxRealtimeGateway {
+                            throw error
+                        }
                         NetworkDebugLogger.logError(
                             context: "Realtime STT session failed; falling back to recorded audio",
                             error: error
