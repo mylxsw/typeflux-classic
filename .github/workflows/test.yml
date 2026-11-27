@@ -37,6 +37,9 @@ jobs:
       - name: Test account sync updates
         run: python3 scripts/test_account_sync.py
 
+      - name: Test release build script
+        run: python3 scripts/test_build_release.py
+
       - name: Build
         run: make build
 
