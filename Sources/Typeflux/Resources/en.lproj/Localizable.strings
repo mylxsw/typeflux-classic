@@ -1248,6 +1248,8 @@
 "cloud.billing.action.subscribe" = "Subscribe";
 "cloud.billing.action.upgradePlan" = "Upgrade Plan";
 "cloud.billing.action.switchModel" = "Switch Model";
+"cloud.billing.action.buyCredits" = "Buy add-on credits";
+"cloud.billing.paidQuotaExceeded.body" = "Your monthly and add-on credits are used up. Buy add-on credits to keep using Typeflux Cloud, or switch to another model.";
 
 "auth.account.provider" = "Login Method";
 "auth.account.memberSince" = "Member Since";

@@ -1248,6 +1248,8 @@
 "cloud.billing.action.subscribe" = "订阅会员";
 "cloud.billing.action.upgradePlan" = "升级套餐";
 "cloud.billing.action.switchModel" = "切换其他模型";
+"cloud.billing.action.buyCredits" = "购买加购额度";
+"cloud.billing.paidQuotaExceeded.body" = "本月额度和加购额度都已用完。购买加购额度即可继续使用 Typeflux Cloud，也可以切换到其他模型。";
 
 "auth.account.provider" = "登录方式";
 "auth.account.memberSince" = "注册时间";
