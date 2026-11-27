@@ -1,6 +1,6 @@
 <div align="center">
 
-# Typeflux - 你来说，我们来输入
+# [Typeflux Classic](https://typeflux.app) - 你来说，我们来输入
 
 按住 `Fn` 即可语音输入，双击 `Fn` 可以随口提问。Typeflux 会把快速、准确的语音转文字直接输入到任意 macOS 应用中。免费、开源，并支持本地模型 - 你的声音不必离开你的 Mac。
 
@@ -15,6 +15,11 @@
 [查看更多截图](./docs/SCREENSHOTS.md)
 
 </div>
+
+> [!NOTE]
+> **Typeflux 已经升级为一款完整的 Mac 效率工具。** 除了语音输入，[Typeflux](https://github.com/mylxsw/typeflux) 还提供超级搜索、Chat、操作圆环、剪贴板历史、截图、录屏和翻译。Typeflux Classic 专注语音输入，继续提供问题修复和账户相关更新；新功能只在 Typeflux 中推出。
+>
+> 两个应用共用同一个账户、会员和本地数据。它们安装后都是 `Typeflux.app`，安装 [Typeflux](https://github.com/mylxsw/typeflux/releases/latest) 会替换 Classic，历史记录和设置都会保留。
 
 ## 下载
 

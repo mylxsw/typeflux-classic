@@ -17,6 +17,11 @@ English | [简体中文](./README.zh-CN.md)
 </div>
 
 
+> [!NOTE]
+> **Typeflux is now a full productivity app for Mac.** Beyond voice input, [Typeflux](https://github.com/mylxsw/typeflux) adds a launcher, Chat, an action Ring, clipboard history, screenshots, screen recording, and translation. Typeflux Classic stays focused on voice input and receives bug fixes and account updates; new features go to Typeflux.
+>
+> Both apps use the same account, subscription, and local data. Each installs as `Typeflux.app`, so installing [Typeflux](https://github.com/mylxsw/typeflux/releases/latest) replaces Classic and keeps your history and settings.
+
 ## Download
 
 **[⬇ Download latest release (.dmg)](https://github.com/mylxsw/typeflux-classic/releases/latest)**
