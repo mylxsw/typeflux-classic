@@ -43,12 +43,16 @@ jobs:
       - name: Build
         run: make build
 
-      - name: Run affected tests
+      - name: Run localization, branding, and affected tests
         run: |
           set -euo pipefail
 
           changed_files="$(git diff --name-only HEAD^1 HEAD)"
-          suites=()
+          suites=(
+            ClassicProductBrandingTests
+            LocalizationReleaseTests
+            LocalizationResourceTests
+          )
           while IFS= read -r path; do
             name="${path##*/}"
             case "$path" in
@@ -65,6 +69,9 @@ jobs:
             case "$path" in
               */TypefluxCloudRequestHeaders.swift | */CloudRequestExecutor.swift)
                 suites+=(TypefluxCloudRequestHeadersTests TypefluxOfficialTranscriberTests AppAnalyticsReporterTests)
+                ;;
+              */SettingsWindowController.swift | */WindowScreenFitting.swift)
+                suites+=(WindowScreenFittingTests)
                 ;;
               */AutoUpdater.swift | app/Info.plist)
                 suites+=(AutoUpdateArchiveInstallerTests)
@@ -85,9 +92,5 @@ jobs:
             done < scripts/account_module_files.txt
           fi
 
-          if [[ -z "${suites[0]:-}" ]]; then
-            echo "No affected test suites selected."
-            exit 0
-          fi
           filter="$(printf '%s\n' "${suites[@]}" | sort -u | paste -sd '|' -)"
           make test FILTER="$filter"
