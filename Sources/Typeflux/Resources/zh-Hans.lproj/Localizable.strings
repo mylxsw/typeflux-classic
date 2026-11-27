@@ -210,7 +210,7 @@
 "appMenu.selectAll" = "全选";
 
 "about.appName" = "Typeflux Classic";
-"about.subtitle" = "The voice-native typing experience";
+"about.subtitle" = "以语音为核心的输入体验";
 "about.details" = "详情";
 "about.developer" = "开发者";
 "about.developer.subtitle" = "独立开发者";
@@ -1077,7 +1077,7 @@
 
 // MARK: - Agent 框架
 
-"studio.section.agent" = "Agent";
+"studio.section.agent" = "智能体";
 "studio.eyebrow.agent" = "Agent 框架";
 "studio.heading.agent" = "Agent 配置";
 "studio.subheading.agent" = "配置 Agent 框架、MCP 服务器和工具集成。";
@@ -1153,7 +1153,7 @@
 "agent.jobs.detail.stepNumber" = "步骤 %d";
 "agent.jobs.detail.toolCall.arguments" = "调用参数";
 "agent.jobs.detail.reasoning" = "推理过程";
-"agent.jobs.detail.stepTokens" = "%d tokens";
+"agent.jobs.detail.stepTokens" = "%d 个词元";
 "agent.jobs.detail.context.showMore" = "展开全部";
 "agent.jobs.detail.context.showLess" = "收起";
 "agent.jobs.cancel" = "取消任务";
@@ -1452,7 +1452,7 @@
 "account.page.text" = "生成文字";
 "account.page.textDetail" = "识别 + 润色";
 "account.page.today" = "今天";
-"account.page.tokens" = "%@ tokens";
+"account.page.tokens" = "%@ 个词元";
 "account.page.usageSection" = "本期用量";
 "account.page.usageSince" = "%@ 起";
 "account.page.usedVsElapsed" = "本期已用 %@ · 已过 %@ 的周期";

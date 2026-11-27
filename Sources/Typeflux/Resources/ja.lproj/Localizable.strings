@@ -128,7 +128,7 @@
 "settings.appearance.title" = "外観";
 "settings.overlayStyle.title" = "カプセルスタイル";
 "settings.overlayStyle.subtitle" = "カプセルとダイアログの表示スタイルを選択します。";
-"settings.appearance.subtitle" = "コンポーネント システムを明るいテーマ、暗いテーマ、またはシステムに従うテーマの間で切り替えます。";
+"settings.appearance.subtitle" = "ライト、ダーク、またはシステム設定に合わせた外観を選びます。";
 "settings.language.title" = "言語";
 "settings.language.subtitle" = "Typeflux Classic インターフェイス全体で使用される表示言語を選択します。";
 "settings.output.title" = "出力";
@@ -172,6 +172,8 @@
 "menu.transcriptionHistory" = "文字起こし履歴";
 "menu.transcriptionHistory.empty" = "文字起こし履歴はありません";
 "menu.transcriptionHistory.viewAll" = "すべて表示";
+"menu.textTransformation" = "文字変換";
+"menu.textTransformation.enable" = "変換を有効にする";
 "menu.personas" = "ペルソナ";
 "menu.personas.empty" = "ペルソナはありません";
 "menu.personas.edit" = "ペルソナを編集";
@@ -208,14 +210,16 @@
 "appMenu.selectAll" = "すべて選択";
 
 "about.appName" = "Typeflux Classic";
-"about.subtitle" = "音声ネイティブの入力エクスペリエンス";
-"about.details" = "DETAILS";
+"about.subtitle" = "声で文字を入力";
+"about.details" = "詳細";
 "about.developer" = "開発者";
 "about.developer.subtitle" = "独立系開発者";
 "about.website" = "ウェブサイト";
+"about.privacy" = "プライバシー";
+"about.privacy.value" = "プライバシーポリシー";
 "about.project" = "プロジェクト";
 "about.project.subtitle" = "ソースコード、問題点、リリース履歴";
-"about.build" = "ビルドする";
+"about.build" = "ビルド番号";
 "about.build.subtitle" = "アプリバンドルから読み取る";
 "classic.fullVersion.link" = "Typeflux 完全版について";
 
@@ -265,7 +269,7 @@
 "common.expand" = "展開";
 "common.collapse" = "折りたたむ";
 "common.reset" = "リセット";
-"common.apiKey" = "API Key";
+"common.apiKey" = "API キー";
 "common.model" = "モデル";
 "common.automatic" = "自動";
 "common.bundled" = "同梱";
@@ -295,18 +299,18 @@
 "provider.stt.freeModel" = "無料モデル";
 "provider.stt.appleSpeech" = "Apple Speech";
 "provider.stt.localModel" = "ローカルモデル";
-"provider.stt.multimodalLLM" = "Multimodal LLM";
+"provider.stt.multimodalLLM" = "マルチモーダル LLM";
 "provider.stt.aliCloud" = "Alibaba Cloud ASR";
-"provider.stt.doubaoRealtime" = "Doubao Realtime ASR";
+"provider.stt.doubaoRealtime" = "Doubao リアルタイム音声認識";
 "provider.stt.googleCloud" = "Google Speech-to-Text";
 "provider.stt.groq" = "Groq";
 "provider.stt.soniox" = "Soniox";
 "provider.stt.typefluxOfficial" = "Typeflux Cloud";
-"provider.llm.openAICompatible" = "OpenAI-Compatible";
+"provider.llm.openAICompatible" = "OpenAI 互換";
 "provider.llm.custom" = "カスタム";
 "provider.llm.freeModel" = "無料モデル";
 "provider.llm.openRouter" = "OpenRouter";
-"provider.llm.ollama" = "Local Ollama";
+"provider.llm.ollama" = "ローカル Ollama";
 "provider.llm.typefluxCloud" = "Typeflux Cloud";
 
 "downloadSource.modelScope" = "ModelScope";
@@ -439,6 +443,8 @@
 "history.detail.noAudioFile" = "音声ファイルがありません";
 "history.detail.rawTranscript" = "生の転写物";
 "history.detail.personaResult" = "ペルソナの結果";
+"history.detail.openCCResult" = "文字変換後";
+"history.detail.postProcessedResult" = "最終出力";
 "history.detail.selectionOriginal" = "選択したテキスト";
 "history.detail.selectionEdited" = "編集された選択範囲";
 "history.detail.pipelineStats" = "処理メトリクス";
@@ -563,6 +569,9 @@
 "history.privacy.subtitle" = "音声ディクテーション履歴は、この Mac にのみ保存されます。自動クリーンアップにより、期限切れのローカル エントリとリンクされたオーディオ ファイルが削除されます。";
 "history.export.title" = "アーカイブをエクスポートする";
 "history.export.subtitle" = "履歴をマークダウンとしてダウンロードするか、現在のタイムラインをクリアします。";
+"history.export.chooseDirectory" = "書き出し先フォルダを選択";
+"history.export.chooseDirectoryMessage" = "Typeflux Classic はこのフォルダに Markdown 形式の履歴を保存します。";
+"history.export.chooseDirectoryPrompt" = "書き出す";
 "history.empty" = "まだ履歴エントリがありません。";
 "history.loadingMore" = "さらに履歴を読み込んでいます...";
 "history.section.today" = "今日";
@@ -787,7 +796,7 @@
 "settings.models.useAliCloud" = "アリババクラウドを利用する";
 "settings.models.useDoubao" = "豆包を使用する";
 "settings.models.useGroq" = "Groq を使用する";
-"settings.models.useSoniox" = "Use Soniox";
+"settings.models.useSoniox" = "Soniox を使用";
 "settings.models.useTypefluxOfficial" = "Typeflux 公式を使用する";
 "settings.models.useTypefluxCloud" = "Typeflux Cloud を使用する";
 "settings.models.badge.local" = "ローカル";
@@ -804,7 +813,7 @@
 "settings.models.card.doubao.summary" = "ByteDance のネイティブ バイナリ WebSocket プロトコルを使用した Doubao Speech Recognition 2.0 による低遅延ストリーミング認識。";
 "settings.models.card.googleCloud.summary" = "Google Cloud Speech-to-Text によるリアルタイムのストリーミング音声認識。";
 "settings.models.card.groq.summary" = "Groq の推論エンドポイントによる高速な Whisper 文字起こし。既定モデルは whisper-large-v3-turbo。";
-"settings.models.card.soniox.summary" = "Real-time streaming recognition via Soniox V5 with high accuracy across 60+ languages.";
+"settings.models.card.soniox.summary" = "Soniox V5 のリアルタイムストリーミング認識。60 以上の言語に高精度で対応します。";
 "settings.models.card.typefluxOfficial.summary" = "Typeflux 内蔵の音声認識サービスです。Typeflux アカウントでサインインするだけで使用できます。追加の API キーは不要です。";
 "settings.models.card.typefluxCloud.summary" = "Typeflux 内蔵の大規模言語モデルサービスです。Typeflux アカウントでサインインするだけで使用できます。追加の API キーは不要です。";
 "settings.models.card.ollama.summary" = "オプションの自動モデル準備を使用して、ローカルで書き換えおよび編集コマンドを実行します。";
@@ -822,6 +831,8 @@
 "settings.models.card.minimax.summary" = "MiniMax は、国際および中国の API URL を使用して、OpenAI 互換エンドポイントを介してモデル化します。";
 "settings.models.card.grok.summary" = "xAI の OpenAI 互換エンドポイント経由で Grok モデルを使用します。";
 "settings.models.card.xiaomi.summary" = "Xiaomi の OpenAI 互換エンドポイント経由で MiMo mimo-v2 モデルを使用します。";
+"settings.models.card.openCodeZen.summary" = "OpenCode Zen 経由で GPT、Claude、Gemini、Qwen、GLM など、コーディング向けに最適化された厳選モデルを利用できます。";
+"settings.models.card.openCodeGo.summary" = "DeepSeek、Qwen、GLM、Kimi、MiniMax などの低価格なオープンソース開発モデル。初月は $5、以降は月額 $10。";
 "settings.models.badge.free" = "無料";
 "settings.models.freeSTT.hint" = "言論の自由モデルはコードで管理されます。ユーザーは、構成されたモデルのリストからのみ選択できます。";
 "settings.models.freeSTT.noSources" = "フリースピーチモデルソースがまだ設定されていません。 Sources/Typeflux/STT/FreeModels に実装を追加します。";
@@ -860,7 +871,7 @@
 "settings.models.overview.doubao" = "音声認識は、ByteDance WebSocket 経由で Doubao Speech Recognition 2.0 にリアルタイムでストリーミングされます。";
 "settings.models.overview.googleCloud" = "音声認識は Google Cloud Speech-to-Text に直接リアルタイムでストリーミングされます。";
 "settings.models.overview.groq" = "音声認識は、Groq の高速推論エンドポイントが Whisper モデルを使用して処理します。";
-"settings.models.overview.soniox" = "Speech recognition is streamed in real time to Soniox V5 via WebSocket.";
+"settings.models.overview.soniox" = "音声認識は WebSocket 経由で Soniox V5 にリアルタイム送信され、60 以上の言語に対応します。";
 "settings.models.overview.typefluxOfficial" = "音声認識は Typeflux の内蔵サービスで処理されます。";
 "settings.models.overview.typefluxCloud" = "テキストの書き直しと編集は Typeflux の内蔵 LLM サービスで処理されます。";
 "settings.models.mode.local" = "ローカル";
@@ -882,7 +893,7 @@
 "settings.models.focused.doubao" = "Doubao Speech Recognition 2.0 を介した遅延の最も低いクラウド ディクテーション パスが必要な場合は、これを使用します。";
 "settings.models.focused.googleCloud" = "Google Cloud Speech-to-Text のリアルタイム ストリーミング認識が必要な場合にこれを使用します。";
 "settings.models.focused.groq" = "Groq の高速推論を使用した迅速なクラウド文字起こしが必要な場合にこれを使用します。";
-"settings.models.focused.soniox" = "Use this for accurate real-time cloud transcription via Soniox V5 across 60+ languages.";
+"settings.models.focused.soniox" = "Soniox V5 による 60 以上の言語に対応した高精度なリアルタイムクラウド文字起こしが必要な場合にこれを使用します。";
 "settings.models.focused.typefluxOfficial" = "Typeflux 内蔵の音声認識サービスを使用します。サインインするだけで、追加の設定は不要です。";
 "settings.models.focused.typefluxCloud" = "Typeflux 内蔵の LLM サービスを使用してテキストの書き直しと編集を行います。サインインするだけで、追加の設定は不要です。";
 "settings.models.routing" = "ルーティング動作";
@@ -899,7 +910,7 @@
 "settings.models.routing.doubao" = "Doubao Speech Recognition 2.0 は、ByteDance のバイナリ WebSocket プロトコルを介してリアルタイム ストリーミング ASR を処理します。";
 "settings.models.routing.googleCloud" = "Google Cloud Speech-to-Text はこの Mac から直接リアルタイム ストリーミング ASR を処理します。";
 "settings.models.routing.groq" = "Groq は、Whisper 互換の文字起こしエンドポイントを使用した高速推論でディクテーションを処理します。";
-"settings.models.routing.soniox" = "Soniox V5 handles real-time streaming ASR via WebSocket with high accuracy across 60+ languages.";
+"settings.models.routing.soniox" = "Soniox V5 は WebSocket でリアルタイムのストリーミング音声認識を行い、60 以上の言語に高精度で対応します。";
 "settings.models.googleCloud.streaming" = "StreamingRecognize";
 "settings.models.googleCloud.projectID" = "Project ID";
 "settings.models.googleCloud.oauth.authorize" = "Google を認可";
@@ -1001,9 +1012,9 @@
 "onboarding.models.stt.whisper.description" = "リモート API — エンドポイントとキーが必要です";
 "onboarding.models.stt.local.description" = "ダウンロードしてローカルで実行する";
 "onboarding.models.stt.local.hint" = "モデルは初めて使用するときに自動的にダウンロードされます。";
-"onboarding.models.llm.openai.title" = "OpenAI-Compatible";
+"onboarding.models.llm.openai.title" = "OpenAI 互換";
 "onboarding.models.llm.openai.description" = "あらゆるリモート チャット API — OpenAI、クロード、ディープシーク…";
-"onboarding.models.llm.ollama.title" = "Local Ollama";
+"onboarding.models.llm.ollama.title" = "ローカル Ollama";
 "onboarding.models.llm.ollama.description" = "プライベート、完全に Mac で実行されます";
 "onboarding.models.badge.noSetup" = "セットアップがありません";
 "onboarding.models.badge.apiKey" = "API キー";
@@ -1145,6 +1156,10 @@
 "agent.jobs.detail.stepTokens" = "%d トークン";
 "agent.jobs.detail.context.showMore" = "すべて表示";
 "agent.jobs.detail.context.showLess" = "折りたたむ";
+"agent.jobs.cancel" = "タスクをキャンセル";
+"agent.jobs.status.running" = "実行中";
+"agent.jobs.status.completed" = "完了";
+"agent.jobs.status.failed" = "失敗";
 "agent.jobs.clearAllDialog.title" = "すべてのジョブを削除";
 "agent.jobs.clearAllDialog.message" = "すべてのジョブ記録を削除しますか?この操作は元に戻すことができません。";
 "agent.jobs.deleteDialog.title" = "ジョブの削除";
