@@ -1617,54 +1617,19 @@ final class WorkflowController {
             self.shouldPreserveLLMConfigurationNotice = true
             self.soundEffectPlayer.play(.tip)
 
-            let primaryAction = error.primaryAction(
+            let prompt = CloudBillingPrompt(
+                error: error,
                 hasPaidSubscription: hasPaidSubscription,
                 billingEnabled: billingEnabled
             )
 
             let actions: [OverlayFailureAction] = [
                 OverlayFailureAction(
-                    title: error.primaryActionTitle(
-                        hasPaidSubscription: hasPaidSubscription,
-                        billingEnabled: billingEnabled
-                    ),
+                    title: prompt.actionTitle,
                     isRetry: false,
-                    trailingSystemImage: "arrow.up.right",
+                    trailingSystemImage: prompt.actionSymbol,
                     handler: { [weak self] in
-                        guard let self else { return }
-                        switch primaryAction {
-                        case .openAccount:
-                            SettingsWindowController.shared.show(
-                                settingsStore: settingsStore,
-                                historyStore: historyStore,
-                                initialSection: .account
-                            )
-                        case .openPlans:
-                            Task { @MainActor [weak self] in
-                                guard let self else { return }
-                                do {
-                                    let url = try await AccountBillingFlow.destination(
-                                        for: .subscribe,
-                                        requestBillingPageToken: {
-                                            try await AuthState.shared.requestBillingPageToken()
-                                        },
-                                        createPortalSession: {
-                                            try await AuthState.shared.createBillingPortalSession()
-                                        }
-                                    )
-                                    NSWorkspace.shared.open(url)
-                                } catch {
-                                    self.logger.error(
-                                        "Failed to open Typeflux Cloud plans: \(error.localizedDescription, privacy: .public)"
-                                    )
-                                    SettingsWindowController.shared.show(
-                                        settingsStore: self.settingsStore,
-                                        historyStore: self.historyStore,
-                                        initialSection: .account
-                                    )
-                                }
-                            }
-                        }
+                        self?.openCloudBillingDestination(prompt.destination)
                     }
                 ),
                 OverlayFailureAction(
@@ -1683,11 +1648,45 @@ final class WorkflowController {
             ]
 
             self.overlayController.showFailureWithActions(
-                title: error.title(hasPaidSubscription: hasPaidSubscription, billingEnabled: billingEnabled),
-                message: error.message(hasPaidSubscription: hasPaidSubscription, billingEnabled: billingEnabled),
+                title: prompt.title,
+                message: prompt.message,
                 tone: .billing,
                 actions: actions
             )
+        }
+    }
+
+    @MainActor
+    private func openCloudBillingDestination(_ destination: CloudBillingPrompt.Destination) {
+        switch destination {
+        case .account:
+            SettingsWindowController.shared.show(
+                settingsStore: settingsStore,
+                historyStore: historyStore,
+                initialSection: .account
+            )
+        case let .billing(tab):
+            Task { @MainActor [weak self] in
+                await AccountBillingFlow.open(
+                    { try await AuthState.shared.requestBillingPageToken(tab: tab) },
+                    onLink: { url in
+                        // Returning from the browser fetches the new balance right away.
+                        AuthState.shared.invalidateAccountSummary()
+                        NSWorkspace.shared.open(url)
+                    },
+                    onFailure: { error in
+                        guard let self else { return }
+                        self.logger.error(
+                            "Failed to open Typeflux Cloud billing: \(error.localizedDescription, privacy: .public)"
+                        )
+                        SettingsWindowController.shared.show(
+                            settingsStore: self.settingsStore,
+                            historyStore: self.historyStore,
+                            initialSection: .account
+                        )
+                    }
+                )
+            }
         }
     }
 

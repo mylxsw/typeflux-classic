@@ -252,26 +252,26 @@ struct OnboardingView: View {
             Spacer(minLength: 0)
 
             VStack(alignment: .center, spacing: 28) {
-                if authState.isLoggedIn {
-                    editorialStepHeader(
-                        eyebrow: stepEyebrow(for: .account),
-                        title: L("onboarding.account.title"),
-                        subtitle: L("onboarding.account.subtitle"),
-                        alignCenter: true,
-                        showStepCounter: false
-                    )
-                }
+                editorialStepHeader(
+                    eyebrow: stepEyebrow(for: .account),
+                    title: L("onboarding.account.title"),
+                    subtitle: L("onboarding.account.subtitle"),
+                    alignCenter: true,
+                    showStepCounter: false
+                )
 
                 VStack(spacing: 18) {
                     if authState.isLoggedIn {
                         signedInAccountCard
                     } else {
-                        LoginView(presentationStyle: .plain) {
-                            viewModel.useCloudAccountModelsAndContinue()
-                        }
-                        .padding(.top, 8)
-                        .padding(.bottom, 6)
-                        .frame(maxWidth: .infinity)
+                        OnboardingWebLoginCard(
+                            coordinator: viewModel.accountLogin,
+                            sharedLogin: authState.webLoginCoordinator,
+                            onSucceeded: {
+                                // The browser kept focus; bring the setup window back for the next step.
+                                NSApp.activate(ignoringOtherApps: true)
+                            }
+                        )
                     }
                 }
                 .frame(maxWidth: 460)

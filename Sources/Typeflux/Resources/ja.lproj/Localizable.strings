@@ -1233,6 +1233,8 @@
 "cloud.billing.action.subscribe" = "購読する";
 "cloud.billing.action.upgradePlan" = "プランをアップグレード";
 "cloud.billing.action.switchModel" = "別のモデルに切り替え";
+"cloud.billing.action.buyCredits" = "追加クレジットを購入";
+"cloud.billing.paidQuotaExceeded.body" = "今月のクレジットと追加クレジットをすべて使い切りました。追加クレジットを購入して Typeflux Cloud を引き続き利用するか、別のモデルに切り替えてください。";
 
 "auth.account.provider" = "ログイン方法";
 "auth.account.memberSince" = "登録日";
