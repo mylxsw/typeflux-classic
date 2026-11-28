@@ -183,9 +183,6 @@ Join the community to share feedback, ask questions, and follow development upda
 
 - [Join Discord](https://discord.com/invite/Vr5389YrN)
 - [X](https://x.com/mylxsw)
-- WeChat group:
-
-  <img src="./assets/wechat-group-20260527.jpg" alt="Typeflux WeChat group QR code" width="260">
 
 ## Contributing
 
