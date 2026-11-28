@@ -222,6 +222,17 @@
 "about.build" = "构建版本";
 "about.build.subtitle" = "读取自应用 Bundle";
 "classic.fullVersion.link" = "了解完整版 Typeflux";
+"fullAppSwitch.action.switch" = "切换到 Typeflux";
+"fullAppSwitch.confirm.title" = "切换到 Typeflux？";
+"fullAppSwitch.confirm.dataKept" = "数据和账户都会保留。";
+"fullAppSwitch.confirm.action" = "切换";
+"fullAppSwitch.downloading" = "正在下载 Typeflux";
+"fullAppSwitch.installing" = "正在安装 Typeflux";
+"fullAppSwitch.failed" = "未能切换到 Typeflux";
+"fullAppSwitch.error.identity" = "下载的应用不是正版 Typeflux，已拒绝安装。";
+"fullAppSwitch.error.unavailable" = "Typeflux 暂不可用。";
+"fullAppSwitch.error.busy" = "请先结束当前的录音，再重试。";
+"fullAppSwitch.error.download" = "无法下载 Typeflux，请检查网络后重试。";
 
 "permission.microphone.title" = "麦克风";
 "permission.microphone.summary" = "用于采集系统麦克风输入。";

@@ -222,6 +222,17 @@
 "about.build" = "빌드";
 "about.build.subtitle" = "앱 번들에서 읽기";
 "classic.fullVersion.link" = "Typeflux 전체 버전 알아보기";
+"fullAppSwitch.action.switch" = "Typeflux로 전환";
+"fullAppSwitch.confirm.title" = "Typeflux로 전환할까요?";
+"fullAppSwitch.confirm.dataKept" = "데이터와 계정은 그대로 유지됩니다.";
+"fullAppSwitch.confirm.action" = "전환";
+"fullAppSwitch.downloading" = "Typeflux 다운로드 중";
+"fullAppSwitch.installing" = "Typeflux 설치 중";
+"fullAppSwitch.failed" = "Typeflux로 전환하지 못했습니다";
+"fullAppSwitch.error.identity" = "다운로드한 앱이 정품 Typeflux가 아니어서 설치하지 않았습니다.";
+"fullAppSwitch.error.unavailable" = "현재 Typeflux를 사용할 수 없습니다.";
+"fullAppSwitch.error.busy" = "진행 중인 녹음을 마친 후 다시 시도하세요.";
+"fullAppSwitch.error.download" = "Typeflux를 다운로드할 수 없습니다. 네트워크 연결을 확인한 후 다시 시도해 주세요.";
 
 "permission.microphone.title" = "마이크";
 "permission.microphone.summary" = "시스템 마이크에서 오디오를 캡처하는 데 필요합니다.";

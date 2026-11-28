@@ -222,6 +222,17 @@
 "about.build" = "建置版本";
 "about.build.subtitle" = "讀取自應用 Bundle";
 "classic.fullVersion.link" = "了解完整版 Typeflux";
+"fullAppSwitch.action.switch" = "切換到 Typeflux";
+"fullAppSwitch.confirm.title" = "切換到 Typeflux？";
+"fullAppSwitch.confirm.dataKept" = "資料和帳號都會保留。";
+"fullAppSwitch.confirm.action" = "切換";
+"fullAppSwitch.downloading" = "正在下載 Typeflux";
+"fullAppSwitch.installing" = "正在安裝 Typeflux";
+"fullAppSwitch.failed" = "無法切換到 Typeflux";
+"fullAppSwitch.error.identity" = "下載的應用程式不是正版 Typeflux，已拒絕安裝。";
+"fullAppSwitch.error.unavailable" = "Typeflux 暫時無法使用。";
+"fullAppSwitch.error.busy" = "請先結束目前的錄音，再重試。";
+"fullAppSwitch.error.download" = "無法下載 Typeflux，請檢查網路後再試一次。";
 
 "permission.microphone.title" = "麥克風";
 "permission.microphone.summary" = "用於擷取系統麥克風輸入。";
